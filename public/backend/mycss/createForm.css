@@ -1,0 +1,47 @@
+.answer div {
+    display: flex;
+    /* justify-content: space-around; */
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.answer div > div {
+    margin-bottom: 5px;
+}
+
+.answer div input{
+    margin: 0 5px 0 0;
+}
+
+.answer .answer-content {
+    width: 90%;
+    border-left: 1px solid #bdc3c7; 
+    border-right: 1px solid #bdc3c7; 
+    padding: 0 5px;
+    margin-bottom: 0;
+    word-wrap: break-word;
+}
+
+.answer .answer-content p {
+    margin-bottom: 0px;
+    /* word-wrap: break-all; */
+    display: block;
+}
+
+.answer .answer-icon {
+    width: 7%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5px;
+    font-size: 18px;
+    margin-bottom: 0;
+}
+
+.answer .answer-icon .fa-edit {
+    color: #2980b9;
+}
+
+.answer .answer-icon .fa-trash-alt {
+    color: #e84118;
+}

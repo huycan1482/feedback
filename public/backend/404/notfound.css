@@ -1,0 +1,60 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+
+body {
+    background-image: url('bg_purple.png');
+    background-repeat: repeat-x;
+    background-size: cover;
+    background-position: left top;
+    height: 100%;
+    overflow: hidden;
+}
+
+.error-page {
+    width: 100%;
+    min-height: 760px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-image: url('http://salehriaz.com/404Page/img/overlay_stars.svg');
+    background-repeat: repeat;
+    background-size: contain;
+    background-position: left top;
+    /* background-color: #2980b9; */
+
+}
+
+.error-page span {
+    font-size: 100px;
+    color: #ecf0f1;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.error-page p {
+    font-size: 2rem;
+    color: #ecf0f1;
+    margin-bottom: 1rem;
+}
+
+.error-page a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 500;
+    background-color: #2980b9;
+    padding: 1rem;
+    border-radius: .3rem;
+    transition: .9s;
+}
+
+.error-page a:hover {
+    transition: .9s;
+    background-color: #c0392b;
+    box-shadow: 0 12px 15px 0 rgba(0, 0, 0, .24), 0 17px 50px 0 rgba(0, 0, 0, .19);
+}
+

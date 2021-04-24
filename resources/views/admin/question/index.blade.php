@@ -9,7 +9,7 @@
 <section class="content-header">
     <h1>
         Quản lý danh sách Câu hỏi
-        <small><a href="{{ route('question.create') }}">Thêm mới</a></small>
+        <small><a href="{{ route('admin.question.create') }}">Thêm mới</a></small>
     </h1>
 </section>
 
@@ -60,6 +60,13 @@
 
                                             </td>
                                         </tr>
+                                        <tr style="width: 100%">
+                                            <td class="" style="width: 30%">
+                                                Câu trả lời
+                                            </td>
+                                            <td class="modal-question-answers" style="overflow-wrap: anywhere;width: 70%" >
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -106,7 +113,7 @@
                                 </td>
                                 <td class="text-center">
 
-                                    <a href="" class="btn btn-primary" title="Câu trả lời liên quan">
+                                    <a href="{{ route('admin.question.getListAnswer', ['id' => $question->id]) }}" class="btn btn-primary" title="Câu trả lời liên quan">
                                         <i class="fas fa-long-arrow-alt-right"></i>
                                     </a>
 
@@ -114,7 +121,7 @@
                                         <i class="fas fa-cog"></i>
                                     </button>
 
-                                    <a href="{{ route('question.edit', ['id'=> $question->id]) }}" class="btn btn-success" title="Sửa">
+                                    <a href="{{ route('admin.question.edit', ['id'=> $question->id]) }}" class="btn btn-success" title="Sửa">
                                         <i class="fa fa-edit"></i>
                                     </a>
 
@@ -159,7 +166,7 @@
             }
         });
 
-        $('.btn-detail').click(function () {
+        $(document).on('click', '.btn-detail', function(){
             var itemId = $(this).attr('data-id');
             $.ajax({
                 type: "get",
@@ -167,19 +174,24 @@
                 data: {},
                 dataType: "json",
                 success: function (response) {
-                    console.log(response.question);
+                    var html = '';
+                    // console.log(response.question);
                     $('.modal-question-content').html(response.question.content);
                     if (response.question.is_active == 1) {
                         $('.modal-question-active').html("<span class='label label-success'> Hiển thị </span>");
                     } else {
                         $('.modal-question-active').html("<span class='label label-danger'> Ẩn </span>")
                     }
+                    response.answers.forEach( function (value, index) {
+                        // console.log(value, index);
+                        html += "<div>Câu "+ (index + 1) +": "+ value.content +"</div>"
+                    });
+
+                    $('.modal-question-answers').html(html);
+                    // console.log(html);
                 }
             });
-            // console.log($(this).attr('data-id'));
-
-        });
-
+        })
 
     })
 </script>

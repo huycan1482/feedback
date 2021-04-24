@@ -16,7 +16,6 @@
 .answer .answer-content {
     width: 90%;
     border-left: 1px solid #bdc3c7; 
-    border-right: 1px solid #bdc3c7; 
     padding: 0 5px;
     margin-bottom: 0;
     word-wrap: break-word;
@@ -25,6 +24,7 @@
 .answer .answer-content p {
     margin-bottom: 0px;
     /* word-wrap: break-all; */
+    overflow-wrap: anywhere;
     display: block;
 }
 

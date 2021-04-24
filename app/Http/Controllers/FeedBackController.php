@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\FeedBack;
 use Illuminate\Http\Request;
 
 class FeedBackController extends Controller
@@ -13,7 +14,10 @@ class FeedBackController extends Controller
      */
     public function index()
     {
-        //
+        $feedbacks = FeedBack::latest()->get();
+        return view ('admin.feedback.index', [
+            'feedbacks' => $feedbacks
+        ]);
     }
 
     /**
@@ -23,7 +27,9 @@ class FeedBackController extends Controller
      */
     public function create()
     {
-        //
+        return view ('admin.feedback.create', [
+
+        ]);
     }
 
     /**

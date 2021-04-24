@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
@@ -68,5 +69,38 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+    }
+
+    public function register () 
+    {
+        return view ('auth.register');
+    }
+
+    public function postRegister (Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8|confirmed'
+        ], [
+            'name.required' => 'Yêu cầu không để trống',
+            'name.string' => 'Sai kiểu dữ liệu',
+            'email.required' => 'Yêu cầu không để trống',
+            'email.email' => 'Yêu cầu email',
+            'email.unique' => 'Email đã tồn tại',
+            'password.required' => 'Yêu cầu không để trống',
+            'password.min' => 'Độ dài phải lớn hơn 8 kí tự',
+            'password.confirmed' => 'Nhập lại mật khẩu không khớp',
+        ]);
+
+        $user = new User;
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->role_id = 4;
+        $user->password = Hash::make($request->input('password'));
+        $user->save();
+
+        return redirect()->route('admin.login');
+        // dd($request->all());
     }
 }

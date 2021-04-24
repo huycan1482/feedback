@@ -103,3 +103,36 @@ function errorResponse (e) {
     messageResponse('danger', e.responseJSON.mess);
 }
 
+function successResponseModal (response) {
+    $("*").removeClass('has-error');
+    $('.sp-error').remove();
+
+    messageResponseModal('success', response.mess, 'Tự động tải lại sau 1,5s');
+}
+
+function errorResponseModal (e) {
+    errors = e.responseJSON.errors;
+    
+    $("*").removeClass('has-error');
+
+    $('.sp-error').remove();
+
+    $.each( errors, function( key, value ) {
+        $('.sp-' + key).remove();
+        $('#form-' + key).addClass('has-error');
+        $('#form-' + key).append("<span class='help-block sp-" + key + " sp-error'>"+ value[0] +"</span>");
+    });
+
+    messageResponseModal('danger', e.responseJSON.mess, '');
+}
+
+function messageResponseModal(status, mess, reload) {
+    var message = "<div class='pad margin no-print col-md-11' id='message' ><div class='alert alert-" + status + " alert-dismissible'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>×</button><h4><i class='icon fa fa-check'></i> Thông báo !</h4>"
+    + mess +" <br> "+ reload +" </div></div>";
+
+    if ( $('#message') ) {
+        $('#message').remove();
+    }
+
+    $('.form-modal').before(message);
+}

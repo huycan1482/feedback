@@ -32,11 +32,11 @@ function addModel (model, data) {
         type: "POST",
         url: base_url + model,
         data: data,
-        // dataType : "formData",
-        enctype: 'multipart/form-data',
-        processData: false,
-        contentType: false,
-        cache: false,
+        dataType : "json",
+        // enctype: 'multipart/form-data',
+        // processData: false,
+        // contentType: false,
+        // cache: false,
         success: function (response) {
             successResponse(response);
         },
@@ -48,14 +48,14 @@ function addModel (model, data) {
 
 function updateModel (model, data) {
     $.ajax({
-        type: "POST",
+        type: 'PUT',
         url: base_url + model,
         data: data,
-        // dataType : "formData",
-        enctype: 'multipart/form-data',
-        processData: false,
-        contentType: false,
-        cache: false,
+        dataType : "json",
+        // enctype: 'multipart/form-data',
+        // processData: false,
+        // contentType: false,
+        // cache: false,
         success: function (response) {
             successResponse(response);
         }, 

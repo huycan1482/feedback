@@ -47,5 +47,6 @@ Route::group(['prefix' => 'admin' , 'as' => 'admin.', 'middleware' => 'guest'], 
     Route::resource('question', 'QuestionController');
     Route::get('listAnswers/{id}', 'QuestionController@getListAnswers')->name('question.getListAnswer');
     Route::resource('feedback', 'FeedbackController');
+    Route::resource('subject', 'SubjectController');
 });
 // Route::get('/home', 'HomeController@index')->name('home');

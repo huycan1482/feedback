@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Course;
+use App\Subject;
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CourseController extends Controller
 {
@@ -27,7 +30,17 @@ class CourseController extends Controller
      */
     public function create()
     {
-        //
+        $subjects = Subject::where('is_active', '=', 1)->latest()->get();
+        $teachers = DB::table('users')
+            ->leftJoin('roles', 'roles.id', '=', 'users.role_id')
+            ->where('roles.name', '=', 'teacher')
+            // ->groupBy('users.id')
+            ->latest('users.created_at')->get();
+
+        return view ('admin.course.create', [
+            'subjects' => $subjects,
+            'teachers' => $teachers
+        ]);
     }
 
     /**

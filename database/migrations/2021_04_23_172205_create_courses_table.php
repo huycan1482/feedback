@@ -22,7 +22,6 @@ class CreateCoursesTable extends Migration
             $table->dateTime('start_at');
             $table->integer('total_lesson');
             $table->integer('total_number');
-            $table->integer('time_limit');
             $table->tinyInteger('is_active');
             $table->unsignedBigInteger('teacher_id');
             $table->unsignedBigInteger('user_create');

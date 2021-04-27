@@ -45,18 +45,9 @@
 
                         <div class="form-group" id="form-subject">
                             <label>Môn học</label>
-                            <select class=" select2 form-control" style="width: 100%;" name="subject">
+                            <select class=" select2 form-control" style="width: 100%;" name="subject" id="subject">
                                 @foreach ($subjects as $subject)
                                 <option value="{{ $subject->id }}">{{ $subject->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="form-group" id="form-teacher">
-                            <label>Giảng viên</label>
-                            <select class=" select2 form-control" style="width: 100%;" name="teacher">
-                                @foreach ($teachers as $teacher)
-                                <option value="{{ $teacher->id }}">{{ $teacher->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -66,38 +57,28 @@
                             <input name="total-lesson" type="number" class="form-control" placeholder="Tổng số buổi học">
                         </div>
 
-                        <div class="form-group" id="form-total_number">
-                            <label for="">Tổng số học viên</label>
-                            <input name="total-number" type="number" class="form-control" placeholder="Tổng số buổi học">
-                        </div>
-
-                        <div class="form-group" id="form-start_at">
-                            <label for="">Ngày bắt đầu</label>
-                            <div class="input-group date">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-calendar"></i>
-                                </div>
-                                <input type="text" class="form-control pull-right datepicker" name="day_startAt" placeholder="DD-MM-YYYY">
-                            </div>
-                        </div>
-
-                        <div class="bootstrap-timepicker">
-                            <div class="form-group">
-                                <label>Thời gian bắt đầu</label>
-            
-                                <div class="input-group">
-                                    <input type="text" class="form-control timepicker" name="time_startAt">
-            
+                        <div class="" id="form-start_at">
+                            <div class="form-group col-lg-6" style="padding-left: 0">
+                                <label for="">Ngày bắt đầu</label>
+                                <div class="input-group date">
                                     <div class="input-group-addon">
-                                        <i class="fa fa-clock-o"></i>
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" class="form-control pull-right datepicker" name="day_startAt" placeholder="DD-MM-YYYY">
+                                </div>
+                            </div>
+    
+                            <div class="bootstrap-timepicker col-lg-6" style="padding-right: 0">
+                                <div class="form-group">
+                                    <label>Thời gian bắt đầu</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control timepicker" name="time_startAt">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-clock-o"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="form-group" id="form-time_limit">
-                            <label for="">Thời lượng</label>
-                            <input name="total-time_limit" type="number" class="form-control" placeholder="Thời lượng theo phút">
                         </div>
 
                         <div class="checkbox form-group" id="form-is_active">
@@ -152,18 +133,49 @@
 
             //Timepicker
         $('.timepicker').timepicker({
-            showInputs: false
+            showInputs: false,
         })
 
         $('.add-course').click(function (e) {
             var name = $("input[name='name']").val();
             var code = $("input[name='code']").val(); 
+            var subject = $('#subject').val();
+            var total_lesson = $("input[name='total-lesson']").val();
             var is_active = ( $("input[name='is_active']").is(':checked') ) ? 1 : 0;
+            
+
+            var test = $('.timepicker').val();
+            var time = test.split(' ')[0];
+            var dayOrNight = test.split(' ')[1];
+            var hour = time.split(':')[0];
+            var minute = time.split(':')[1];
+            // console.log(time3);
+            if (hour < 10) {
+                hour = '0' + hour;
+            }
+
+            if (dayOrNight == 'PM') {
+                hour = hour * 1 + 12;
+            }
+
+            var timeStartAt = hour + ':' + minute + ':00';
+            
+            var date = $("input[name='day_startAt']").val().split('-');
+
+            var dateStartAt = date[2] + '-' + date[1] + '-' + date[0];
+
+            var start_at = dateStartAt + ' ' + timeStartAt;
+            
             var data = { 
                 name : name,
                 code : code,
-                is_active : is_active
+                subject : subject,
+                total_lesson : total_lesson,
+                start_at : start_at,
+                is_active : is_active,
             };
+
+            console.log(data);
 
             var model = '/admin/course';
 

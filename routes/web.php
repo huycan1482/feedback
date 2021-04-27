@@ -50,5 +50,6 @@ Route::group(['prefix' => 'admin' , 'as' => 'admin.', 'middleware' => 'guest'], 
     Route::resource('subject', 'SubjectController');
     Route::resource('course', 'CourseController');
     Route::resource('user', 'UserController');
+    Route::resource('lesson', 'LessonController');
 });
 // Route::get('/home', 'HomeController@index')->name('home');

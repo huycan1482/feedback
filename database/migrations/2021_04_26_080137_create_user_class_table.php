@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateFeedbackeDetailsTable extends Migration
+class CreateUserClassTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,10 @@ class CreateFeedbackeDetailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('feedback_details', function (Blueprint $table) {
+        Schema::create('user_class', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('feedback_id');
-            $table->dateTime('start_at');
-            $table->dateTime('end_at');
+            $table->unsignedBigInteger('class_id');
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ class CreateFeedbackeDetailsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('feedback_details');
+        Schema::dropIfExists('user_class');
     }
 }

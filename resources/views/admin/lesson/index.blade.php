@@ -8,8 +8,8 @@
 @section('content')
 <section class="content-header">
     <h1>
-        Quản lý danh sách Khóa học
-        <small><a href="{{ route('admin.course.create') }}">Thêm mới</a></small>
+        Quản lý danh sách Môn học
+        <small><a href="{{ route('admin.subject.create') }}">Thêm mới</a></small>
     </h1>
 </section>
 
@@ -21,7 +21,7 @@
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Thông tin chi tiết Khóa học</h4>
+                        <h4 class="modal-title">Thông tin chi tiết câu hỏi</h4>
                     </div>
                     <div class="modal-body">
                         <div class="box">
@@ -32,7 +32,7 @@
                                             <td class="" style="width: 30%">
                                                 Tên môn học:
                                             </td>
-                                            <td class="modal-course-content" style="width: 70%">
+                                            <td class="modal-subject-content" style="width: 70%">
 
                                             </td>
                                         </tr>
@@ -40,7 +40,7 @@
                                             <td class="" style="width: 30%">
                                                 Mã môn học:
                                             </td>
-                                            <td class="modal-course-code" style="width: 70%">
+                                            <td class="modal-subject-code" style="width: 70%">
 
                                             </td>
                                         </tr>
@@ -48,7 +48,7 @@
                                             <td class="" style="width: 30%">
                                                 Kích hoạt:
                                             </td>
-                                            <td class="modal-course-active" style="width: 70%">
+                                            <td class="modal-subject-active" style="width: 70%">
 
                                             </td>
                                         </tr>
@@ -56,7 +56,7 @@
                                             <td class="" style="width: 30%">
                                                 Người tạo:
                                             </td>
-                                            <td class="modal-course-userCreate" style="width: 70%">
+                                            <td class="modal-subject-userCreate" style="width: 70%">
 
                                             </td>
                                         </tr>
@@ -64,7 +64,7 @@
                                             <td class="" style="width: 30%">
                                                 Ngày tạo:
                                             </td>
-                                            <td class="modal-course-createdAt" style="width: 70%">
+                                            <td class="modal-subject-createdAt" style="width: 70%">
 
                                             </td>
                                         </tr>
@@ -96,35 +96,35 @@
                             <tr>
                                 <th class="text-center">STT</th>
                                 <th class="text-center">Tên</th>
-                                <th class="text-center">Mã Khóa học</th>
-                                <th class="text-center">Môn học</th>
+                                <th class="text-center">Mã môn</th>
+                                {{-- <th class="text-center"></th> --}}
                                 <th class="text-center">Người tạo</th>
                                 <th class="text-center">Trạng thái</th>
                                 <th class="text-center">Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($courses as $key => $course)
-                            <tr class="item-{{ $course->id }}">
+                            @foreach($subjects as $key => $subject)
+                            <tr class="item-{{ $subject->id }}">
                                 <td class="text-center">{{ $key + 1}}</td>
-                                <td class="text-center">{{ $course->name }}</td>
-                                <td class="text-center">{{ $course->code }}</td>
-                                <td class="text-center">{{ $course->subject->name }}</td>
+                                <td class="text-center">{{ $subject->name }}</td>
+                                <td class="text-center">{{ $subject->code }}</td>
+                                {{-- <td class="text-center"></td> --}}
                                 <td class="text-center"></td>
                                 <td class="text-center">
-                                    <span class="label label-{{ ($course->is_active == 1) ? 'success' : 'danger' }}">{{ ($course->is_active == 1) ? 'Hiển thị' : 'Ẩn' }}</span>
+                                    <span class="label label-{{ ($subject->is_active == 1) ? 'success' : 'danger' }}">{{ ($subject->is_active == 1) ? 'Hiển thị' : 'Ẩn' }}</span>
                                 </td>
                                 <td class="text-center">
 
-                                    <button type="button" class="btn btn-warning btn-detail" data-toggle="modal" data-target="#modal-default" title="Chi tiết" data-id="{{$course->id}}">
+                                    <button type="button" class="btn btn-warning btn-detail" data-toggle="modal" data-target="#modal-default" title="Chi tiết" data-id="{{$subject->id}}">
                                         <i class="fas fa-cog"></i>
                                     </button>
 
-                                    <a href="{{ route('admin.course.edit', ['id'=> $course->id]) }}" class="btn btn-success" title="Sửa">
+                                    <a href="{{ route('admin.subject.edit', ['id'=> $subject->id]) }}" class="btn btn-success" title="Sửa">
                                         <i class="fa fa-edit"></i>
                                     </a>
 
-                                    <a href="javascript:void(0)" class="btn btn-danger" onclick="destroyModel('course', '{{ $course->id }}' )" title="Xóa">
+                                    <a href="javascript:void(0)" class="btn btn-danger" onclick="destroyModel('subject', '{{ $subject->id }}' )" title="Xóa">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </td>
@@ -169,22 +169,22 @@
             var itemId = $(this).attr('data-id');
             $.ajax({
                 type: "get",
-                url: base_url + '/admin/course/' + itemId,
+                url: base_url + '/admin/subject/' + itemId,
                 data: {},
                 dataType: "json",
                 success: function (response) {
                     var html = '';
-                    // console.log(response.course);
-                    $('.modal-course-name').html(response.course.name);
-                    $('.modal-course-code').html(response.course.code);
-                    if (response.course.is_active == 1) {
-                        $('.modal-course-active').html("<span class='label label-success'> Hiển thị </span>");
+                    // console.log(response.subject);
+                    $('.modal-subject-name').html(response.subject.name);
+                    $('.modal-subject-code').html(response.subject.code);
+                    if (response.subject.is_active == 1) {
+                        $('.modal-subject-active').html("<span class='label label-success'> Hiển thị </span>");
                     } else {
-                        $('.modal-course-active').html("<span class='label label-danger'> Ẩn </span>")
+                        $('.modal-subject-active').html("<span class='label label-danger'> Ẩn </span>")
                     }
 
-                    // $('.modal-course-userCreate').html(response.course.code);
-                    $('.modal-course-createAt').html(response.course.created_at);
+                    // $('.modal-subject-userCreate').html(response.subject.code);
+                    $('.modal-subject-createAt').html(response.subject.created_at);
 
                 }
             });

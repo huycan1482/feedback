@@ -27,12 +27,16 @@
 
                         <div class="form-group" id="form-name">
                             <label for="">Tên môn học</label>
-                            <input name="name" type="text" class="form-control" placeholder="Tên môn">
+                            <div>
+                                <input name="name" type="text" class="form-control" placeholder="Tên môn">
+                            </div>
                         </div>
 
                         <div class="form-group" id="form-code">
                             <label for="">Mã môn học môn học</label>
-                            <input name="code" type="text" class="form-control" placeholder="Mã môn học">
+                            <div>
+                                <input name="code" type="text" class="form-control" placeholder="Mã môn học">
+                            </div>
                         </div>
                         
                         <div class="checkbox form-group" id="form-is_active">
@@ -87,25 +91,7 @@
             var model = '/admin/subject';
 
             addModel(model, data);
-
-            // $.ajax({
-            //     type: "post",
-            //     url: base_url + '/admin/subject',
-            //     data: {
-            //         'content' : content,
-            //         'answers' : answers,
-            //         'is_active' : is_active,
-            //     },
-            //     dataType: "json",
-            //     success: function (response) {
-            //         successResponse(response);
-            //     }, 
-            //     error: function (e) {
-            //         errorResponse(e)
-            //     }
-            // });
         }); 
-
         
     });
 

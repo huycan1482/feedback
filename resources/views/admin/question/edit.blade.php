@@ -33,7 +33,9 @@
 
                         <div class="form-group" id="form-answer_content">
                             <label for="">Nội dung câu trả lời</label>
-                            <input name="modal-answer-content" type="text" class="form-control" placeholder="Nội dung câu hỏi" value="">
+                            <div>
+                                <input name="modal-answer-content" type="text" class="form-control" placeholder="Nội dung câu hỏi" value="">
+                            </div>
                         </div>
 
                         <div class="form-group" id="form-answer_is_active">
@@ -77,7 +79,9 @@
 
                         <div class="form-group" id="form-add_answer_content">
                             <label for="">Nội dung câu trả lời</label>
-                            <input name="modal-add-answer-content" type="text" class="form-control" placeholder="Nội dung câu hỏi" value="">
+                            <div>
+                                <input name="modal-add-answer-content" type="text" class="form-control" placeholder="Nội dung câu hỏi" value="">
+                            </div>
                         </div>
 
                         <div class="form-group" id="form-add_answer_active">
@@ -124,15 +128,17 @@
 
                         <div class="form-group">
                             <label for="">Nội dung câu hỏi</label>
-                            <input name="content" type="text" class="form-control" placeholder="Nội dung câu hỏi" value="{{$question->content}}">
+                            <div>
+                                <input name="content" type="text" class="form-control" placeholder="Nội dung câu hỏi" value="{{$question->content}}">
+                            </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" style="display: block;">
                             <label for="">
                                 <span>Danh sách câu trả lời </span>
                                 <span class="label label-success" data-toggle="modal" data-target="#modal-default2" style="margin-left: 10px; cursor: pointer;"> Thêm đáp án</span>
                             </label>
-                            <div class="answer">
+                            <div class="answer" style="width: 100%">
                                 @foreach($answers as $key => $answer)
                                 <div data-id="{{ $answer->id }}">
                                     <input type="radio" class="minimal" checked>

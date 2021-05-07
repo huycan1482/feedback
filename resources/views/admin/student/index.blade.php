@@ -8,8 +8,8 @@
 @section('content')
 <section class="content-header">
     <h1>
-        Quản lý danh sách Môn học
-        <small><a href="{{ route('admin.subject.create') }}">Thêm mới</a></small>
+        Quản lý danh sách Học viên
+        <small><a href="{{ route('admin.student.create') }}">Thêm mới</a></small>
     </h1>
 </section>
 
@@ -21,7 +21,7 @@
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Thông tin chi tiết câu hỏi</h4>
+                        <h4 class="modal-title">Thông tin chi tiết Học viên</h4>
                     </div>
                     <div class="modal-body">
                         <div class="box">
@@ -30,33 +30,25 @@
                                     <tbody>
                                         <tr style="width: 100%">
                                             <td class="" style="width: 30%">
-                                                Tên môn học:
+                                                Tên người dùng:
                                             </td>
-                                            <td class="modal-subject-name" style="width: 70%">
+                                            <td class="modal-user-name" style="width: 70%">
 
                                             </td>
                                         </tr>
                                         <tr style="width: 100%">
                                             <td class="" style="width: 30%">
-                                                Mã môn học:
+                                                Email:
                                             </td>
-                                            <td class="modal-subject-code" style="width: 70%">
+                                            <td class="modal-user-email" style="width: 70%">
 
                                             </td>
                                         </tr>
                                         <tr style="width: 100%">
                                             <td class="" style="width: 30%">
-                                                Kích hoạt:
+                                                Chức năng:
                                             </td>
-                                            <td class="modal-subject-active" style="width: 70%">
-
-                                            </td>
-                                        </tr>
-                                        <tr style="width: 100%">
-                                            <td class="" style="width: 30%">
-                                                Người tạo:
-                                            </td>
-                                            <td class="modal-subject-userCreate" style="width: 70%">
+                                            <td class="modal-user-role" style="width: 70%">
 
                                             </td>
                                         </tr>
@@ -64,7 +56,7 @@
                                             <td class="" style="width: 30%">
                                                 Ngày tạo:
                                             </td>
-                                            <td class="modal-subject-createdAt" style="width: 70%">
+                                            <td class="modal-user-createdAt" style="width: 70%">
 
                                             </td>
                                         </tr>
@@ -82,8 +74,7 @@
             </div>
             <!-- /.modal-dialog -->
         </div>
-
-        
+      
         <div class="col-xs-12">
             <div class="box">
                 <div class="box-header">
@@ -96,37 +87,36 @@
                             <tr>
                                 <th class="text-center">STT</th>
                                 <th class="text-center">Tên</th>
-                                <th class="text-center">Mã môn</th>
-                                {{-- <th class="text-center"></th> --}}
-                                <th class="text-center">Người tạo</th>
-                                <th class="text-center">Trạng thái</th>
+                                <th class="text-center">SĐT</th>
+                                <th class="text-center">Email</th>
+                                {{-- <th class="text-center">Trạng thái</th> --}}
                                 <th class="text-center">Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($subjects as $key => $subject)
-                            <tr class="item-{{ $subject->id }}">
+                            @foreach($students as $key => $student)
+                            <tr class="item-{{ $student->id }}">
                                 <td class="text-center">{{ $key + 1}}</td>
-                                <td class="text-center">{{ $subject->name }}</td>
-                                <td class="text-center">{{ $subject->code }}</td>
-                                {{-- <td class="text-center"></td> --}}
-                                <td class="text-center"></td>
-                                <td class="text-center">
-                                    <span class="label label-{{ ($subject->is_active == 1) ? 'success' : 'danger' }}">{{ ($subject->is_active == 1) ? 'Hiển thị' : 'Ẩn' }}</span>
-                                </td>
+                                <td class="text-center">{{ $student->name }}</td>
+                                <td class="text-center">{{ $student->phone }}</td>
+                                <td class="text-center">{{ $student->email }}</td>
+                                {{-- <td class="text-center">
+                                    <span class="label label-{{ ($user->is_active == 1) ? 'success' : 'danger' }}">{{ ($user->is_active == 1) ? 'Hiển thị' : 'Ẩn' }}</span>
+                                </td> --}}
                                 <td class="text-center">
 
-                                    <button type="button" class="btn btn-warning btn-detail" data-toggle="modal" data-target="#modal-default" title="Chi tiết" data-id="{{$subject->id}}">
+                                    <button type="button" class="btn btn-warning btn-detail" data-toggle="modal" data-target="#modal-default" title="Chi tiết" data-id="{{$student->id}}">
                                         <i class="fas fa-cog"></i>
                                     </button>
 
-                                    <a href="{{ route('admin.subject.edit', ['id'=> $subject->id]) }}" class="btn btn-success" title="Sửa">
+                                    <a href="{{ route('admin.student.edit', ['id'=> $student->id]) }}" class="btn btn-success" title="Sửa">
                                         <i class="fa fa-edit"></i>
                                     </a>
 
-                                    <a href="javascript:void(0)" class="btn btn-danger" onclick="destroyModel('subject', '{{ $subject->id }}' )" title="Xóa">
+                                    <a href="javascript:void(0)" class="btn btn-danger" onclick="destroyModel('student', '{{ $student->id }}' )" title="Xóa">
                                         <i class="fa fa-trash"></i>
                                     </a>
+
                                 </td>
                             </tr>
                             @endforeach
@@ -169,22 +159,14 @@
             var itemId = $(this).attr('data-id');
             $.ajax({
                 type: "get",
-                url: base_url + '/admin/subject/' + itemId,
+                url: base_url + '/admin/student/' + itemId,
                 data: {},
                 dataType: "json",
                 success: function (response) {
-                    var html = '';
-                    // console.log(response.subject);
-                    $('.modal-subject-name').html(response.subject.name);
-                    $('.modal-subject-code').html(response.subject.code);
-                    if (response.subject.is_active == 1) {
-                        $('.modal-subject-active').html("<span class='label label-success'> Hiển thị </span>");
-                    } else {
-                        $('.modal-subject-active').html("<span class='label label-danger'> Ẩn </span>")
-                    }
-
-                    // $('.modal-subject-userCreate').html(response.subject.code);
-                    $('.modal-subject-createAt').html(response.subject.created_at);
+                    // $('.modal-user-name').html(response.user.name);
+                    // $('.modal-user-email').html(response.user.email);
+                    // $('.modal-user-role').html(response.user.role);
+                    // $('.modal-user-createdAt').html(response.user.created_at);
 
                 }
             });

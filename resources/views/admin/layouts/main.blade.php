@@ -33,6 +33,8 @@
     <link rel="stylesheet" href="/backend/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
 
     <link rel="stylesheet" href="/backend/bower_components/select2/dist/css/select2.min.css">
+
+    <link rel="stylesheet" href="/backend/mycss/myCss.css">
     
     @yield('css')
 

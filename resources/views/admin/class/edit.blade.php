@@ -26,16 +26,12 @@
 
                         <div class="form-group" id="form-name">
                             <label for="">Tên môn học</label>
-                            <div>
-                                <input name="name" type="text" class="form-control" placeholder="Tên môn" value="{{ $subject->name }}">
-                            </div>
+                            <input name="name" type="text" class="form-control" placeholder="Tên môn" value="{{ $subject->name }}">
                         </div>
 
                         <div class="form-group" id="form-code">
                             <label for="">Mã môn học môn học</label>
-                            <div>
-                                <input name="code" type="text" class="form-control" placeholder="Mã môn học" value="{{ $subject->code }}">
-                            </div>
+                            <input name="code" type="text" class="form-control" placeholder="Mã môn học" value="{{ $subject->code }}">
                         </div>
                         
                         <div class="checkbox form-group" id="form-is_active">

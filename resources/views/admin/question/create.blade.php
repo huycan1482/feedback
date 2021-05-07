@@ -18,7 +18,7 @@
     </h1>
 </section>
 
-<div class="modal fade" id="modal-default2">
+<div class="modal fade" id="modal-default1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -27,33 +27,45 @@
                 <h4 class="modal-title">Thêm câu trả lời</h4>
             </div>
             <div class="modal-body">
-
                 <form class="form-modal" enctype="multipart/form-data">
                     <div class="box-body">
-
-                        <div class="form-group" id="form-add_answer_content">
+                        <div class="" id="form-add_answer_content">
                             <label for="">Nội dung câu trả lời</label>
-                            <input name="modal-add-answer-content" type="text" class="form-control" placeholder="Nội dung câu hỏi" value="">
+                            <input name="modal-add-answer-content" type="text" class="form-control" placeholder="Nội dung câu hỏi" value="" style="margin-left: 10px">
                         </div>
-
-                        {{-- <div class="form-group" id="form-add_answer_active">
-                            <label>
-                                <input type="checkbox" name="modal-add-answer-active" value="1" > Kích hoạt
-                            </label>
-                        </div> --}}
-
-                        {{-- <div class="form-group">
-                            <label>
-                                <input type="checkbox" name="" value="1" > Câu trả lời đúng
-                            </label>
-                        </div> --}}
-
                     </div>
                 </form>
-
             </div>
             <div class="modal-footer">
                 <div type="button" class="btn btn-primary btn-add-answer" >Add</div>
+                <div type="button" class="btn btn-danger" data-dismiss="modal">Close</div>
+            </div>
+        </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="modal-default2">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Sửa câu trả lời</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-modal" enctype="multipart/form-data">
+                    <div class="box-body">
+                        <div class="" id="form-add_answer_content">
+                            <label for="">Nội dung câu trả lời</label>
+                            <input name="modal-edit-answer-content" type="text" class="form-control" placeholder="Nội dung câu hỏi" value="" style="margin-left: 10px">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div type="button" class="btn btn-success btn-edit-answer" >Edit</div>
                 <div type="button" class="btn btn-danger" data-dismiss="modal">Close</div>
             </div>
         </div>
@@ -80,13 +92,15 @@
 
                         <div class="form-group" id="form-content">
                             <label for="">Nội dung câu hỏi</label>
-                            <input name="content" type="text" class="form-control" placeholder="Nội dung câu hỏi">
+                            <div>
+                                <input name="content" type="text" class="form-control" placeholder="Nội dung câu hỏi">
+                            </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="">
                             <label for="">
                                 <span>Danh sách câu trả lời </span>
-                                <span class="label label-success" data-toggle="modal" data-target="#modal-default2" style="margin-left: 10px; cursor: pointer;"> Thêm đáp án</span>
+                                <span class="label label-success" data-toggle="modal" data-target="#modal-default1" style="margin-left: 10px; cursor: pointer;"> Thêm đáp án</span>
                             </label>
                             <div class="answer">
                                 <div></div>
@@ -132,10 +146,12 @@
 <script src="backend/js/main.js"></script>
 <script>
     $(function () {
+        
         let data_id = 1;
         let current_id = 0;
 
         $('.btn-add-answer').click(function (e) {
+
             if ($('input:radio').length < 4) {
                 var val = $("input[name*='modal-add-answer-content']").val();
                 $('.answer > div:last-child').after("<div class='data-id-"+ data_id +"'>" +
@@ -151,7 +167,7 @@
                     $('#message').remove();
                 }
 
-                $('.form-modal').before(message);
+                $('#modal-default1 .form-modal').before(message);
             }
             
         });
@@ -159,12 +175,15 @@
         $(document).on('click', '.fa-edit', function(e) {
             var edit_id = $(this).attr('data-id');
             var value = $('p.data-id-' + edit_id).text();
-            $("input[name*='modal-add-answer-content']").val(value);
+            $("input[name*='modal-edit-answer-content']").val(value);
             current_id = edit_id;
+        });
 
-            $('.btn-add-answer').text('Update');
-            $('.btn-add-answer').removeClass('btn-primary');
-            $('.btn-add-answer').addClass('btn-success');
+        $(document).on('click', '.btn-edit-answer', function(e) {
+            var answer_content = $("input[name='modal-edit-answer-content']").val();
+            $("p.data-id-" + current_id).text(answer_content);
+            $("input.data-id-" + current_id).val(answer_content);
+            $('#modal-default2').modal('hide');
         });
 
         $(document).on('click', '.fa-trash-alt', function(e) {

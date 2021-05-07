@@ -20,7 +20,6 @@ class CreateClassesTable extends Migration
             $table->unsignedBigInteger('course_id');
             $table->unsignedBigInteger('teacher_id');
             $table->integer('total_number');
-            $table->datetime('start_at');
             $table->tinyInteger('is_active');
             $table->timestamps();
         });

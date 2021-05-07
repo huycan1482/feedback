@@ -41,4 +41,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo('App\Role', 'role_id', 'id');
     }
+
+    public function classRoom ()
+    {
+        return $this->belongsToMany('App\ClassRoom', 'user_class', 'user_id', 'class_id')->withPivot('user_id', 'class_id', 'id');
+    }
 }

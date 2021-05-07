@@ -35,46 +35,59 @@
 
                         <div class="form-group" id="form-name">
                             <label for="">Tên khóa học</label>
-                            <input name="name" type="text" class="form-control" placeholder="Tên khóa">
+                            <div>
+                                <input name="name" type="text" class="form-control" placeholder="Tên khóa">
+                            </div>
                         </div>
 
                         <div class="form-group" id="form-code">
                             <label for="">Mã khóa học</label>
-                            <input name="code" type="text" class="form-control" placeholder="Mã khóa học">
+                            <div>
+                                <input name="code" type="text" class="form-control" placeholder="Mã khóa học">
+                            </div>
                         </div>
 
                         <div class="form-group" id="form-subject">
                             <label>Môn học</label>
-                            <select class=" select2 form-control" style="width: 100%;" name="subject" id="subject">
-                                @foreach ($subjects as $subject)
-                                <option value="{{ $subject->id }}">{{ $subject->name }}</option>
-                                @endforeach
-                            </select>
+                            <div>
+                                <select class=" select2 form-control" style="width: 100%;" name="subject" id="subject">
+                                    <option value="">-- Chọn --</option>
+                                    @foreach ($subjects as $subject)
+                                    <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
 
                         <div class="form-group" id="form-total_lesson">
                             <label for="">Tổng số buổi học</label>
-                            <input name="total-lesson" type="number" class="form-control" placeholder="Tổng số buổi học">
+                            <div>
+                                <input name="total-lesson" type="number" class="form-control" placeholder="Tổng số buổi học">
+                            </div>
                         </div>
 
-                        <div class="" id="form-start_at">
-                            <div class="form-group col-lg-6" style="padding-left: 0">
+                        <div class="form-group" >
+                            <div class="form-group col-lg-6" style="padding-left: 0" id="form-start_at">
                                 <label for="">Ngày bắt đầu</label>
-                                <div class="input-group date">
-                                    <div class="input-group-addon">
-                                        <i class="fa fa-calendar"></i>
+                                <div>
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-right datepicker" name="day_startAt" placeholder="DD-MM-YYYY">
                                     </div>
-                                    <input type="text" class="form-control pull-right datepicker" name="day_startAt" placeholder="DD-MM-YYYY">
                                 </div>
                             </div>
     
                             <div class="bootstrap-timepicker col-lg-6" style="padding-right: 0">
                                 <div class="form-group">
                                     <label>Thời gian bắt đầu</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control timepicker" name="time_startAt">
-                                        <div class="input-group-addon">
-                                            <i class="fa fa-clock-o"></i>
+                                    <div>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control timepicker" name="time_startAt">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -131,7 +144,7 @@
             forceParse: false,
         })
 
-            //Timepicker
+        //Timepicker
         $('.timepicker').timepicker({
             showInputs: false,
         })

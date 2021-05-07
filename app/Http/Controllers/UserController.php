@@ -50,12 +50,11 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->input('password'));
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|exits:roles,id',
+            'role' => 'required|exists:roles,id',
         ], [
             'name.required' => 'Yêu cầu không để trống',
             'name.string' => 'Sai kiểu dữ liệu',
@@ -66,7 +65,7 @@ class UserController extends Controller
             'password.min' => 'Độ dài phải lớn hơn 8 kí tự',
             'password.confirmed' => 'Nhập lại mật khẩu không khớp',
             'role.required' => 'Yêu cầu không để trống',
-            'role.exits' => 'Dữ liệu không tồn tại'
+            'role.exists' => 'Dữ liệu không tồn tại'
         ]);
 
         $errs = $validator->errors();
@@ -82,6 +81,7 @@ class UserController extends Controller
             if (!empty($request->input('password'))) {
                 $user->password = Hash::make($request->input('password'));
             }
+            
             if ($user->save()) {
                 return response()->json(['mess' => 'Thêm bản ghi thành công', 200]);
             } else {
@@ -194,4 +194,6 @@ class UserController extends Controller
     {
         //
     }
+
+    
 }

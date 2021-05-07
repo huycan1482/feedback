@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ClassRoom;
 use App\Course;
 use App\Subject;
 use App\User;
@@ -69,7 +70,7 @@ class CourseController extends Controller
             'code.required' => 'Yêu cầu không để trống',
             'code.unique' => 'Dữ liệu bị trùng',
             'subject.required' => 'Yêu cầu không để trống',
-            'subject.unique' => 'Dữ liệu bị trùng',
+            'subject.exists' => 'Dữ liệu không tồn tại',
             'total_lesson.required' => 'Yêu cầu không để trống',
             'total_lesson.integer' => 'Sai kiểu dữ liệu',
             'total_lesson.min' => 'Dữ liệu phải lớn hơn 0',
@@ -111,7 +112,19 @@ class CourseController extends Controller
      */
     public function show($id)
     {
-        
+        $course = Course::find($id);
+        // dd($id, $course);
+
+        if (empty($course)) {
+            return response()->json(['mess' => 'Bản ghi không tồn tại'], 404);
+        } else {
+            $subjects = Subject::where('is_active', '=', 1)->get();
+
+            $classRooms = ClassRoom::where([['is_active', '=', 1], ['course_id', '=', $id]])->get();
+
+            return response()->json(['classRooms' => $classRooms, 'subjects' => $subjects], 200);
+        }
+
     }
 
     /**

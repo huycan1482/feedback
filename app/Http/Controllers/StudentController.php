@@ -149,11 +149,14 @@ class StudentController extends Controller
             return response()->json(['mess' => 'Bản ghi không tồn tại'], 404);
         } else {
             
-            $data = User::selectRaw('courses.code as course, classes.name as class, subjects.code as subject')
+            $data = User::selectRaw('courses.code as course, classes.name as class, subjects.code as subject, user_class.is_active as is_active,
+            ( select UNIX_TIMESTAMP(lessons.start_at)*1000 from lessons where lessons.class_id = classes.id order by lessons.start_at asc limit 1) as start_at, 
+            ( select UNIX_TIMESTAMP(lessons.start_at)*1000 from lessons where lessons.class_id = classes.id order by lessons.start_at desc limit 1) as end_at ')
             ->join('user_class', 'user_class.user_id', '=', 'users.id')
             ->join('classes', 'classes.id', '=', 'user_class.class_id')
             ->join('courses', 'courses.id', '=', 'classes.course_id')
             ->join('subjects', 'subjects.id', '=', 'courses.subject_id')
+            ->where('users.id', '=', $id)
             ->get();
 
             return response()->json(['student' => $student, 'data' => $data], 200);

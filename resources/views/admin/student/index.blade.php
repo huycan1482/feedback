@@ -21,13 +21,15 @@
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Thông tin chi tiết Học viên</h4>
+                        <h3 class="modal-title">Thông tin chi tiết Học viên</h3>
                     </div>
                     <div class="modal-body">
                         <div class="box">
                             <div class="box-body table-responsive no-padding">
                                 <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
                                     <tbody>
+                                        <h4>Thông tin chung</h4>
+
                                         <tr style="width: 100%">
                                             <td class="" style="width: 30%">
                                                 Tên người dùng:
@@ -46,20 +48,47 @@
                                         </tr>
                                         <tr style="width: 100%">
                                             <td class="" style="width: 30%">
-                                                Chức năng:
+                                                SĐT:
                                             </td>
-                                            <td class="modal-user-role" style="width: 70%">
+                                            <td class="modal-user-phone" style="width: 70%">
 
                                             </td>
                                         </tr>
                                         <tr style="width: 100%">
                                             <td class="" style="width: 30%">
-                                                Ngày tạo:
+                                                Ngày sinh:
                                             </td>
-                                            <td class="modal-user-createdAt" style="width: 70%">
+                                            <td class="modal-user-birth" style="width: 70%">
 
                                             </td>
                                         </tr>
+                                        <tr style="width: 100%">
+                                            <td class="" style="width: 30%">
+                                                Chứng minh thư:
+                                            </td>
+                                            <td class="modal-user-code" style="width: 70%">
+
+                                            </td>
+                                        </tr>
+                                        <tr style="width: 100%">
+                                            <td class="" style="width: 30%">
+                                                Địa chỉ
+                                            </td>
+                                            <td class="modal-user-address" style="width: 70%">
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                            </div>
+                        </div>
+                        <div class="box">
+                            <div class="box-body table-responsive no-padding">
+                                <h4>Thông tin lớp học</h4>
+                                <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
+                                    <tbody class="modal-student-data">
+
                                     </tbody>
                                 </table>
                             </div>
@@ -122,14 +151,7 @@
                             @endforeach
                         </tbody>
                         <tfoot>
-                            {{-- <tr>
-                                <th>STT</th>
-                                <th>Nội dung</th>
-                                <th></th>
-                                <th>Trạng thái</th>
-                                <th>Người tạo</th>
-                                <th>Hành động</th>
-                            </tr> --}}
+
                         </tfoot>
                     </table>
                 </div>
@@ -163,11 +185,43 @@
                 data: {},
                 dataType: "json",
                 success: function (response) {
-                    // $('.modal-user-name').html(response.user.name);
-                    // $('.modal-user-email').html(response.user.email);
-                    // $('.modal-user-role').html(response.user.role);
-                    // $('.modal-user-createdAt').html(response.user.created_at);
 
+                    $('.modal-user-name').html(response.student.name);
+                    $('.modal-user-email').html(response.student.email);
+                    $('.modal-user-phone').html(response.student.phone);
+                    $('.modal-user-birth').html(response.student.birth);
+                    $('.modal-user-code').html(response.student.code);
+                    $('.modal-user-address').html(response.student.address);
+                    // $('.modal-user-subject').html(response.student.subject);
+                    // $('.modal-user-course').html(response.student.course);
+                    // $('.modal-user-class').html(response.student.class);
+                    // $('.modal-user-email').html(response.student.email);
+                    var html = '';
+
+                    response.data.forEach(function (value, index) {
+                        console.log(value, index);
+                        var status = '';
+                        var start_at = new Date(value.start_at);
+                        var end_at = new Date(value.end_at);
+                        // console.log( $.now(), start_at, end_at, 1 * value.end_at);
+                        if ( value.is_active == 0 ) {
+                            status = '<span class="label label-danger"> Hủy </span>';
+                        } else if ( $.now() < (1 * value.start_at) ) {
+                            status = '<span class="label label-warning"> Chờ học </span>';
+                        } else if ( $.now() < (1 * value.end_at) ) {
+                            status = '<span class="label label-success"> Đang học </span>';
+                        } else {
+                            console.log( $.now() , 1 * value.end_at);
+
+                            status = '<span class="label label-danger"> Hoàn thành </span>';
+                        }
+
+                        html += "<tr style='width: 100%'><td style='width: 30%'>Lớp học:  "+ value.class +"</td><td style='width: 70%'>" + 
+                                "<div>Khóa học:  "+ value.course +"</div><div>Môn học:  "+ value.subject +"</div>" +
+                                "<div>Tình trạng:  "+ status +"</div></td></tr>"
+                    });
+
+                    $('.modal-student-data').html(html);
                 }
             });
         })

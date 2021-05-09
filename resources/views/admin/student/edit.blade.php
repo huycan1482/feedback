@@ -198,7 +198,6 @@
                                     @else
                                         <span class="label label-warning">Chờ học</span>
                                     @endif
-
                                 </td>
                                 <td class="text-center">
                                     <a href="{{ route('admin.userClass.edit', ['id' => $item->pivot->id] ) }}" class="btn btn-success detail-class" title="Sửa" data-id="{{ $item->id }}">

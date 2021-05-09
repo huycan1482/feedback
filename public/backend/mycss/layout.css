@@ -1,0 +1,29 @@
+.sidebar-menu > li:hover > a {
+    background-color: #079992 !important;
+}
+
+.treeview-menu {
+    background: linear-gradient(#00b5ad,#17a2b8) !important ;
+
+}
+
+.treeview-menu > li:hover {
+    background-color: #079992 !important;
+}
+
+.treeview-menu > li {
+    transition: .5s;
+}
+
+.sidebar-menu li a {
+    color: #fff !important;
+    transition: .5s !important;
+}
+
+.menu-open > a {
+    background: linear-gradient(#00b5ad,#17a2b8) !important ;
+}
+
+.sidebar-menu i {
+    margin-right: 5px;
+}

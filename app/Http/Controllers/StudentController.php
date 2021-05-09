@@ -148,10 +148,15 @@ class StudentController extends Controller
         if (empty($student)) {
             return response()->json(['mess' => 'Bản ghi không tồn tại'], 404);
         } else {
-            // dd($student->classRoom);
-            // $data = ;
             
-            // return response()->json(['student' => $student, 'data' => $data], 200);
+            $data = User::selectRaw('courses.code as course, classes.name as class, subjects.code as subject')
+            ->join('user_class', 'user_class.user_id', '=', 'users.id')
+            ->join('classes', 'classes.id', '=', 'user_class.class_id')
+            ->join('courses', 'courses.id', '=', 'classes.course_id')
+            ->join('subjects', 'subjects.id', '=', 'courses.subject_id')
+            ->get();
+
+            return response()->json(['student' => $student, 'data' => $data], 200);
         }
     }
 

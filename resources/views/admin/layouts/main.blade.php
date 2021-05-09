@@ -35,6 +35,8 @@
     <link rel="stylesheet" href="/backend/bower_components/select2/dist/css/select2.min.css">
 
     <link rel="stylesheet" href="/backend/mycss/myCss.css">
+
+    <link rel="stylesheet" href="/backend/mycss/layout.css">
     
     @yield('css')
 

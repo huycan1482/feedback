@@ -45,3 +45,9 @@
     background: #01a3a4 !important;
 }
 
+
+@media (min-width: 768px) {
+    .modal .modal-dialog {
+        width: 70vw !important;
+    }
+}

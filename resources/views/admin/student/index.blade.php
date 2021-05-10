@@ -24,75 +24,93 @@
                         <h3 class="modal-title">Thông tin chi tiết Học viên</h3>
                     </div>
                     <div class="modal-body">
-                        <div class="box">
-                            <div class="box-body table-responsive no-padding">
-                                <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
-                                    <tbody>
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <div class="box box-info">
+                                    <div class="box-header">
                                         <h4>Thông tin chung</h4>
+                                    </div>
+                                    <div class="box-body table-responsive no-padding">
+                                        <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
+                                            <tbody>
+                                                <tr style="width: 100%">
+                                                    <td class="" style="width: 30%">
+                                                        Tên người dùng:
+                                                    </td>
+                                                    <td class="modal-user-name" style="width: 70%">
 
-                                        <tr style="width: 100%">
-                                            <td class="" style="width: 30%">
-                                                Tên người dùng:
-                                            </td>
-                                            <td class="modal-user-name" style="width: 70%">
+                                                    </td>
+                                                </tr>
+                                                <tr style="width: 100%">
+                                                    <td class="" style="width: 30%">
+                                                        Email:
+                                                    </td>
+                                                    <td class="modal-user-email" style="width: 70%">
 
-                                            </td>
-                                        </tr>
-                                        <tr style="width: 100%">
-                                            <td class="" style="width: 30%">
-                                                Email:
-                                            </td>
-                                            <td class="modal-user-email" style="width: 70%">
+                                                    </td>
+                                                </tr>
+                                                <tr style="width: 100%">
+                                                    <td class="" style="width: 30%">
+                                                        SĐT:
+                                                    </td>
+                                                    <td class="modal-user-phone" style="width: 70%">
 
-                                            </td>
-                                        </tr>
-                                        <tr style="width: 100%">
-                                            <td class="" style="width: 30%">
-                                                SĐT:
-                                            </td>
-                                            <td class="modal-user-phone" style="width: 70%">
+                                                    </td>
+                                                </tr>
+                                                <tr style="width: 100%">
+                                                    <td class="" style="width: 30%">
+                                                        Ngày sinh:
+                                                    </td>
+                                                    <td class="modal-user-birth" style="width: 70%">
 
-                                            </td>
-                                        </tr>
-                                        <tr style="width: 100%">
-                                            <td class="" style="width: 30%">
-                                                Ngày sinh:
-                                            </td>
-                                            <td class="modal-user-birth" style="width: 70%">
+                                                    </td>
+                                                </tr>
+                                                <tr style="width: 100%">
+                                                    <td class="" style="width: 30%">
+                                                        Chứng minh thư:
+                                                    </td>
+                                                    <td class="modal-user-code" style="width: 70%">
 
-                                            </td>
-                                        </tr>
-                                        <tr style="width: 100%">
-                                            <td class="" style="width: 30%">
-                                                Chứng minh thư:
-                                            </td>
-                                            <td class="modal-user-code" style="width: 70%">
+                                                    </td>
+                                                </tr>
+                                                <tr style="width: 100%">
+                                                    <td class="" style="width: 30%">
+                                                        Địa chỉ
+                                                    </td>
+                                                    <td class="modal-user-address" style="width: 70%">
 
-                                            </td>
-                                        </tr>
-                                        <tr style="width: 100%">
-                                            <td class="" style="width: 30%">
-                                                Địa chỉ
-                                            </td>
-                                            <td class="modal-user-address" style="width: 70%">
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-7">
+                                <div class="box box-success">
+                                    <div class="box-header">
+                                        <h4>Thông tin lớp học</h4>
+                                    </div>
+                                    <div class="box-body table-responsive no-padding">
+                                        <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
+                                            <thead>
+                                                <th>STT</th>
+                                                <th>Tên Lớp</th>
+                                                <th>Mã khóa</th>
+                                                <th>Mã môn</th>
+                                                <th>Tình trạng</th>
+                                            </thead>
+                                            <tbody class="modal-student-data">
 
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="box">
-                            <div class="box-body table-responsive no-padding">
-                                <h4>Thông tin lớp học</h4>
-                                <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
-                                    <tbody class="modal-student-data">
-
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                        
+                        
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -192,18 +210,13 @@
                     $('.modal-user-birth').html(response.student.birth);
                     $('.modal-user-code').html(response.student.code);
                     $('.modal-user-address').html(response.student.address);
-                    // $('.modal-user-subject').html(response.student.subject);
-                    // $('.modal-user-course').html(response.student.course);
-                    // $('.modal-user-class').html(response.student.class);
-                    // $('.modal-user-email').html(response.student.email);
+
                     var html = '';
 
                     response.data.forEach(function (value, index) {
-                        console.log(value, index);
                         var status = '';
                         var start_at = new Date(value.start_at);
                         var end_at = new Date(value.end_at);
-                        // console.log( $.now(), start_at, end_at, 1 * value.end_at);
                         if ( value.is_active == 0 ) {
                             status = '<span class="label label-danger"> Hủy </span>';
                         } else if ( $.now() < (1 * value.start_at) ) {
@@ -216,9 +229,9 @@
                             status = '<span class="label label-danger"> Hoàn thành </span>';
                         }
 
-                        html += "<tr style='width: 100%'><td style='width: 30%'>Lớp học:  "+ value.class +"</td><td style='width: 70%'>" + 
-                                "<div>Khóa học:  "+ value.course +"</div><div>Môn học:  "+ value.subject +"</div>" +
-                                "<div>Tình trạng:  "+ status +"</div></td></tr>"
+                        html += "<tr style='width: 100%'><td>"+ (index + 1)  +"</td><td>"+ value.class +"</td>" + 
+                                "<td>"+ value.course +"</td><td>"+ value.subject +"</td>" +
+                                "<td>"+ status +"</td></tr>";
                     });
 
                     $('.modal-student-data').html(html);

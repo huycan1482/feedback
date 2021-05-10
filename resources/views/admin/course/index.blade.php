@@ -16,60 +16,99 @@
 <section class="content">
     <div class="row">
         <div class="modal fade" id="modal-default">
-            <div class="modal-dialog">
+            <div class="modal-dialog" style="">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Thông tin chi tiết Khóa học</h4>
+                        <h3 class="modal-title">Thông tin chi tiết Khóa học</h3>
                     </div>
                     <div class="modal-body">
-                        <div class="box">
-                            <div class="box-body table-responsive no-padding">
-                                <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
-                                    <tbody>
-                                        <tr style="width: 100%">
-                                            <td class="" style="width: 30%">
-                                                Tên môn học:
-                                            </td>
-                                            <td class="modal-course-content" style="width: 70%">
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <div class="box box-info">
+                                    <div class="box-header">
+                                        <h4>Thông tin chung</h4>
+                                    </div>
+                                    <div class="box-body table-responsive no-padding">
+                                        <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
+                                            <tbody>
+                                                <tr style="width: 100%">
+                                                    <td class="" style="width: 30%">
+                                                        Tên khóa:
+                                                    </td>
+                                                    <td class="modal-course-name" style="width: 70%">
 
-                                            </td>
-                                        </tr>
-                                        <tr style="width: 100%">
-                                            <td class="" style="width: 30%">
-                                                Mã môn học:
-                                            </td>
-                                            <td class="modal-course-code" style="width: 70%">
+                                                    </td>
+                                                </tr>
+                                                <tr style="width: 100%">
+                                                    <td class="" style="width: 30%">
+                                                        Mã khóa học:
+                                                    </td>
+                                                    <td class="modal-course-code" style="width: 70%">
 
-                                            </td>
-                                        </tr>
-                                        <tr style="width: 100%">
-                                            <td class="" style="width: 30%">
-                                                Kích hoạt:
-                                            </td>
-                                            <td class="modal-course-active" style="width: 70%">
+                                                    </td>
+                                                </tr>
+                                                <tr style="width: 100%">
+                                                    <td class="" style="width: 30%">
+                                                        Tổng số buổi học:
+                                                    </td>
+                                                    <td class="modal-course-total" style="width: 70%">
 
-                                            </td>
-                                        </tr>
-                                        <tr style="width: 100%">
-                                            <td class="" style="width: 30%">
-                                                Người tạo:
-                                            </td>
-                                            <td class="modal-course-userCreate" style="width: 70%">
+                                                    </td>
+                                                </tr>
+                                                <tr style="width: 100%">
+                                                    <td class="" style="width: 30%">
+                                                        Kích hoạt:
+                                                    </td>
+                                                    <td class="modal-course-active" style="width: 70%">
 
-                                            </td>
-                                        </tr>
-                                        <tr style="width: 100%">
-                                            <td class="" style="width: 30%">
-                                                Ngày tạo:
-                                            </td>
-                                            <td class="modal-course-createdAt" style="width: 70%">
+                                                    </td>
+                                                </tr>
+                                                <tr style="width: 100%">
+                                                    <td class="" style="width: 30%">
+                                                        Người tạo:
+                                                    </td>
+                                                    <td class="modal-course-userCreate" style="width: 70%">
 
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                                    </td>
+                                                </tr>
+                                                <tr style="width: 100%">
+                                                    <td class="" style="width: 30%">
+                                                        Ngày tạo:
+                                                    </td>
+                                                    <td class="modal-course-createdAt" style="width: 70%">
+
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-7">
+                                <div class="box box-success">
+                                    <div class="box-header with-border">
+                                        <h4>Thông tin lớp học liên quan</h4>
+                                    </div>
+                                    <div class="box-body table-responsive no-padding">
+                                        <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center">STT</th>
+                                                    <th class="text-center">Lớp</th>
+                                                    <th class="text-center">Môn học</th>
+                                                    <th class="text-center">Giảng viên</th>
+                                                    <th class="text-center">Trạng thái</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="table-class">
+                                                
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -174,18 +213,37 @@
                 dataType: "json",
                 success: function (response) {
                     var html = '';
-                    // console.log(response.course);
+                    // console.log(response.course, response.data);
+                    
                     $('.modal-course-name').html(response.course.name);
                     $('.modal-course-code').html(response.course.code);
-                    if (response.course.is_active == 1) {
-                        $('.modal-course-active').html("<span class='label label-success'> Hiển thị </span>");
+                    $('.modal-course-total').html(response.course.total_lesson);
+                    if ( response.course.is_active == 1 ) {
+                        $('.modal-course-active').html('<span class="label label-success">Kích hoạt</span>');
                     } else {
-                        $('.modal-course-active').html("<span class='label label-danger'> Ẩn </span>")
+                        $('.modal-course-active').html('<span class="label label-success">Ẩn</span>');
                     }
 
-                    // $('.modal-course-userCreate').html(response.course.code);
-                    $('.modal-course-createAt').html(response.course.created_at);
+                    response.data.forEach( function (value, index) {
+                        html += "<tr><td class='text-center'>"+ (index + 1) +"</td>"+
+                                "<td class='text-center'>"+ value.class +"</td>"+ 
+                                "<td class='text-center'>"+ value.subject +"</td>"+ 
+                                "<td class='text-center'>"+ value.teacher +"</td>";
 
+                        // if (value.active == 1) {
+                        //     html+= '<td class="text-center">Hiển thị</td></tr>';
+                        // } else {
+                        //     html+= '<td class="text-center">Ẩn</td></tr>';
+                        // }
+
+                        (value.active == 1) ? html+= '<td class="text-center"><span class="label label-success">Kích hoạt</span></td></tr>' 
+                            : html+= '<td class="text-center"><span class="label label-danger">Ẩn</span></td></tr>';
+                    });
+
+
+                    $('.table-class').html(html);
+
+                    
                 }
             });
         })

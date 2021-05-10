@@ -113,16 +113,19 @@ class CourseController extends Controller
     public function show($id)
     {
         $course = Course::find($id);
-        // dd($id, $course);
 
         if (empty($course)) {
             return response()->json(['mess' => 'Bản ghi không tồn tại'], 404);
         } else {
-            $subjects = Subject::where('is_active', '=', 1)->get();
 
-            $classRooms = ClassRoom::where([['is_active', '=', 1], ['course_id', '=', $id]])->get();
+            $data = Course::selectRaw('classes.id as classId, subjects.code as subject, classes.name as class, users.name as teacher, classes.is_active as active')
+            ->leftJoin('subjects', 'subjects.id', '=', 'courses.subject_id')
+            ->leftJoin('classes', 'classes.course_id', '=', 'courses.id')
+            ->join('users', 'classes.teacher_id', '=', 'users.id')
+            ->where('course_id', '=', $id)
+            ->get();
 
-            return response()->json(['classRooms' => $classRooms, 'subjects' => $subjects], 200);
+            return response()->json(['course' => $course, 'data' => $data], 200);
         }
 
     }

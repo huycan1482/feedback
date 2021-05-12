@@ -191,8 +191,8 @@
                     // console.log(html);
                 }
             });
-        })
+        });
 
-    })
+    });
 </script>
 @endsection

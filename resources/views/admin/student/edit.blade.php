@@ -195,8 +195,10 @@
                                         <span class="label label-danger">Đã hủy</span>
                                     @elseif ( (strtotime($item->lesson->first()->start_at) > time()) ) 
                                         <span class="label label-success">Đang học</span>
-                                    @else
+                                    @elseif ( (strtotime($item->lesson->first()->start_at) < time()) ) 
                                         <span class="label label-warning">Chờ học</span>
+                                    @else
+                                        <span class="label label-danger">Hoàn thành</span>
                                     @endif
                                 </td>
                                 <td class="text-center">
@@ -251,8 +253,8 @@
                     dataType: "json",
                     success: function (response) {
                         var html = '';
-                        response.classRooms.forEach(function (value, index) {
-                            html += "<option value='"+ value.id +"'>"+ value.name + "</option>";
+                        response.data.forEach(function (value, index) {
+                            html += "<option value='"+ value.classId +"'>"+ value.class + "</option>";
                         });
 
                         $('#form-classRoom_id').show();

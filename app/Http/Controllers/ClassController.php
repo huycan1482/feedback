@@ -189,7 +189,32 @@ class ClassController extends Controller
      */
     public function edit($id)
     {
-        //
+        $classRoom = ClassRoom::findOrFail($id);
+
+        $teachers = DB::table('users')
+            ->select('users.*')
+            ->leftJoin('roles', 'roles.id', '=', 'users.role_id')
+            ->where('roles.name', '=', 'teacher')
+            ->latest()->get();
+        $courses = Course::where('is_active', '=', 1)->latest()->get();
+
+        $lessons = Lesson::
+        selectRaw('WEEKDAY(lessons.start_at) as day, lessons.time_limit, (select lessons.start_at from lessons where WEEKDAY(lessons.start_at) = day order by lessons.start_at asc limit 1) as time')
+        ->rightJoin('classes', 'classes.id', '=', 'lessons.class_id')
+        ->where('classes.id', '=', $id)
+        ->groupBy('day', 'time_limit')
+        ->orderBy('day', 'asc')
+        ->get();
+
+        // dd($lessons);
+        // 3 5 6
+
+        return view ('admin.class.edit', [
+            'classRoom' => $classRoom,
+            'teachers' => $teachers,
+            'courses' => $courses,
+            'lessons' => $lessons,
+        ]);
     }
 
     /**
@@ -201,7 +226,7 @@ class ClassController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        dd($request->all());
     }
 
     /**

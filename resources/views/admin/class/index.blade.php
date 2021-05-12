@@ -8,7 +8,7 @@
 @section('content')
 <section class="content-header">
     <h1>
-        Quản lý danh sách Môn học
+        Quản lý danh sách Lớp học
         <small><a href="{{ route('admin.class.create') }}">Thêm mới</a></small>
     </h1>
 </section>

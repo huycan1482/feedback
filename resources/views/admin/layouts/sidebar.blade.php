@@ -67,9 +67,9 @@
                     </span>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href=""><i class="fas fa-book"></i>Đánh giá</a></li>
-                    <li><a href=""><i class="fas fa-question-circle"></i>Câu hỏi</a></li>
-                    <li><a href=""><i class="fas fa-stream"></i>Câu trả lời</a></li>
+                    <li><a href="{{ route('admin.feedback.index') }}"><i class="fas fa-book"></i>Đánh giá</a></li>
+                    <li><a href="{{ route('admin.question.index') }}"><i class="fas fa-question-circle"></i>Câu hỏi</a></li>
+                    <li><a href="{{ route('admin.answer.index') }}"><i class="fas fa-stream"></i>Câu trả lời</a></li>
                     {{-- <li><a href=""><i class="fas fa-user-tie"></i> Quản lí giảng viên</a></li> --}}
                 </ul>
             </li>

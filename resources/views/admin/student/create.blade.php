@@ -204,9 +204,9 @@
 
                         var html = '';
 
-                        response.classRooms.forEach(function (value, index) {
+                        response.data.forEach(function (value, index) {
 
-                            html += "<option value='"+ value.id +"'>"+ value.name + "</option>";
+                            html += "<option value='"+ value.classId +"'>"+ value.class + "</option>";
 
                         });
 

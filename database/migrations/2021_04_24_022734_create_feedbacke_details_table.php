@@ -17,6 +17,7 @@ class CreateFeedbackeDetailsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('feedback_id');
+            $table->unsignedBigInteger('class_id');
             $table->dateTime('start_at');
             $table->dateTime('end_at');
             $table->timestamps();

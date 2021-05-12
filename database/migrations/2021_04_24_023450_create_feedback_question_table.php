@@ -17,8 +17,8 @@ class CreateFeedbackQuestionTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('question_id');
             $table->unsignedBigInteger('feedback_id');
-            $table->unsignedBigInteger('user_create');
-            $table->unsignedBigInteger('user_update');
+            $table->unsignedBigInteger('user_create')->nullable();
+            $table->unsignedBigInteger('user_update')->nullable();
             $table->timestamps();
         });
     }

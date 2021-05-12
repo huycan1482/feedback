@@ -20,8 +20,8 @@ class CreateAnswersTable extends Migration
             $table->text('content');
             $table->tinyInteger('type');
             $table->tinyInteger('is_true');
-            $table->unsignedBigInteger('user_create');
-            $table->unsignedBigInteger('user_update');
+            $table->unsignedBigInteger('user_create')->nullable();
+            $table->unsignedBigInteger('user_update')->nullable();
             $table->timestamps();
         });
     }

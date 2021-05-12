@@ -19,8 +19,8 @@ class CreateQuestionsTable extends Migration
             $table->string('content', 255);
             $table->string('slug', 255);
             $table->tinyInteger('is_active');
-            $table->unsignedBigInteger('user_create');
-            $table->unsignedBigInteger('user_update');
+            $table->unsignedBigInteger('user_create')->nullable();
+            $table->unsignedBigInteger('user_update')->nullable();
             $table->timestamps();
         });
     }

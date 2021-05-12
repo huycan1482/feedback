@@ -17,13 +17,14 @@ class CreateFeedbacksTable extends Migration
             $table->bigIncrements('id');
             $table->string('name', 255);
             $table->string('slug', 255);
+            $table->string('code', 255);
             $table->unsignedBigInteger('teacher_id');
             $table->unsignedBigInteger('course_id');
             $table->dateTime('start_at');
             $table->dateTime('end_at');
             $table->tinyInteger('is_active');
-            $table->unsignedBigInteger('user_create');
-            $table->unsignedBigInteger('user_update');
+            $table->unsignedBigInteger('user_create')->nullable();
+            $table->unsignedBigInteger('user_update')->nullable();
             $table->timestamps();
         });
     }

@@ -21,6 +21,8 @@ class CreateClassesTable extends Migration
             $table->unsignedBigInteger('teacher_id');
             $table->integer('total_number');
             $table->tinyInteger('is_active');
+            $table->unsignedBigInteger('user_create')->nullable();
+            $table->unsignedBigInteger('user_update')->nullable();
             $table->timestamps();
         });
     }

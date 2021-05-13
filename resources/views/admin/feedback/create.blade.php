@@ -10,7 +10,7 @@
 <section class="content-header">
     <h1>
         Thêm - Bài đánh giá
-        <small><a href="{{ route('admin.question.index') }}">Danh sách</a></small>
+        <small><a href="{{ route('admin.feedback.index') }}">Danh sách</a></small>
     </h1>
 </section>
 

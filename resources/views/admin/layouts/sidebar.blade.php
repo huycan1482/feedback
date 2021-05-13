@@ -41,7 +41,7 @@
                 <ul class="treeview-menu">
                     <li><a href="{{ route('admin.user.index') }}"><i class="fas fa-user"></i> Quản lí Tài khoản</a></li>
                     <li><a href="{{ route('admin.student.index') }}"><i class="fas fa-user-graduate"></i>Học viên</a></li>
-                    <li><a href=""><i class="fas fa-user-tie"></i>Giảng viên</a></li>
+                    <li><a href="{{ route('admin.teacher.index') }}"><i class="fas fa-user-tie"></i>Giảng viên</a></li>
                 </ul>
             </li>
             <li class="treeview">

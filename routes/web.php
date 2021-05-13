@@ -50,6 +50,7 @@ Route::group(['prefix' => 'admin' , 'as' => 'admin.', 'middleware' => 'guest'], 
     Route::resource('subject', 'SubjectController');
     Route::resource('course', 'CourseController');
 
+    Route::resource('teacher', 'TeacherController');
     Route::resource('user', 'UserController');
     Route::resource('student', 'StudentController');
     Route::resource('userClass', 'UserClassController');

@@ -95,11 +95,7 @@
                             <tr>
                                 <th class="text-center">STT</th>
                                 <th class="text-center">Tên</th>
-                                <th class="text-center">Khóa học</th>
-                                <th class="text-center">Người dạy</th>
-                                <th class="text-center">Thời gian</th>
-                                {{-- <th class="text-center"></th> --}}
-                                <th class="text-center">Người tạo</th>
+                                <th class="text-center">Mã đề khảo sát</th>
                                 <th class="text-center">Trạng thái</th>
                                 <th class="text-center">Hành động</th>
                             </tr>
@@ -108,11 +104,9 @@
                             @foreach($feedbacks as $key => $feedback)
                             <tr class="item-{{ $feedback->id }}">
                                 <td class="text-center">{{ $key + 1}}</td>
-                                <td class="text-center">{!! Str::limit($feedback->content, 50) !!}</td>
-                                <td class="text-center"></td>
-                                <td class="text-center"></td>
-                                <td class="text-center"></td>
-                                <td class="text-center"></td>
+                                <td class="text-center">{{ $feedback->name }}</td>
+                                {{-- <td class="text-center">{!! Str::limit($feedback->content, 50) !!}</td> --}}
+                                <td class="text-center">{{ $feedback->code }}</td>
                                 <td class="text-center">
                                     <span class="label label-{{ ($feedback->is_active == 1) ? 'success' : 'danger' }}">{{ ($feedback->is_active == 1) ? 'Hiển thị' : 'Ẩn' }}</span>
                                 </td>

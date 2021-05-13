@@ -16,6 +16,7 @@ class CreateClassesTable extends Migration
         Schema::create('classes', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name', 255);
+            $table->string('code', 255);
             $table->string('slug', 255);
             $table->unsignedBigInteger('course_id');
             $table->unsignedBigInteger('teacher_id');

@@ -8,8 +8,8 @@
 @section('content')
 <section class="content-header">
     <h1>
-        Quản lý danh sách Học viên
-        <small><a href="{{ route('admin.student.create') }}">Thêm mới</a></small>
+        Quản lý danh sách Giảng viên
+        <small><a href="{{ route('admin.teacher.create') }}">Thêm mới</a></small>
     </h1>
 </section>
 
@@ -21,7 +21,7 @@
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span></button>
-                        <h3 class="modal-title">Thông tin chi tiết Học viên</h3>
+                        <h3 class="modal-title">Thông tin chi tiết Giảng viên</h3>
                     </div>
                     <div class="modal-body">
                         <div class="row">
@@ -90,7 +90,7 @@
                             <div class="col-lg-7">
                                 <div class="box box-success">
                                     <div class="box-header">
-                                        <h4>Thông tin lớp học</h4>
+                                        <h4>Thông tin lớp giảng dạy</h4>
                                     </div>
                                     <div class="box-body table-responsive no-padding">
                                         <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
@@ -101,7 +101,7 @@
                                                 <th>Mã môn</th>
                                                 <th>Tình trạng</th>
                                             </thead>
-                                            <tbody class="modal-student-data">
+                                            <tbody class="modal-teacher-data">
 
                                             </tbody>
                                         </table>
@@ -141,26 +141,26 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($students as $key => $student)
-                            <tr class="item-{{ $student->id }}">
+                            @foreach($teachers as $key => $teacher)
+                            <tr class="item-{{ $teacher->id }}">
                                 <td class="text-center">{{ $key + 1}}</td>
-                                <td class="text-center">{{ $student->name }}</td>
-                                <td class="text-center">{{ $student->phone }}</td>
-                                <td class="text-center">{{ $student->email }}</td>
+                                <td class="text-center">{{ $teacher->name }}</td>
+                                <td class="text-center">{{ $teacher->phone }}</td>
+                                <td class="text-center">{{ $teacher->email }}</td>
                                 {{-- <td class="text-center">
                                     <span class="label label-{{ ($user->is_active == 1) ? 'success' : 'danger' }}">{{ ($user->is_active == 1) ? 'Hiển thị' : 'Ẩn' }}</span>
                                 </td> --}}
                                 <td class="text-center">
 
-                                    <button type="button" class="btn btn-warning btn-detail" data-toggle="modal" data-target="#modal-default" title="Chi tiết" data-id="{{$student->id}}">
+                                    <button type="button" class="btn btn-warning btn-detail" data-toggle="modal" data-target="#modal-default" title="Chi tiết" data-id="{{$teacher->id}}">
                                         <i class="fas fa-cog"></i>
                                     </button>
 
-                                    <a href="{{ route('admin.student.edit', ['id'=> $student->id]) }}" class="btn btn-success" title="Sửa">
+                                    <a href="{{ route('admin.teacher.edit', ['id'=> $teacher->id]) }}" class="btn btn-success" title="Sửa">
                                         <i class="fa fa-edit"></i>
                                     </a>
 
-                                    <a href="javascript:void(0)" class="btn btn-danger" onclick="destroyModel('student', '{{ $student->id }}' )" title="Xóa">
+                                    <a href="javascript:void(0)" class="btn btn-danger" onclick="destroyModel('teacher', '{{ $teacher->id }}' )" title="Xóa">
                                         <i class="fa fa-trash"></i>
                                     </a>
 
@@ -199,17 +199,17 @@
             var itemId = $(this).attr('data-id');
             $.ajax({
                 type: "get",
-                url: base_url + '/admin/student/' + itemId,
+                url: base_url + '/admin/teacher/' + itemId,
                 data: {},
                 dataType: "json",
                 success: function (response) {
 
-                    $('.modal-user-name').html(response.student.name);
-                    $('.modal-user-email').html(response.student.email);
-                    $('.modal-user-phone').html(response.student.phone);
-                    $('.modal-user-birth').html(response.student.date_of_birth);
-                    $('.modal-user-code').html(response.student.code);
-                    $('.modal-user-address').html(response.student.address);
+                    $('.modal-user-name').html(response.teacher.name);
+                    $('.modal-user-email').html(response.teacher.email);
+                    $('.modal-user-phone').html(response.teacher.phone);
+                    $('.modal-user-birth').html(response.teacher.date_of_birth);
+                    $('.modal-user-code').html(response.teacher.code);
+                    $('.modal-user-address').html(response.teacher.address);
 
                     var html = '';
 
@@ -220,9 +220,9 @@
                         if ( value.is_active == 0 ) {
                             status = '<span class="label label-danger"> Hủy </span>';
                         } else if ( $.now() < (1 * value.start_at) ) {
-                            status = '<span class="label label-warning"> Chờ học </span>';
+                            status = '<span class="label label-warning"> Chờ dạy </span>';
                         } else if ( $.now() < (1 * value.end_at) ) {
-                            status = '<span class="label label-success"> Đang học </span>';
+                            status = '<span class="label label-success"> Đang dạy </span>';
                         } else {
                             console.log( $.now() , 1 * value.end_at);
 
@@ -234,7 +234,7 @@
                                 "<td>"+ status +"</td></tr>";
                     });
 
-                    $('.modal-student-data').html(html);
+                    $('.modal-teacher-data').html(html);
                 }
             });
         })

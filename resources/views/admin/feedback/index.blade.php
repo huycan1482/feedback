@@ -21,54 +21,65 @@
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Thông tin chi tiết Bài khảo sát</h4>
+                        <h3 class="modal-title">Thông tin chi tiết Bài khảo sát</h3>
                     </div>
                     <div class="modal-body">
-                        <div class="box">
-                            <div class="box-body table-responsive no-padding">
-                                <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
-                                    <tbody>
-                                        <tr style="width: 100%">
-                                            <td class="" style="width: 30%">
-                                                Nội dung câu hỏi:
-                                            </td>
-                                            <td class="modal-question-content" style="width: 70%">
-
-                                            </td>
-                                        </tr>
-                                        <tr style="width: 100%">
-                                            <td class="" style="width: 30%">
-                                                Kích hoạt:
-                                            </td>
-                                            <td class="modal-question-active" style="width: 70%">
-
-                                            </td>
-                                        </tr>
-                                        <tr style="width: 100%">
-                                            <td class="" style="width: 30%">
-                                                Người tạo:
-                                            </td>
-                                            <td class="modal-question-" style="width: 70%">
-
-                                            </td>
-                                        </tr>
-                                        <tr style="width: 100%">
-                                            <td class="" style="width: 30%">
-                                                Ngày tạo:
-                                            </td>
-                                            <td class="modal-question-createdAt" style="width: 70%">
-
-                                            </td>
-                                        </tr>
-                                        <tr style="width: 100%">
-                                            <td class="" style="width: 30%">
-                                                Câu trả lời
-                                            </td>
-                                            <td class="modal-question-answers" style="overflow-wrap: anywhere;width: 70%" >
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                        <div class="box box-info">
+                            <div class="box-header">
+                                <h4 class="feedback-name" style="text-align: center">Bài đánh giá khảo sát giảng viên</h4>
+                            </div>
+                            <div class="box-body">
+                                <div class="feedback-info">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="feedback-item feedback-feedbackName">
+                                                <i class="fas fa-scroll"></i>
+                                                <span>Bài đánh giá: </span>
+                                                <span></span>
+                                            </div>
+                                            {{-- <div class="feedback-item feedback-className">
+                                                <i class="fas fa-book-open"></i>
+                                                <span>Lớp học: </span>
+                                                <span></span>
+                                            </div>
+                                            <div class="feedback-item feedback-teacherName">
+                                                <i class="fas fa-user-tie"></i>
+                                                <span>Giảng viên: </span>
+                                                <span></span>
+                                            </div>
+                                            <div class="feedback-item feedback-courseName">
+                                                <i class="fas fa-bookmark"></i>
+                                                <span>Khóa học: </span>
+                                                <span></span>
+                                            </div>
+                                            <div class="feedback-item feedback-subjectName">
+                                                <i class="fas fa-book"></i>
+                                                <span>Môn học: </span>
+                                                <span></span>
+                                            </div> --}}
+                                        </div>
+                                        <div class="col-lg-6">
+                                            {{-- <div class="feedback-item feedback-start_at">
+                                                <i class="far fa-circle"></i>
+                                                <span>Ngày bắt đầu học: </span>
+                                                <span></span>
+                                            </div>
+                                            <div class="feedback-item feedback-end_at">
+                                                <i class="far fa-dot-circle"></i>
+                                                <span>Ngày kết thúc<: </span>
+                                                <span></span>
+                                            </div> --}}
+                                            <div class="feedback-item feedback-close">
+                                                <i class="far fa-calendar-check"></i>
+                                                <span>Ngày bắt đầu khảo sát: </span>
+                                                <span></span>
+                                            </div>
+                                        </div>
+                                    </div>   
+                                </div>
+                                <div class="feedback-content">
+                                   
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -132,14 +143,7 @@
                             @endforeach
                         </tbody>
                         <tfoot>
-                            {{-- <tr>
-                                <th>STT</th>
-                                <th>Nội dung</th>
-                                <th></th>
-                                <th>Trạng thái</th>
-                                <th>Người tạo</th>
-                                <th>Hành động</th>
-                            </tr> --}}
+
                         </tfoot>
                     </table>
                 </div>
@@ -169,25 +173,33 @@
             var itemId = $(this).attr('data-id');
             $.ajax({
                 type: "get",
-                url: base_url + '/admin/question/' + itemId,
+                url: base_url + '/admin/feedback/' + itemId,
                 data: {},
                 dataType: "json",
                 success: function (response) {
+                    console.log(response);
+
+                    $('.feedback-feedbackName > span:last-child').html(response.feedback.name + ' / ' + response.feedback.code);
+                    $('.feedback-close > span:last-child').html(response.feedback.start_at);
+
                     var html = '';
-                    // console.log(response.question);
-                    $('.modal-question-content').html(response.question.content);
-                    if (response.question.is_active == 1) {
-                        $('.modal-question-active').html("<span class='label label-success'> Hiển thị </span>");
-                    } else {
-                        $('.modal-question-active').html("<span class='label label-danger'> Ẩn </span>")
-                    }
-                    response.answers.forEach( function (value, index) {
+
+                    var question = JSON.parse(response.data) ;
+
+                    question.forEach( function (value, index) {
                         // console.log(value, index);
-                        html += "<div>Câu "+ (index + 1) +": "+ value.content +"</div>"
+                        html += "<div class='feedback-question'><span>"+ (index + 1) +". ("+ value.code +"): </span>"+ value.content +"</div><div class='feedback-answers'><div class='row'>";
+
+                        value.answer.forEach( function (value2, index2) {
+                            // console.log(value2, index2);
+                            html += "<div class='col-lg-6 answer-items'><i class='far fa-circle'></i>"+
+                                value2.content +"</div>";
+                        });
+
+                        html += '</div></div>';
                     });
 
-                    $('.modal-question-answers').html(html);
-                    // console.log(html);
+                    $('.feedback-content').html(html);
                 }
             });
         })

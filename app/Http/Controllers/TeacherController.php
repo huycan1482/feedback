@@ -125,6 +125,8 @@ class TeacherController extends Controller
             ->join('subjects', 'courses.subject_id', '=', 'subjects.id')
             ->where('users.id', $id)
             ->get();
+
+            dd($data);
             return response()->json(['teacher' => $teacher, 'data' => $data], 200);
         }
     }

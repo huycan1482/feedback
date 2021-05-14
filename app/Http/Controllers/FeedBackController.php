@@ -137,7 +137,42 @@ class FeedBackController extends Controller
      */
     public function show($id)
     {
-        //
+        $checkFeedback = FeedBack::find($id);
+
+        if (empty($checkFeedback)) {
+            return response()->json(['mess' => 'Bản ghi không tồn tại'], 404);
+        } else {
+
+            foreach ($checkFeedback->question as $key => $item) {
+                $arr = [];
+
+                foreach($item->answer as $item2) {
+                    $arr [] = [
+                        'id' => $item2->id,
+                        'content' => $item2->content,
+                    ];
+                }
+
+                $data [] = [
+                    'id' => $item->id, 
+                    'code' => $item->code,
+                    'content' => $item->content,
+                    'answer' => $arr,
+                ];
+            }
+
+            // $feedback = FeedBack::selectRaw('feedbacks.code, feedbacks.name, classes.name as class, users.name as teacher, courses.name as course, subjects.name as subject')
+            // ->leftJoin('classes', 'feedbacks.id', '=' ,'classes.feedback_id')
+            // ->join('courses', 'classes.course_id', '=', 'courses.id')
+            // ->join('subjects', 'courses.subject_id', '=', 'subjects.id')
+            // ->join('users', 'classes.teacher_id', '=', 'users.id')
+            // ->where('feedback', $id)
+            // ->get();
+
+            // dd($data);
+
+            return response()->json(['feedback' => $checkFeedback, 'data' => json_encode($data)], 200);
+        }
     }
 
     /**
@@ -148,7 +183,11 @@ class FeedBackController extends Controller
      */
     public function edit($id)
     {
-        //
+        $feedback = Feedback::findOrFail($id);
+
+        return view ('admin.feedback.edit', [
+            'feedback' => $feedback
+        ]);
     }
 
     /**

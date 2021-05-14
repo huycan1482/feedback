@@ -46,6 +46,49 @@
 }
 
 
+/* modal feedback */
+
+.feedback-info {
+    padding-bottom: 15px;
+    border-bottom: 2px solid #17a2b8;
+}
+
+.feedback-item i {
+    margin-right: 10px;
+    color: #2c3e50;
+}
+
+.feedback-item i + span {
+    color: #17a2b8;
+    font-weight: 600;
+}
+
+.feedback-item {
+    margin-bottom: 10px;
+}
+
+.feedback-question {
+    margin: 50px 0 15px;
+    color: #17a2b8;
+}
+
+.feedback-question > span {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.feedback-answer, .feedback-question {
+    letter-spacing: 1px;
+}
+
+.answer-items {
+    margin: 5px 0;
+}
+
+.answer-items i {
+    margin-right: 5px;
+}
+
 @media (min-width: 768px) {
     .modal .modal-dialog {
         width: 70vw !important;

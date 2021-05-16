@@ -82,6 +82,12 @@
                             </div>
                         </div>
 
+                        <div class="checkbox form-group" id="form-is_active">
+                            <label>
+                                <input type="checkbox" name="is_active" value="1"> Kích hoạt
+                            </label>
+                        </div>
+
                     </div>
                     <!-- /.box-body -->
 
@@ -229,6 +235,7 @@
             var code = $("input[name='code']").val(); 
             var classRoom_id = $('#classRoom_id').val();
             var course_id = $('#course_id').val();
+            var is_active = ( $("input[name='is_active']").is(':checked') ) ? 1 : 0;
 
             if ($("input[name='date-of-birth']").val() != '') { 
                 var date = $("input[name='date-of-birth']").val().split('-');
@@ -247,6 +254,7 @@
                 date_of_birth : date_of_birth,
                 classRoom_id : classRoom_id,
                 course_id : course_id,
+                is_active : is_active,
             };
 
             var model = '/admin/student';

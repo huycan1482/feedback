@@ -53,6 +53,7 @@ class TeacherController extends Controller
             'address' => 'required',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
+            'is_active' => 'integer|boolean',
         ], [
             'name.required' => 'Yêu cầu không để trống',
             'code.required' => 'Yêu cầu không để trống',
@@ -72,6 +73,8 @@ class TeacherController extends Controller
             'password.required' => 'Yêu cầu không để trống',
             'password.min' => 'Độ dài phải lớn hơn 8 kí tự',
             'password.confirmed' => 'Nhập lại mật khẩu không khớp',
+            'is_active.integer' => 'Sai kiểu dữ liệu',
+            'is_active.boolean' => 'Sai kiểu dữ liệu',
         ]);
 
         $errs = $validator->errors();
@@ -170,6 +173,8 @@ class TeacherController extends Controller
                 'address' => 'required',
                 'email' => 'required|string|email|max:255|unique:users,email,'.$id,
                 'password' => 'nullable|string|min:8|confirmed',
+                'is_active' => 'integer|boolean',
+
             ], [
                 'name.required' => 'Yêu cầu không để trống',
                 'code.required' => 'Yêu cầu không để trống',
@@ -188,6 +193,8 @@ class TeacherController extends Controller
                 'email.unique' => 'Email đã tồn tại',
                 'password.min' => 'Độ dài phải lớn hơn 8 kí tự',
                 'password.confirmed' => 'Nhập lại mật khẩu không khớp',
+                'is_active.integer' => 'Sai kiểu dữ liệu',
+                'is_active.boolean' => 'Sai kiểu dữ liệu',
             ]);
     
             $errs = $validator->errors();

@@ -82,6 +82,12 @@
                             </div>
                         </div>
 
+                        <div class="checkbox form-group" id="form-is_active">
+                            <label>
+                                <input type="checkbox" name="is_active" value="1" {{ ($student->is_active == 1) ? 'checked' : '' }}> Kích hoạt
+                            </label>
+                        </div>
+
                     </div>
                     <!-- /.box-body -->
 
@@ -303,6 +309,7 @@
             var gender = $('#gender').val();
             var phone = $("input[name='phone']").val(); 
             var code = $("input[name='code']").val(); 
+            var is_active = ( $("input[name='is_active']").is(':checked') ) ? 1 : 0;
 
             if ($("input[name='date-of-birth']").val() != '') { 
                 var date = $("input[name='date-of-birth']").val().split('-');
@@ -319,6 +326,7 @@
                 phone : phone,
                 code : code,
                 date_of_birth : date_of_birth,
+                is_active : is_active,
             };
 
             var model = '/admin/student/' + $(this).attr('data-id');

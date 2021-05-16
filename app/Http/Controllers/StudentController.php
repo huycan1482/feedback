@@ -63,6 +63,8 @@ class StudentController extends Controller
             'password' => 'required|string|min:8|confirmed',
             'classRoom_id' => 'required|exists:classes,id',
             'course_id' => 'required|exists:courses,id',
+            'is_active' => 'integer|boolean',
+
         ], [
             'name.required' => 'Yêu cầu không để trống',
             'code.required' => 'Yêu cầu không để trống',
@@ -86,6 +88,8 @@ class StudentController extends Controller
             'classRoom_id.exists' => 'Dữ liệu không tồn tại',
             'course_id.required' => 'Yêu cầu không để trống',
             'course_id.exists' => 'Dữ liệu không tồn tại',
+            'is_active.integer' => 'Sai kiểu dữ liệu',
+            'is_active.boolean' => 'Sai kiểu dữ liệu',
         ]);
 
 
@@ -204,6 +208,8 @@ class StudentController extends Controller
                 'address' => 'required',
                 'email' => 'required|string|email|max:255|unique:users,email,'.$id,
                 'password' => 'nullable|string|min:8|confirmed',
+                'is_active' => 'integer|boolean',
+
             ], [
                 'name.required' => 'Yêu cầu không để trống',
                 'code.required' => 'Yêu cầu không để trống',
@@ -222,6 +228,8 @@ class StudentController extends Controller
                 'email.unique' => 'Email đã tồn tại',
                 'password.min' => 'Độ dài phải lớn hơn 8 kí tự',
                 'password.confirmed' => 'Nhập lại mật khẩu không khớp',
+                'is_active.integer' => 'Sai kiểu dữ liệu',
+                'is_active.boolean' => 'Sai kiểu dữ liệu',
             ]);
     
             $errs = $validator->errors();

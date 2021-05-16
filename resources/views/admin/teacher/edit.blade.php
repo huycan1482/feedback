@@ -82,12 +82,26 @@
                             </div>
                         </div>
 
+                        <div class="checkbox form-group" id="form-is_active">
+                            <label>
+                                <input type="checkbox" name="is_active" value="1" {{ ($teacher->is_active == 1) ? 'checked' : '' }}> Kích hoạt
+                            </label>
+                        </div>
+
                     </div>
                     <!-- /.box-body -->
 
                 </form>
-            </div>
 
+                <div class="box-footer">
+                    <div class="btn btn-info update-user" data-id="{{ $teacher->id }}">Update</div>
+                    <button type="reset" class="btn btn-danger">Reset</button>
+                </div>
+            </div>
+            <!-- /.box -->
+        </div>
+
+        <div class="col-md-5">
             <div class="box box-success">
                 <div class="box-header with-border">
                     <h3 class="box-title">Thông tin Tài khoản</h3>
@@ -119,12 +133,7 @@
                     </div>
                 </form>
 
-                <div class="box-footer">
-                    <div class="btn btn-info update-user" data-id="{{ $teacher->id }}">Update</div>
-                    <button type="reset" class="btn btn-danger">Reset</button>
-                </div>
             </div>
-            <!-- /.box -->
         </div>
         <!--/.col (right) -->
     </div>
@@ -158,6 +167,7 @@
             var gender = $('#gender').val();
             var phone = $("input[name='phone']").val(); 
             var code = $("input[name='code']").val(); 
+            var is_active = ( $("input[name='is_active']").is(':checked') ) ? 1 : 0;
 
             if ($("input[name='date-of-birth']").val() != '') { 
                 var date = $("input[name='date-of-birth']").val().split('-');
@@ -174,6 +184,7 @@
                 phone : phone,
                 code : code,
                 date_of_birth : date_of_birth,
+                is_active : is_active,
             };
 
             var model = '/admin/teacher/' + $(this).attr('data-id');

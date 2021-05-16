@@ -55,6 +55,12 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
             'role' => 'required|exists:roles,id',
+            'code' => 'required|unique:users,code',
+            'gender' => 'required|integer|min:1|max:3',
+            'date_of_birth' => 'required|date_format:"Y-m-d"',
+            'phone' => 'required|size:10',
+            'address' => 'required',
+            'is_active' => 'integer|boolean',
         ], [
             'name.required' => 'Yêu cầu không để trống',
             'name.string' => 'Sai kiểu dữ liệu',
@@ -65,7 +71,20 @@ class UserController extends Controller
             'password.min' => 'Độ dài phải lớn hơn 8 kí tự',
             'password.confirmed' => 'Nhập lại mật khẩu không khớp',
             'role.required' => 'Yêu cầu không để trống',
-            'role.exists' => 'Dữ liệu không tồn tại'
+            'role.exists' => 'Dữ liệu không tồn tại',
+            'code.required' => 'Yêu cầu không để trống',
+            'code.unique' => 'Dữ liệu bị trùng',
+            'gender.required' => 'Yêu cầu không để trống',
+            'gender.integer' => 'Sai kiểu dữ liệu',
+            'gender.min' => 'Sai kiểu dữ liệu',
+            'gender.max' => 'Sai kiểu dữ liệu',
+            'date_of_birth.required' => 'Yêu cầu không để trống',
+            'date_of_birth.date_format' => 'Sai kiểu dữ liệu',
+            'phone.required' => 'Yêu cầu không để trống',
+            'phone.size' => 'Sai kiểu dữ liệu',
+            'address.required' => 'Yêu cầu không để trống',
+            'is_active.integer' => 'Sai kiểu dữ liệu',
+            'is_active.boolean' => 'Sai kiểu dữ liệu',
         ]);
 
         $errs = $validator->errors();
@@ -78,9 +97,12 @@ class UserController extends Controller
             $user->email = $request->input('email');
             $user->role_id = $request->input('role');
             $user->password = Hash::make($request->input('password'));
-            if (!empty($request->input('password'))) {
-                $user->password = Hash::make($request->input('password'));
-            }
+            $user->code = $request->input('code');
+            $user->gender = $request->input('gender');
+            $user->date_of_birth = $request->input('date_of_birth');
+            $user->phone = $request->input('phone');
+            $user->address = $request->input('address');
+            $user->is_active = (int)$request->input('is_active');   
             
             if ($user->save()) {
                 return response()->json(['mess' => 'Thêm bản ghi thành công', 200]);
@@ -149,6 +171,12 @@ class UserController extends Controller
                 'email' => 'required|string|email|max:255|unique:users,email,'.$id,
                 'password' => 'nullable|string|min:8|confirmed',
                 'role' => 'required|exits:roles,id',
+                'code' => 'required|unique:users,code,'.$id,
+                'gender' => 'required|integer|min:1|max:3',
+                'date_of_birth' => 'required|date_format:"Y-m-d"',
+                'phone' => 'required|size:10',
+                'address' => 'required',
+                'is_active' => 'integer|boolean',
             ], [
                 'name.required' => 'Yêu cầu không để trống',
                 'name.string' => 'Sai kiểu dữ liệu',
@@ -159,7 +187,20 @@ class UserController extends Controller
                 'password.min' => 'Độ dài phải lớn hơn 8 kí tự',
                 'password.confirmed' => 'Nhập lại mật khẩu không khớp',
                 'role.required' => 'Yêu cầu không để trống',
-                'role.exits' => 'Dữ liệu không tồn tại'
+                'role.exits' => 'Dữ liệu không tồn tại',
+                'code.required' => 'Yêu cầu không để trống',
+                'code.unique' => 'Dữ liệu bị trùng',
+                'gender.required' => 'Yêu cầu không để trống',
+                'gender.integer' => 'Sai kiểu dữ liệu',
+                'gender.min' => 'Sai kiểu dữ liệu',
+                'gender.max' => 'Sai kiểu dữ liệu',
+                'date_of_birth.required' => 'Yêu cầu không để trống',
+                'date_of_birth.date_format' => 'Sai kiểu dữ liệu',
+                'phone.required' => 'Yêu cầu không để trống',
+                'phone.size' => 'Sai kiểu dữ liệu',
+                'address.required' => 'Yêu cầu không để trống',
+                'is_active.integer' => 'Sai kiểu dữ liệu',
+                'is_active.boolean' => 'Sai kiểu dữ liệu',
             ]);
     
             $errs = $validator->errors();
@@ -168,11 +209,20 @@ class UserController extends Controller
                 return response()->json(['errors' => $errs, 'mess' => 'Thêm bản ghi lỗi'], 400);
             } else {
                 $user = new User();
+
                 $user->name = $request->input('name');
                 $user->email = $request->input('email');
                 $user->role_id = $request->input('role');
-                // $user->password = Hash::make($request->input('password'));
-    
+                $user->code = $request->input('code');
+                $user->gender = $request->input('gender');
+                $user->date_of_birth = $request->input('date_of_birth');
+                $user->phone = $request->input('phone');
+                $user->address = $request->input('address'); 
+                $user->is_active = (int)$request->input('is_active');   
+
+                if (!empty($request->input('password'))) {
+                    $user->password = Hash::make($request->input('password'));
+                }
                 if ($user->save()) {
                     return response()->json(['mess' => 'Thêm bản ghi thành công', 200]);
                 } else {

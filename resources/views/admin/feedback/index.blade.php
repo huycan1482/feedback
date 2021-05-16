@@ -123,7 +123,7 @@
                                 </td>
                                 <td class="text-center">
 
-                                    <a href="{{ route('admin.question.getListAnswer', ['id' => $feedback->id]) }}" class="btn btn-primary" title="Câu trả lời liên quan">
+                                    <a href="{{ route('admin.question.getListQuestions', ['id' => $feedback->id]) }}" class="btn btn-primary" title="Câu trả lời liên quan">
                                         <i class="fas fa-long-arrow-alt-right"></i>
                                     </a>
 
@@ -131,7 +131,7 @@
                                         <i class="fas fa-cog"></i>
                                     </button>
 
-                                    <a href="{{ route('admin.question.edit', ['id'=> $feedback->id]) }}" class="btn btn-success" title="Sửa">
+                                    <a href="{{ route('admin.feedback.edit', ['id'=> $feedback->id]) }}" class="btn btn-success" title="Sửa">
                                         <i class="fa fa-edit"></i>
                                     </a>
 

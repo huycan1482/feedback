@@ -92,9 +92,6 @@ class FeedBackController extends Controller
             $feedback->end_at = $request->input('end_at');
             $feedback->is_active = (int)$request->input('is_active');
 
-            $feedback->teacher_id = 1;
-            $feedback->course_id = 1;
-
             $current_date = new DateTime();
             $created_time = date('Y-m-d H:i:s', $current_date->getTimestamp());
             $feedback->created_at = $created_time;
@@ -102,8 +99,6 @@ class FeedBackController extends Controller
             DB::beginTransaction();
 
             try {
-
-                // dd($feedback);
 
                 $feedback->save();
 
@@ -113,7 +108,7 @@ class FeedBackController extends Controller
                     $feedback_question = new FeedbackQuestion;
                     $feedback_question->question_id = $item;
                     $feedback_question->feedback_id = $latestFeedBack;
-
+                    $feedback_question->position = 1;
                     $feedback_question->save();
                 }
 
@@ -142,6 +137,12 @@ class FeedBackController extends Controller
         if (empty($checkFeedback)) {
             return response()->json(['mess' => 'Bản ghi không tồn tại'], 404);
         } else {
+            // $test = FeedBack::selectRaw('feedback_question.*')
+            // ->leftJoin('feedback_question', 'feedbacks.id', '=', 'feedback_question.feedback_id')
+            // ->where('feedbacks.id', $id)
+            // ->orderBy('position', 'asc')
+            // ->orderBy('feedback_question.id', 'desc')
+            // ->get();
 
             foreach ($checkFeedback->question as $key => $item) {
                 $arr = [];
@@ -169,8 +170,6 @@ class FeedBackController extends Controller
             // ->where('feedback', $id)
             // ->get();
 
-            // dd($data);
-
             return response()->json(['feedback' => $checkFeedback, 'data' => json_encode($data)], 200);
         }
     }
@@ -185,8 +184,25 @@ class FeedBackController extends Controller
     {
         $feedback = Feedback::findOrFail($id);
 
+        $question_ids = [];
+
+        foreach ($feedback->question as $item) {
+            $question_ids [] = $item->id;
+        }
+
+        $questions = Question::where('is_active', '=', 1)->whereNotIn('id', $question_ids)->latest()->get(); 
+
+        $data = Question::selectRaw('questions.*, feedback_question.position as position, feedback_question.id as feedbackQuestionId')
+        ->rightJoin('feedback_question', 'questions.id', '=', 'feedback_question.question_id')
+        ->whereIn('questions.id', $question_ids)
+        ->orderBy('position', 'desc')
+        ->orderBy('feedback_question.id', 'asc')
+        ->get(); 
+
         return view ('admin.feedback.edit', [
-            'feedback' => $feedback
+            'feedback' => $feedback,
+            'questions' => $questions,
+            'data' => $data
         ]);
     }
 
@@ -199,7 +215,53 @@ class FeedBackController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $feedback = FeedBack::find($id);
+
+        if (empty($feedback)) {
+            return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
+        } else {
+            $request['trueName'] = $request->input('name');
+            $request['name'] = Str::slug($request->input('name'));
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|unique:feedbacks,slug,'.$id,
+                'code' => 'required|unique:feedbacks,code,'.$id,
+                'start_at' => 'required|date_format:"Y-m-d"',
+                'end_at' => 'required|date_format:"Y-m-d"|after:start_at',
+                'is_active' => 'integer|boolean',
+            ], [
+                'name.required' => 'Yêu cầu không để trống',
+                'name.unique' => 'Dữ liệu trùng',
+                'code.required' => 'Yêu cầu không để trống',
+                'code.unique' => 'Dữ liệu trùng',
+                'start_at.required' => 'Yêu cầu không để trống',
+                'start_at.date_format' => 'Sai định dạng',
+                'end_at.required' => 'Yêu cầu không để trống',
+                'end_at.date_format' => 'Sai định dạng',
+                'end_at.after' => 'Thời gian kết thúc p sau thời gian bắt đầu',
+                'is_active.integer' => 'Sai kiểu dữ liệu',
+                'is_active.boolean' => 'Sai kiểu dữ liệu',
+            ]);
+
+            $errs = $validator->errors();
+
+            if ( $validator->fails() ) {
+                return response()->json(['errors' => $errs, 'mess' => 'Sửa bản ghi lỗi'], 400);
+            } else {
+                $feedback->name = $request->input('trueName');
+                $feedback->slug = $request->input('name');
+                $feedback->code = $request->input('code');
+                $feedback->start_at = $request->input('start_at');
+                $feedback->end_at = $request->input('end_at');
+                $feedback->is_active = (int)$request->input('is_active');
+
+                if ($feedback->save()) {
+                    return response()->json(['mess' => 'Sửa bản ghi thành công', 200]);
+                } else {
+                    return response()->json(['mess' => 'Sửa bản ghi lỗi'], 502);
+                }
+            }
+                
+        }
     }
 
     /**
@@ -211,5 +273,14 @@ class FeedBackController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function getListQuestions($id)
+    {
+        $feedback = Feedback::findOrFail($id);
+        
+        return view ('admin.feedback.listQuestions', [
+            'feedback' => $feedback
+        ]);
     }
 }

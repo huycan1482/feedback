@@ -25,6 +25,6 @@ class ClassRoom extends Model
 
     public function lesson ()
     {
-        return $this->hasMany('App\Lesson', 'class_id', 'id');
+        return $this->hasMany('App\Lesson', 'class_id', 'id')->orderBy('start_at', 'asc');
     }
 }

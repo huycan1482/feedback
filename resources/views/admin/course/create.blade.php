@@ -66,34 +66,6 @@
                             </div>
                         </div>
 
-                        <div class="form-group" >
-                            <div class="form-group col-lg-6" style="padding-left: 0" id="form-start_at">
-                                <label for="">Ngày bắt đầu</label>
-                                <div>
-                                    <div class="input-group date">
-                                        <div class="input-group-addon">
-                                            <i class="fa fa-calendar"></i>
-                                        </div>
-                                        <input type="text" class="form-control pull-right datepicker" name="day_startAt" placeholder="DD-MM-YYYY">
-                                    </div>
-                                </div>
-                            </div>
-    
-                            <div class="bootstrap-timepicker col-lg-6" style="padding-right: 0">
-                                <div class="form-group">
-                                    <label>Thời gian bắt đầu</label>
-                                    <div>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control timepicker" name="time_startAt">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-clock-o"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="checkbox form-group" id="form-is_active">
                             <label>
                                 <input type="checkbox" name="is_active" value="1"> Kích hoạt
@@ -156,60 +128,18 @@
             var total_lesson = $("input[name='total-lesson']").val();
             var is_active = ( $("input[name='is_active']").is(':checked') ) ? 1 : 0;
             
-
-            var test = $('.timepicker').val();
-            var time = test.split(' ')[0];
-            var dayOrNight = test.split(' ')[1];
-            var hour = time.split(':')[0];
-            var minute = time.split(':')[1];
-            // console.log(time3);
-            if (hour < 10) {
-                hour = '0' + hour;
-            }
-
-            if (dayOrNight == 'PM') {
-                hour = hour * 1 + 12;
-            }
-
-            var timeStartAt = hour + ':' + minute + ':00';
-            
-            var date = $("input[name='day_startAt']").val().split('-');
-
-            var dateStartAt = date[2] + '-' + date[1] + '-' + date[0];
-
-            var start_at = dateStartAt + ' ' + timeStartAt;
-            
             var data = { 
                 name : name,
                 code : code,
                 subject : subject,
                 total_lesson : total_lesson,
-                start_at : start_at,
                 is_active : is_active,
             };
-
-            console.log(data);
 
             var model = '/admin/course';
 
             addModel(model, data);
 
-            // $.ajax({
-            //     type: "post",
-            //     url: base_url + '/admin/course',
-            //     data: {
-            //         'content' : content,
-            //         'answers' : answers,
-            //         'is_active' : is_active,
-            //     },
-            //     dataType: "json",
-            //     success: function (response) {
-            //         successResponse(response);
-            //     }, 
-            //     error: function (e) {
-            //         errorResponse(e)
-            //     }
-            // });
         }); 
 
         

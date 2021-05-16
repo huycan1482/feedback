@@ -64,7 +64,7 @@ class TeacherController extends Controller
             'date_of_birth.required' => 'Yêu cầu không để trống',
             'date_of_birth.date_format' => 'Sai kiểu dữ liệu',
             'phone.required' => 'Yêu cầu không để trống',
-            'phone.size' => 'Sai kiểu dữ liệu',
+            'phone.size' => 'Đọ dài phải lớn hơn 10',
             'address.required' => 'Yêu cầu không để trống',
             'email.required' => 'Yêu cầu không để trống',
             'email.email' => 'Yêu cầu email',
@@ -94,6 +94,7 @@ class TeacherController extends Controller
             $user->address = $request->input('address');
             $user->email = $request->input('email');
             $user->role_id = $role_id;
+            $user->is_active = $request->input('is_active');
             $user->password = Hash::make($request->input('password'));
     
             if ($user->save()) {
@@ -126,7 +127,7 @@ class TeacherController extends Controller
             ->where('users.id', $id)
             ->get();
 
-            dd($data);
+            // dd($data);
             return response()->json(['teacher' => $teacher, 'data' => $data], 200);
         }
     }

@@ -82,6 +82,8 @@ function successResponse (response) {
     $('.sp-error').remove();
  
     messageResponse('success',response.mess);
+
+    return true;
 }
 
 function errorResponse (e) {
@@ -130,7 +132,7 @@ function errorResponseModal (e) {
 }
 
 function messageResponseModal(status, mess, reload) {
-    var message = "<div class='pad margin no-print col-md-11' id='message' ><div class='alert alert-" + status + " alert-dismissible'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>×</button><h4><i class='icon fa fa-check'></i> Thông báo !</h4>"
+    var message = "<div class='pad margin no-print' id='message' ><div class='alert alert-" + status + " alert-dismissible'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>×</button><h4><i class='icon fa fa-check'></i> Thông báo !</h4>"
     + mess +" <br> "+ reload +" </div></div>";
 
     if ( $('#message') ) {

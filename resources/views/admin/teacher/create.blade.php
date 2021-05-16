@@ -33,7 +33,7 @@
                         <div class="form-group " id="form-name">
                             <label class="" for="">Tên giảng viên</label>
                             <div>
-                                <input name="name" type="text" class="form-control " placeholder="Tên học viên">
+                                <input name="name" type="text" class="form-control " placeholder="Tên giảng viên">
                             </div>
                         </div>
 
@@ -80,6 +80,12 @@
                             <div>
                                 <input name="address" type="text" class="form-control " placeholder="Địa chỉ">
                             </div>
+                        </div>
+
+                        <div class="checkbox form-group" id="form-is_active">
+                            <label>
+                                <input type="checkbox" name="is_active" value="1"> Kích hoạt
+                            </label>
                         </div>
 
                     </div>
@@ -168,6 +174,7 @@
             var gender = $('#gender').val();
             var phone = $("input[name='phone']").val(); 
             var code = $("input[name='code']").val(); 
+            var is_active = ( $("input[name='is_active']").is(':checked') ) ? 1 : 0;
 
             if ($("input[name='date-of-birth']").val() != '') { 
                 var date = $("input[name='date-of-birth']").val().split('-');
@@ -184,6 +191,7 @@
                 phone : phone,
                 code : code,
                 date_of_birth : date_of_birth,
+                is_active : is_active,
             };
 
             var model = '/admin/teacher';

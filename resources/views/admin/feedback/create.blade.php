@@ -83,75 +83,7 @@
 
 <section class="content">
     <div class="row">
-        <div class="col-md-8">
-            <div class="box box-info">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Thêm câu hỏi</h3>
-                </div>
-
-                <div class="box-body">
-                    <table id="example1" class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th class="text-center">STT</th>
-                                <th class="text-center">Mã câu hỏi</th>
-                                <th class="text-center">Nội dung</th>
-                                <th class="text-center">Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($questions as $key => $question)
-                            <tr class="item-{{ $question->id }}">
-                                <td class="text-center">{{ $key + 1}}</td>
-                                <td class="text-center">{{ $question->code }}</td>
-                                <td class="text-center">{{ $question->content }}</td>
-                                <td class="text-center">
-
-                                    <div class="btn btn-success btn-add-question" title="Thêm" data-id="{{$question->id}}">
-                                        <i class="fas fa-plus"></i>
-                                    </div>
-    
-                                    <button type="button" class="btn btn-warning btn-detail" data-toggle="modal" data-target="#modal-default" title="Chi tiết" data-id="{{$question->id}}">
-                                        <i class="fas fa-cog"></i>
-                                    </button>
-    
-                                 </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                        <tfoot>
-    
-                        </tfoot>
-                    </table>
-                    <div id="form-question_id">
-                        <h3 class="" style="font-size: 18px;padding-top: 25px; border-top: 1px solid #17a2b8" >Danh sách câu hỏi được thêm</h3>
-                        <div class="table-responsive no-padding">
-                            <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">STT</th>
-                                        <th class="text-center">Mã câu hỏi</th>
-                                        <th class="text-center">Nội dung</th>
-                                        <th class="text-center">Hành động</th>
-                                    </tr>
-                                </thead>
-                                <!-- Lặp một mảng dữ liệu pass sang view để hiển thị -->
-                                <tbody class="list-questions">
-                                    
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="box-footer">
-                    <div class="btn btn-primary add-feedback">Add</div>
-                    <button type="reset" class="btn btn-danger">Reset</button>
-                </div>
-            </div>
-
-        </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <!-- general form elements -->
 
             <div class="box box-success">
@@ -209,17 +141,86 @@
                         </div>
                         
                     </form>
+                    <div id="form-question_id">
+                        <h3 class="" style="font-size: 18px;padding-top: 25px; border-top: 1px solid #17a2b8" >Danh sách câu hỏi được thêm</h3>
+                        <div class="table-responsive no-padding">
+                            <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">STT</th>
+                                        <th class="text-center">Mã câu hỏi</th>
+                                        <th class="text-center">Nội dung</th>
+                                        <th class="text-center">Hành động</th>
+                                    </tr>
+                                </thead>
+                                <!-- Lặp một mảng dữ liệu pass sang view để hiển thị -->
+                                <tbody class="list-questions">
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-                    
-                <!-- /.box-body -->
 
                 
+
+                <div class="box-footer">
+                    <div class="btn btn-primary add-feedback">Add</div>
+                    <button type="reset" class="btn btn-danger">Reset</button>
+                </div>  
                 
             </div>
             <!-- /.box -->
-            
+        </div>
+
+        <div class="col-md-6">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Thêm câu hỏi</h3>
+                </div>
+
+                <div class="box-body">
+                    <table id="example1" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-center">STT</th>
+                                <th class="text-center">Mã câu hỏi</th>
+                                <th class="text-center">Nội dung</th>
+                                <th class="text-center">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($questions as $key => $question)
+                            <tr class="item-{{ $question->id }}">
+                                <td class="text-center">{{ $key + 1}}</td>
+                                <td class="text-center">{{ $question->code }}</td>
+                                <td class="text-center">{{ $question->content }}</td>
+                                <td class="text-center">
+
+                                    <div class="btn btn-success btn-add-question" title="Thêm" data-id="{{$question->id}}">
+                                        <i class="fas fa-plus"></i>
+                                    </div>
+    
+                                    <button type="button" class="btn btn-warning btn-detail" data-toggle="modal" data-target="#modal-default" title="Chi tiết" data-id="{{$question->id}}">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+    
+                                 </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+    
+                        </tfoot>
+                    </table>
+                    
+                </div>
+
+                
+            </div>
 
         </div>
+        
         <!--/.col (right) -->
     </div>
     <!-- /.row -->
@@ -297,10 +298,11 @@
         });
 
         $(document).on('click', '.btn-del-question', function(e) {
+            // var answers = '';
             $('.item-' + $(this).attr('data-id')).css('display', '');
             $('.question-'+ $(this).attr('data-id')).remove();
 
-            answers = answers.filter(item => item != $(this).attr('data-id'));
+            questions = questions.filter(item => item != $(this).attr('data-id'));
         });
 
         $(document).on('click', '.add-feedback', function (e) {

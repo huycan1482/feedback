@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\ClassRoom;
 use App\Course;
+use App\FeedBack;
 use App\Lesson;
 use App\User;
 use DateTime;
 use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -41,10 +43,12 @@ class ClassController extends Controller
             ->leftJoin('roles', 'roles.id', '=', 'users.role_id')
             ->where('roles.name', '=', 'teacher')
             ->latest()->get();
+        $feedbacks = FeedBack::where('is_active', '=', 1)->latest()->get();
         $courses = Course::where('is_active', '=', 1)->latest()->get();
         return view ('admin.class.create', [
             'teachers' => $teachers,
             'courses' => $courses,
+            'feedbacks' => $feedbacks,
         ]);
     }
 
@@ -56,22 +60,27 @@ class ClassController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
+        // dd($request->all()); 
         $request['trueName'] = $request->input('name');
         $request['name'] = Str::slug($request->input('name'));
         $validator = Validator::make($request->all(), [
             'name' => 'required|unique:classes,slug',
+            'code' => 'required|unique:classes,code',
             'course_id' => 'required|exists:courses,id',
             'teacher_id' => 'required|exists:users,id',
             'total_number' => 'required|integer|min:1',
+            'feedback_id' => 'nullable|exists:feedbacks,id',
             'is_active' => 'integer|boolean',
             'lessons' => 'required|array|min:1',
             'time_limit' => 'required|integer|min:1',
         ], [
             'name.required' => 'Yêu cầu không để trống',
             'name.unique' => 'Dữ liệu trùng',
+            'code.required' => 'Yêu cầu không để trống',
+            'code.unique' => 'Dữ liệu trùng',
             'course_id.required' => 'Yêu cầu không để trống',
-            'course_id.exists' => 'Dữ liệu bị trùng',
+            'course_id.exists' => 'Dữ liệu không tồn tại',
+            'feedback_id.exists' => 'Dữ liệu không tồn tại',
             'teacher_id.required' => 'Yêu cầu không để trống',
             'teacher_id.unique' => 'Dữ liệu bị trùng',
             'total_number.required' => 'Yêu cầu không để trống',
@@ -94,11 +103,14 @@ class ClassController extends Controller
         } else {
             $classRoom = new ClassRoom;
             $classRoom->name = $request->input('trueName');
+            $classRoom->code = $request->input('code');
             $classRoom->slug = $request->input('name');
             $classRoom->course_id = $request->input('course_id');
             $classRoom->teacher_id = $request->input('teacher_id');
+            $classRoom->feedback_id = $request->input('feedback_id');
             $classRoom->total_number = $request->input('total_number');
             $classRoom->is_active = (int)$request->input('is_active'); 
+            $classRoom->user_create = Auth::user()->id;
 
             $current_date = new DateTime();
             $created_time = date('Y-m-d H:i:s', $current_date->getTimestamp());
@@ -108,12 +120,13 @@ class ClassController extends Controller
 
             try {
                 $classRoom->save();
-               
+                
                 $courseTotalLessons = Course::where('id', '=', $request->input('course_id'))->first()->total_lesson;
                 $latestClass = ClassRoom::where([ 'created_at' => $created_time ])->first()->id;
 
                 $day = 0;
                 $i = 0;
+
                 while ($i < $courseTotalLessons) {
                     foreach ($request->input(['lessons']) as $key => $item) {
 
@@ -198,22 +211,22 @@ class ClassController extends Controller
             ->latest()->get();
         $courses = Course::where('is_active', '=', 1)->latest()->get();
 
-        $lessons = Lesson::
-        selectRaw('WEEKDAY(lessons.start_at) as day, lessons.time_limit, (select lessons.start_at from lessons where WEEKDAY(lessons.start_at) = day order by lessons.start_at asc limit 1) as time')
-        ->rightJoin('classes', 'classes.id', '=', 'lessons.class_id')
-        ->where('classes.id', '=', $id)
-        ->groupBy('day', 'time_limit')
-        ->orderBy('day', 'asc')
-        ->get();
+        $feedbacks = FeedBack::where('is_active', '=', 1)->latest()->get();
 
-        // dd($lessons);
-        // 3 5 6
+        // $lessons = Lesson::
+        // selectRaw('WEEKDAY(lessons.start_at) as day, lessons.time_limit, (select lessons.start_at from lessons where WEEKDAY(lessons.start_at) = day order by lessons.start_at asc limit 1) as time')
+        // ->rightJoin('classes', 'classes.id', '=', 'lessons.class_id')
+        // ->where('classes.id', '=', $id)
+        // ->groupBy('day', 'time_limit')
+        // ->orderBy('day', 'asc')
+        // ->get();
 
         return view ('admin.class.edit', [
             'classRoom' => $classRoom,
             'teachers' => $teachers,
             'courses' => $courses,
-            'lessons' => $lessons,
+            'feedbacks' => $feedbacks
+            // 'lessons' => $lessons,
         ]);
     }
 
@@ -226,7 +239,70 @@ class ClassController extends Controller
      */
     public function update(Request $request, $id)
     {
-        dd($request->all());
+        $classRoom = ClassRoom::find($id);
+
+        if (empty($classRoom)) {
+            return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
+        } else {
+            $request['trueName'] = $request->input('name');
+            $request['name'] = Str::slug($request->input('name'));
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|unique:classes,slug,'.$id,
+                'code' => 'required|unique:classes,code,'.$id,
+                'course_id' => 'required|exists:courses,id',
+                'teacher_id' => 'required|exists:users,id',
+                'total_number' => 'required|integer|min:1',
+                'feedback_id' => 'nullable|exists:feedbacks,id',
+                'is_active' => 'integer|boolean',
+                'time_limit' => 'nullable|integer|min:1',
+            ], [
+                'name.required' => 'Yêu cầu không để trống',
+                'name.unique' => 'Dữ liệu trùng',
+                'code.required' => 'Yêu cầu không để trống',
+                'code.unique' => 'Dữ liệu trùng',
+                'course_id.required' => 'Yêu cầu không để trống',
+                'course_id.exists' => 'Dữ liệu không tồn tại',
+                'feedback_id.exists' => 'Dữ liệu không tồn tại',
+                'teacher_id.required' => 'Yêu cầu không để trống',
+                'teacher_id.exists' => 'Dữ liệu không tồn tại',
+                'total_number.required' => 'Yêu cầu không để trống',
+                'total_number.integer' => 'Sai kiểu dữ liệu',
+                'total_number.min' => 'Dữ liệu phải lớn hơn 0',
+                'is_active.integer' => 'Sai kiểu dữ liệu',
+                'is_active.boolean' => 'Sai kiểu dữ liệu',
+                'time_limit.integer' => 'Sai kiểu dữ liệu',
+                'time_limit.min' => 'Dữ liệu phải lớn hơn 0',
+            ]);
+
+            $errs = $validator->errors();
+
+            if ( $validator->fails() ) {
+                return response()->json(['errors' => $errs, 'mess' => 'Thêm bản ghi lỗi'], 400);
+            } else {
+                $classRoom->name = $request->input('trueName');
+                $classRoom->code = $request->input('code');
+                $classRoom->slug = $request->input('name');
+                $classRoom->course_id = $request->input('course_id');
+                $classRoom->teacher_id = $request->input('teacher_id');
+                $classRoom->feedback_id = $request->input('feedback_id');
+                $classRoom->total_number = $request->input('total_number');
+                $classRoom->is_active = (int)$request->input('is_active'); 
+                $classRoom->user_update = Auth::user()->id;
+
+                if (!empty($request->input('time_limit'))) {
+                    $classRoom->lesson()->update([
+                        'time_limit' => $request->input('time_limit'),
+                    ]);
+                }
+
+                if ($classRoom->save()) {
+                    return response()->json(['mess' => 'Sửa bản ghi thành công', 200]);
+                } else {
+                    return response()->json(['mess' => 'Sửa bản ghi lỗi'], 502);
+                }
+
+            }
+        }
     }
 
     /**

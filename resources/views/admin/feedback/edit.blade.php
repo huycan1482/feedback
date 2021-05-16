@@ -1,20 +1,16 @@
 @extends('admin.layouts.main')
 
 @section('css')
-    <!-- Theme style -->
-    <link rel="stylesheet" href="backend/dist/css/AdminLTE.min.css">
-    <!-- iCheck for checkboxes and radio inputs -->
-    <link rel="stylesheet" href="backend/plugins/iCheck/all.css">
-    <!-- my css -->
-    <link rel="stylesheet" href="backend/mycss/createForm.css">
+  <!-- DataTables -->
+<link rel="stylesheet" href="backend/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
 @endsection
 
 @section('content')
 
 <section class="content-header">
     <h1>
-        Sửa - Câu hỏi
-        <small><a href="{{ route('admin.question.index') }}">Danh sách</a></small>
+        Sửa - Bài đánh giá
+        <small><a href="{{ route('admin.feedback.index') }}">Danh sách</a></small>
     </h1>
 </section>
 
@@ -24,37 +20,60 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Chỉnh sửa câu trả lời</h4>
+                <h4 class="modal-title">Thông tin chi tiết câu hỏi</h4>
             </div>
             <div class="modal-body">
+                <div class="box">
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
+                            <tbody>
+                                <tr style="width: 100%">
+                                    <td class="" style="width: 30%">
+                                        Nội dung câu hỏi:
+                                    </td>
+                                    <td class="modal-question-content" style="width: 70%">
 
-                <form role="form" action="" method="" enctype="multipart/form-data">
-                    <div class="box-body">
+                                    </td>
+                                </tr>
+                                <tr style="width: 100%">
+                                    <td class="" style="width: 30%">
+                                        Kích hoạt:
+                                    </td>
+                                    <td class="modal-question-active" style="width: 70%">
 
-                        <div class="form-group" id="form-answer_content">
-                            <label for="">Nội dung câu trả lời</label>
-                            <input name="modal-answer-content" type="text" class="form-control" placeholder="Nội dung câu hỏi" value="">
-                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="width: 100%">
+                                    <td class="" style="width: 30%">
+                                        Người tạo:
+                                    </td>
+                                    <td class="modal-question-" style="width: 70%">
 
-                        <div class="form-group" id="form-answer_is_active">
-                            <label>
-                                <input type="checkbox" name="modal-answer-active" value="1" > Kích hoạt
-                            </label>
-                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="width: 100%">
+                                    <td class="" style="width: 30%">
+                                        Ngày tạo:
+                                    </td>
+                                    <td class="modal-question-createdAt" style="width: 70%">
 
-                        {{-- <div class="form-group">
-                            <label>
-                                <input type="checkbox" name="" value="1" > Câu trả lời đúng
-                            </label>
-                        </div> --}}
-
+                                    </td>
+                                </tr>
+                                <tr style="width: 100%">
+                                    <td class="" style="width: 30%">
+                                        Câu trả lời
+                                    </td>
+                                    <td class="modal-question-answers" style="overflow-wrap: anywhere;width: 70%" >
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                </form>
-
+                </div>
             </div>
             <div class="modal-footer">
-                <div type="button" class="btn btn-primary btn-update-answer" data-id="">Update</div>
-                {{-- <div type="button" class="btn btn-danger btn-delete-answer" data-id="">Delete</div> --}}
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                {{-- <button type="button" class="btn btn-primary">Save changes</button> --}}
             </div>
         </div>
       <!-- /.modal-content -->
@@ -62,43 +81,33 @@
     <!-- /.modal-dialog -->
 </div>
 
-<div class="modal fade" id="modal-default2">
+<div class="modal fade" id="modal-default">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Thêm câu trả lời</h4>
+                <h4 class="modal-title">Thay đổi thứ tự câu hỏi</h4>
             </div>
             <div class="modal-body">
-
-                <form class="form-modal" role="form" action="" method="" enctype="multipart/form-data">
+                <div class="box box-info">
+                    <div class="box-header"></div>
                     <div class="box-body">
-
-                        <div class="form-group" id="form-add_answer_content">
-                            <label for="">Nội dung câu trả lời</label>
-                            <input name="modal-add-answer-content" type="text" class="form-control" placeholder="Nội dung câu hỏi" value="">
+                        <div class="form-modal">
+                            <div class="form-group" id="form-questionPosition">
+                                <label for="">Số thứ tự</label>
+                                <div>
+                                    <input name="questionPosition" type="number" class="form-control" placeholder="Số thứ tự" min="0">
+                                </div>
+                            </div>
                         </div>
-
-                        <div class="form-group" id="form-add_answer_active">
-                            <label>
-                                <input type="checkbox" name="modal-add-answer-active" value="1" > Kích hoạt
-                            </label>
-                        </div>
-
-                        {{-- <div class="form-group">
-                            <label>
-                                <input type="checkbox" name="" value="1" > Câu trả lời đúng
-                            </label>
-                        </div> --}}
-
+                        
                     </div>
-                </form>
-
+                </div>
             </div>
             <div class="modal-footer">
-                <div type="button" class="btn btn-primary btn-add-answer" >Add</div>
-                <div type="button" class="btn btn-danger" data-dismiss="modal">Close</div>
+                <button type="button" class="btn btn-info btn-update-question">Udate</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
         </div>
       <!-- /.modal-content -->
@@ -108,156 +117,286 @@
 
 <section class="content">
     <div class="row">
-        <!-- left column -->
-        <div class="col-md-8">
+        <div class="col-md-6">
             <!-- general form elements -->
 
-            <div class="box box-primary">
+            <div class="box box-success">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Thông tin câu hỏi</h3>
+                    <h3 class="box-title">Thông tin Bài đánh giá</h3>
                 </div>
                 <!-- /.box-header -->
                 <!-- form start -->
-                <form role="form" action="{{ route('admin.question.store') }}" method="post" enctype="multipart/form-data">
-                    @csrf
-                    <div class="box-body">
-
-                        <div class="form-group">
-                            <label for="">Nội dung câu hỏi</label>
-                            <input name="content" type="text" class="form-control" placeholder="Nội dung câu hỏi" value="{{$question->content}}">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="">
-                                <span>Danh sách câu trả lời </span>
-                                <span class="label label-success" data-toggle="modal" data-target="#modal-default2" style="margin-left: 10px; cursor: pointer;"> Thêm đáp án</span>
-                            </label>
-                            <div class="answer">
-                                @foreach($answers as $key => $answer)
-                                <div data-id="{{ $answer->id }}">
-                                    <input type="radio" class="minimal" checked>
-                                    <div class="answer-content">
-                                        <p class="" data-id="{{ $answer->id }}">{{$answer->content}}</p>
-                                    </div>
-                                    <div class="">
-                                        <button type="button" class="btn btn-warning btn-detail" data-toggle="modal" data-target="#modal-default1" title="Chi tiết" data-id="{{$answer->id}}" style="margin-right: 5px">
-                                            <i class="fas fa-cog"></i>
-                                        </button>
-                                        <a class="btn btn-danger btn-delete" title="Xóa" data-id="{{$answer->id}}">
-                                            <i class="fa fa-trash"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                                @endforeach
+                {{-- {{ dd(route('admin.category.store')) }} --}}
+                
+                <div class="box-body">
+                    <form enctype="multipart/form-data">
+                        <div class="form-group" id="form-name">
+                            <label for="">Tên bài đánh giá</label>
+                            <div>
+                                <input name="name" type="text" class="form-control" placeholder="Tên bài đánh giá" value="{{ $feedback->name }}">
                             </div>
                         </div>
-                        
+
+                        <div class="form-group" id="form-code">
+                            <label for="">Mã bài đánh giá</label>
+                            <div>
+                                <input name="code" type="text" class="form-control" placeholder="Mã bài đánh giá" value="{{ $feedback->code }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group " id="form-start_at">
+                            <label for="">Ngày bắt đầu</label>
+                            <div>
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" class="form-control pull-right datepicker" name="start_at" placeholder="DD-MM-YYYY" value="{{ date_format(date_create($feedback->start_at), 'd-m-Y') }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group " id="form-end_at">
+                            <label for="">Ngày kết thúc</label>
+                            <div>
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" class="form-control pull-right datepicker" name="end_at" placeholder="DD-MM-YYYY" value="{{ date_format(date_create($feedback->end_at), 'd-m-Y') }}">
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="checkbox form-group">
                             <label>
-                                <input type="checkbox" name="is_active" value="1" {{ ( $question->is_active == 1 ) ? 'checked' : '' }}> Kích hoạt
+                                <input type="checkbox" name="is_active" id="is_active" {{ ($feedback->is_active == 1) ? 'checked' : '' }}> Kích hoạt
                             </label>
                         </div>
                         
+                    </form>
+
+                    <div id="form-question_id">
+                        <h3 class="" style="font-size: 18px;padding-top: 25px; border-top: 1px solid #17a2b8" >Danh sách câu hỏi được thêm</h3>
+                        <div class="table-responsive no-padding">
+                            <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">STT</th>
+                                        <th class="text-center">Mã câu hỏi</th>
+                                        <th class="text-center">Nội dung</th>
+                                        <th class="text-center">Thứ tự</th>
+                                        <th class="text-center">Hành động</th>
+                                    </tr>
+                                </thead>
+                                <!-- Lặp một mảng dữ liệu pass sang view để hiển thị -->
+                                <tbody class="list-questions">
+                                    @foreach($data as $key => $item)
+                                    <tr class="item-{{ $item->feedbackQuestionId }}">
+                                        <td class="text-center">{{ $key + 1}}</td>
+                                        <td class="text-center">{{ $item->code }}</td>
+                                        <td class="text-center">{{ $item->content }}</td>
+                                        <td class="text-center">{{ $item->position }}</td>
+                                        <td class="text-center">
+        
+                                            <div class="btn btn-primary btn-edit-question" title="Sửa" data-id="{{$item->feedbackQuestionId}}" data-toggle="modal" data-target="#modal-default">
+                                                <i class="fa fa-edit"></i>
+                                            </div>
+
+                                            <div class="btn btn-danger btn-del-question" title="Xóa" data-id="{{$item->feedbackQuestionId}}"> 
+                                                <i class="fa fa-trash"></i>
+                                            </div>
+            
+                                            <button type="button" class="btn btn-warning btn-detail" data-toggle="modal" data-target="#modal-default1" title="Chi tiết" data-id="{{$item->id}}">
+                                                <i class="fas fa-cog"></i>
+                                            </button>
+            
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                    
-                    <!-- /.box-body -->
-                    <div class="box-footer">
-                        <div class="btn btn-primary btn-update-question" data-id="{{$question->id}}">Update</div>
-                        <button type="reset" class="btn btn-danger">Reset</button>
-                    </div>
-                </form>
+                </div>
+
+                <div class="box-footer">
+                    <div class="btn btn-primary update-feedback" data-id="{{ $feedback->id }}">Update</div>
+                    <button type="reset" class="btn btn-danger">Reset</button>
+                </div>  
+                
             </div>
             <!-- /.box -->
-            
+        </div>
+
+        <div class="col-md-6">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Quản lí câu hỏi</h3>
+                    {{-- <span class="label label-success add-lesson" style="cursor:pointer" data-toggle="modal" data-target="#modal-default" > Thêm câu hỏi </span> --}}
+                </div>
+
+                <div class="box-body">
+                    <table id="example1" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-center">STT</th>
+                                <th class="text-center">Mã câu hỏi</th>
+                                <th class="text-center">Nội dung</th>
+                                <th class="text-center">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($questions as $key => $question)
+                            <tr class="item-{{ $question->id }}">
+                                <td class="text-center">{{ $key + 1}}</td>
+                                <td class="text-center">{{ $question->code }}</td>
+                                <td class="text-center">{{ $question->content }}</td>
+                                <td class="text-center">
+
+                                    <div class="btn btn-success btn-add-question" title="Thêm" data-id="{{$question->id}}">
+                                        <i class="fas fa-plus"></i>
+                                    </div>
+    
+                                    <button type="button" class="btn btn-warning btn-detail" data-toggle="modal" data-target="#modal-default1" title="Chi tiết" data-id="{{$question->id}}">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+    
+                                 </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+    
+                        </tfoot>
+                    </table>
+                    
+                </div>
+
+                
+            </div>
 
         </div>
+        
+        <!--/.col (right) -->
     </div>
     <!-- /.row -->
 </section>
 @endsection
 
 @section('my_script')
-<!-- Select2 -->
-<script src="backend/bower_components/select2/dist/js/select2.full.min.js"></script>
+<!-- Table -->
+<script src="backend/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="backend/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 
+<script src="backend/js/main.js"></script>
 <script>
     $(function () {
-        //Initialize Select2 Elements
+        $('#example1').DataTable();
 
-        $(document).on('click', '.btn-add-answer', function (e) {
-            if ($('input:radio').length < 4) {
-                var add_answer_content = $("input[name*='modal-add-answer-content']").val();
-                var add_answer_active = ( $("input[name*='modal-add-answer-active']").is(':checked') ) ? 1 : 0;
-                var question_id = $('.update-question').attr('data-id');
-
-                $.ajax({
-                    type: "post",
-                    url: base_url + '/admin/answer',
-                    data: {
-                        'question_id' : question_id,
-                        'add_answer_content' : add_answer_content,
-                        'add_answer_active' : add_answer_active,
-                    },
-                    dataType: "json",
-                    success: function (response) {
-                        successResponseModal(response);
-                        setTimeout(function (){
-                            location.reload()
-                        }, 1500);
-                    }, 
-                    error: function (e) {
-                        errorResponseModal(e)
-                    }
-                });
-
-            } else {
-                var message = "<div class='pad margin no-print col-md-11' id='message' ><div class='alert alert-danger alert-dismissible'>"
-                    +"<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>×</button><h4><i class='icon fa fa-check'></i> Thông báo !</h4> Tối đa 4 câu trả lời </div></div>";
-
-                if ( $('#message') ) {
-                    $('#message').remove();
-                }
-
-                $('.form-modal').before(message);
-            }
+        $('.datepicker').datepicker({
+            // autoclose: false,
+            format: 'dd-mm-yyyy',
+            forceParse: false,
         });
 
-        $(document).on('click', '.btn-detail', function (e) {
+        $(document).on('click', '.btn-detail', function(){
             var itemId = $(this).attr('data-id');
-
             $.ajax({
-                type: 'get',
-                url: base_url + '/admin/answer/' + itemId,
+                type: "get",
+                url: base_url + '/admin/question/' + itemId,
                 data: {},
                 dataType: "json",
                 success: function (response) {
+                    var html = '';
+                    // console.log(response.question);
+                    $('.modal-question-content').html(response.question.content);
+                    if (response.question.is_active == 1) {
+                        $('.modal-question-active').html("<span class='label label-success'> Hiển thị </span>");
+                    } else {
+                        $('.modal-question-active').html("<span class='label label-danger'> Ẩn </span>")
+                    }
+                    response.answers.forEach( function (value, index) {
+                        // console.log(value, index);
+                        html += "<div>Câu "+ (index + 1) +": "+ value.content +"</div>"
+                    });
 
-                    $("input[name*='modal-answer-content']").val(response.answer.content);
-
-                    if (response.answer.is_check == 1) {
-                        $("input[name*='modal-answer-active']").attr('checked', 'checked');
-                    } else if (response.answer.is_check == 0) {
-                        $("input[name*='modal-answer-active']").attr('checked', '');
-                    } 
-
-                    $('.btn-update-answer').attr('data-id', response.answer.id);
+                    $('.modal-question-answers').html(html);
+                    // console.log(html);
                 }
             });
-        })
+        });
 
-        $(document).on('click', '.btn-delete', function (e) {
+        $(document).on('click', '.btn-add-question', function (e) {
+
+            var itemId = $(this).attr('data-id');
+            var feedback_id = $('.update-feedback').attr('data-id');
+
+            data = {
+                question_id : itemId,
+                feedback_id : feedback_id
+            }
+
+            var model = '/admin/feedbackQuestion';
+
+            if (addModel(model, data)) {
+                setTimeout(function (){
+                    location.reload()
+                }, 1500);
+            }
+
+        });
+
+        $(document).on('click', '.btn-edit-question', function (e) {
+            var itemId = $(this).attr('data-id');
+            var data = $('.item-' + itemId + ' td:nth-of-type(4)').text().replace(/\s/g, '');
+            $('.btn-update-question').attr('data-id', itemId);
+            $("input[name='questionPosition']").val(data);
+        });
+
+        $(document).on('click', '.btn-update-question', function (e) {
+            var position = $("input[name='questionPosition']").val();
+
+            var model = '/admin/feedbackQuestion/' + $(this).attr('data-id');
+
+            data = {
+                position: position
+            }
+
+            $.ajax({
+                type: 'PUT',
+                url: base_url + model,
+                data: data,
+                dataType : "json",
+                success: function (response) {
+                    successResponseModal(response);
+                    setTimeout(function (){
+                        location.reload()
+                    }, 1500);
+                }, 
+                error: function (e) {
+                    errorResponseModal(e)
+                }
+            });
+
+        });
+
+        $(document).on('click', '.btn-del-question', function(e) {
+            var id = $(this).attr('data-id');
 
             var result = confirm("Bạn có chắc chắn muốn xóa ?");
+
             if (result) { 
-                var delete_id = $(this).attr('data-id');
                 $.ajax({
-                    url: base_url + '/admin/answer/' + delete_id, 
+                    url: base_url + '/admin/feedbackQuestion/'+id, 
                     type: 'DELETE',
-                    data: {}, 
+                    data: {},
                     dataType: "json", 
                     success: function (response) { 
-                        $('div.data-id-' + delete_id).remove();
-                        // messageResponse('success', response.mess);
+                        successResponse(response);
+                        setTimeout(function (){
+                            location.reload()
+                        }, 1500);
                     },
                     error: function (e) { 
                         messageResponse('danger', e.responseJSON.mess);
@@ -266,53 +405,31 @@
             }
         });
 
-        $(document).on('click', '.btn-update-answer', function (e) {
-            var question_id = $('.update-question').attr('data-id');
-            var answer_id = $(this).attr('data-id');
-            var answer_content = $("input[name*='modal-answer-content']").val();
-            var answer_active = ( $("input[name*='modal-answer-active']").is(':checked') ) ? 1 : 0;
+        $(document).on('click', '.update-feedback', function (e) {
+            var date1 = $("input[name='start_at']").val().split('-');
+            var date2 = $("input[name='end_at']").val().split('-');
 
-            $.ajax({
-                type: 'PUT',
-                url: base_url + '/admin/answer/' + answer_id,
-                data: {
-                    'answer_content' : answer_content,
-                    'answer_is_active' : answer_active,
-                },
-                dataType: "json",
-                success: function (response) {
-                    $("p[data-id*='" +answer_id+ "']").text(answer_content);
-                    $('#modal-default1').modal('hide');
-                }, 
-                error: function (e){
-                    errorResponseModal(e);
-                }
-            });
-        });
+            var name = $("input[name='name']").val();
+            var code = $("input[name='code']").val();
+            var start_at = date1[2] + '-'+ date1[1] + '-'+ date1[0];
+            var end_at = date2[2] + '-'+ date2[1] + '-'+ date2[0];
+            var is_active = ( $("input[name='is_active']").is(':checked') ) ? 1 : 0;
 
-        $(document).on('click', '.btn-update-question', function (e) {
-            var question_id = $('.btn-update-question').attr('data-id');
-            var content = $("input[name='content']").val();
-            var is_active = ( $("input[name*='is_active']").is(':checked') ) ? 1 : 0;
+            data = {
+                name: name,
+                code: code,
+                start_at: start_at,
+                end_at: end_at,
+                is_active : is_active
+            };
 
-            $.ajax({
-                type: 'PUT',
-                url: base_url + '/admin/question/' + question_id,
-                data: {
-                    'content' : content,
-                    'is_active' : is_active,
-                },
-                dataType: "json",
-                success: function (response) {
-                    successResponse(response);
-                }, 
-                error: function (e){
-                    errorResponse(e);
-                }
-            });
+            var model = '/admin/feedback/' + $(this).attr('data-id');
+
+            updateModel(model, data);
 
         });
 
+  
     });
 
     

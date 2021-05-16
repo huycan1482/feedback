@@ -41,6 +41,13 @@
                             </div>
                         </div>
 
+                        <div class="form-group" id="form-code">
+                            <label class="" >Mã lớp</label>
+                            <div>
+                                <input name="code" type="text" class="form-control " placeholder="Mã lớp">
+                            </div>
+                        </div>
+
                         <div class="form-group" id="form-course_id">
                             <label>Khóa học</label>
                             <div>
@@ -69,6 +76,18 @@
                             <label for="">Tổng số học viên</label>
                             <div>
                                 <input name="total_number" type="number" class="form-control" placeholder="Tổng số học viên">
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="form-feedback_id">
+                            <label for="">Bài đánh giá cuối khóa</label>
+                            <div>
+                                <select class=" select2 form-control" name="feedback_id" id="feedback_id">
+                                    <option value="">-- Chọn --</option>
+                                    @foreach ($feedbacks as $feedback)
+                                    <option value="{{ $feedback->id }}">{{ $feedback->code }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         
@@ -265,8 +284,10 @@
 
         $('.add-class').click(function (e) {
             var name = $("input[name='name']").val();
+            var code = $("input[name='code']").val(); 
             var course_id = $('#course_id').val(); 
             var teacher_id = $('#teacher_id').val(); 
+            var feedback_id = $('#feedback_id').val(); 
             var total_number = $("input[name='total_number']").val(); 
             var is_active = ( $("input[name='is_active']").is(':checked') ) ? 1 : 0;
             var time_limit = $("input[name='time_limit']").val(); 
@@ -314,7 +335,13 @@
                         dMonth = '0' + dMonth;
                     }
 
-                    var startDate = d.getFullYear() + '-' + dMonth + '-' + d.getDate() + ' ' + timeStartAt;
+                    var dDay = d.getDate();
+
+                    if ( d.getDate() < 10 ) {
+                        dDay = '0' + d.getDate();
+                    }
+
+                    var startDate = d.getFullYear() + '-' + dMonth + '-' + dDay + ' ' + timeStartAt;
 
                     // console.log( d.getDate() + '-' + dMonth + '-' + d.getFullYear());
                     
@@ -331,7 +358,9 @@
 
             var data = { 
                 name : name,
+                code: code,
                 course_id : course_id,
+                feedback_id : feedback_id,
                 teacher_id : teacher_id,
                 total_number : total_number,
                 is_active : is_active,

@@ -18,10 +18,10 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = null)
     {
         if (Auth::check()) {
+            // dd(Auth::user());
             return $next($request);
-        } else if (Auth::guard($guard)->check()) {
-            dd('???');
-            return redirect()->route('admin.question.index');
+        // } else if (Auth::guard($guard)->check()) {
+        //     return redirect()->route('admin.question.index');
         } else {
             return redirect()->route('admin.login');
         }

@@ -20,7 +20,7 @@ class CreateClassesTable extends Migration
             $table->string('slug', 255);
             $table->unsignedBigInteger('course_id');
             $table->unsignedBigInteger('teacher_id');
-            $table->unsignedBigInteger('feedback_id');
+            $table->unsignedBigInteger('feedback_id')->nullable();
             $table->integer('total_number');
             $table->tinyInteger('is_active');
             $table->unsignedBigInteger('user_create')->nullable();

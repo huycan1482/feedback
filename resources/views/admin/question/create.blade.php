@@ -27,14 +27,14 @@
                 <h4 class="modal-title">Thêm câu trả lời</h4>
             </div>
             <div class="modal-body">
-                <form class="form-modal" enctype="multipart/form-data">
-                    <div class="box-body">
-                        <div class="" id="form-add_answer_content">
-                            <label for="">Nội dung câu trả lời</label>
+                <div class="form-modal">
+                    <div class="form-group" id="form-add_answer_content">
+                        <label for="">Nội dung câu trả lời</label>
+                        <div>
                             <input name="modal-add-answer-content" type="text" class="form-control" placeholder="Nội dung câu hỏi" value="" style="margin-left: 10px">
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
             <div class="modal-footer">
                 <div type="button" class="btn btn-primary btn-add-answer" >Add</div>
@@ -55,14 +55,14 @@
                 <h4 class="modal-title">Sửa câu trả lời</h4>
             </div>
             <div class="modal-body">
-                <form class="form-modal" enctype="multipart/form-data">
-                    <div class="box-body">
-                        <div class="" id="form-add_answer_content">
-                            <label for="">Nội dung câu trả lời</label>
-                            <input name="modal-edit-answer-content" type="text" class="form-control" placeholder="Nội dung câu hỏi" value="" style="margin-left: 10px">
+                <div class="form-modal">
+                    <div class="form-group" id="form-add_answer_content">
+                        <label for="">Nội dung câu trả lời</label>
+                        <div>
+                            <input name="modal-edit-answer-content" type="text" class="form-control" placeholder="Nội dung câu trả lời" value="" style="margin-left: 10px">
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
             <div class="modal-footer">
                 <div type="button" class="btn btn-success btn-edit-answer" >Edit</div>
@@ -90,6 +90,13 @@
                 <form enctype="multipart/form-data">
                     <div class="box-body">
 
+                        <div class="form-group" id="form-code">
+                            <label for="">Mã câu hỏi</label>
+                            <div>
+                                <input name="code" type="text" class="form-control" placeholder="Mã câu hỏi">
+                            </div>
+                        </div>
+
                         <div class="form-group" id="form-content">
                             <label for="">Nội dung câu hỏi</label>
                             <div>
@@ -108,11 +115,11 @@
 
                         </div>
                         
-                        {{-- <div class="checkbox form-group" id="form-is_active">
+                        <div class="checkbox form-group" id="form-is_active">
                             <label>
                                 <input type="checkbox" name="is_active" value="1"> Kích hoạt
                             </label>
-                        </div> --}}
+                        </div>
                     </div>
                     
                     <!-- /.box-body -->
@@ -151,24 +158,28 @@
         let current_id = 0;
 
         $('.btn-add-answer').click(function (e) {
+            
+            var val = $("input[name='modal-add-answer-content']").val();
 
-            if ($('input:radio').length < 4) {
-                var val = $("input[name*='modal-add-answer-content']").val();
-                $('.answer > div:last-child').after("<div class='data-id-"+ data_id +"'>" +
-                        "<input type='radio' class='minimal data-id-" + data_id + "' name='answer-"+ data_id +"' value='"+ val +"' checked>" + 
-                        "<div class='answer-content'><p class='data-id-"+ data_id +"'>"+ val +"</p></div>" +
-                        "<div class='answer-icon'><i class='fas fa-edit' data-id="+ data_id +" data-toggle='modal' data-target='#modal-default2'></i><i class='fas fa-trash-alt' data-id="+ data_id +"></i></div></div>");
-                    data_id++;
-            } else {
-                var message = "<div class='pad margin no-print col-md-11' id='message' ><div class='alert alert-danger alert-dismissible'>"
-                    +"<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>×</button><h4><i class='icon fa fa-check'></i> Thông báo !</h4> Tối đa 4 câu trả lời </div></div>";
+            if ($.trim(val) != '') {
+                if ($('input:radio').length < 4) {
+                    $('.answer > div:last-child').after("<div class='data-id-"+ data_id +"'>" +
+                            "<input type='radio' class='minimal data-id-" + data_id + "' name='answer-"+ data_id +"' value='"+ val +"' checked>" + 
+                            "<div class='answer-content'><p class='data-id-"+ data_id +"'>"+ val +"</p></div>" +
+                            "<div class='answer-icon'><i class='fas fa-edit' data-id="+ data_id +" data-toggle='modal' data-target='#modal-default2'></i><i class='fas fa-trash-alt' data-id="+ data_id +"></i></div></div>");
+                        data_id++;
+                } else {
+                    var message = "<div class='pad margin no-print' id='message' ><div class='alert alert-danger alert-dismissible'>"
+                        +"<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>×</button><h4><i class='icon fa fa-check'></i> Thông báo !</h4> Tối đa 4 câu trả lời </div></div>";
 
-                if ( $('#message') ) {
-                    $('#message').remove();
+                    if ( $('#message') ) {
+                        $('#message').remove();
+                    }
+
+                    $('#modal-default1 .form-modal').before(message);
                 }
-
-                $('#modal-default1 .form-modal').before(message);
             }
+            
             
         });
 
@@ -192,7 +203,8 @@
         });
 
         $('.add-question').click(function (e) {
-            var content = $("input[name*='content']").val();
+            var code = $("input[name='code']").val();
+            var content = $("input[name='content']").val();
             var is_active = ( $("input[name*='is_active']").is(':checked') ) ? 1 : 0;
             var answers = [];
 
@@ -208,6 +220,7 @@
                 type: "post",
                 url: base_url + '/admin/question',
                 data: {
+                    'code' : code,
                     'content' : content,
                     'answers' : answers,
                     'is_active' : is_active,

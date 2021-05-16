@@ -18,6 +18,105 @@
     </h1>
 </section>
 
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Sửa thông tin buổi học</h4>
+            </div>
+            <div class="modal-body">
+                <div class="box box-info">
+                    <div class="box-header"></div>
+                    <div class="box-body">
+                        <div class="form-modal">
+                            <div class="form-group" id="form-startDate">
+                                <label for="">Ngày học</label>
+                                <div>
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-right datepicker" name="end_at" placeholder="DD-MM-YYYY">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" id="form-startDate">
+                                <label for="">Thời gian</label>
+                                <div class="bootstrap-timepicker" style="padding-right: 0;">
+                                    <div class="input-group" style="width: 100%">
+                                        <input type="text" class="form-control timepicker" name="time">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info btn-update-lesson">Udate</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="modal-default2">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Thêm buổi học</h4>
+            </div>
+            <div class="modal-body">
+                <div class="box box-info">
+                    <div class="box-header"></div>
+                    <div class="box-body">
+                        <div class="form-modal">
+                            <div class="form-group" id="form-addStartDate">
+                                <label for="">Ngày học</label>
+                                <div>
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-right datepicker" name="addEndAt" placeholder="DD-MM-YYYY">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" id="form-startDate">
+                                <label for="">Thời gian</label>
+                                <div class="bootstrap-timepicker" style="padding-right: 0;">
+                                    <div class="input-group" style="width: 100%">
+                                        <input type="text" class="form-control timepicker" name="addTime">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" id="form-addTimeLimit">
+                                <label for="">Thời lượng (phút)</label>
+                                <div>
+                                    <input name="addTimeLimit" type="number" class="form-control" placeholder="Thời lượng">
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info btn-add-lesson">Add</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
 <section class="content">
     <div class="row">
         <!-- left column -->
@@ -38,6 +137,13 @@
                             <label class="" >Tên lớp</label>
                             <div>
                                 <input name="name" type="text" class="form-control " placeholder="Tên lớp" value="{{ $classRoom->name }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="form-name">
+                            <label class="" >Mã lớp</label>
+                            <div>
+                                <input name="code" type="text" class="form-control " placeholder="Mã lớp" value="{{ $classRoom->code }}">
                             </div>
                         </div>
 
@@ -71,6 +177,25 @@
                                 <input name="total_number" type="number" class="form-control" placeholder="Tổng số học viên" value="{{ $classRoom->total_number }}">
                             </div>
                         </div>
+
+                        <div class="form-group" id="form-feedback_id">
+                            <label for="">Bài đánh giá cuối khóa</label>
+                            <div>
+                                <select class=" select2 form-control" name="feedback_id" id="feedback_id">
+                                    <option value="">-- Chọn --</option>
+                                    @foreach ($feedbacks as $feedback)
+                                    <option value="{{ $feedback->id }}">{{ $feedback->code }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="form-time_limit">
+                            <label for="">Thời lượng các buổi học (phút)</label>
+                            <div>
+                                <input name="time_limit" type="number" class="form-control" placeholder="{{ $classRoom->lesson[0]->time_limit }}">
+                            </div>
+                        </div>
                         
                         <div class="checkbox form-group" id="form-is_active">
                             <label>
@@ -102,74 +227,53 @@
                 <form enctype="multipart/form-data">
                     <div class="box-body">
 
-                        <div class="" id="form-" style="overflow: auto">
-
-                            <label for="">Ngày học / tuần</label> 
+                        <div class="" id="form-" style="overflow: auto; max-height: 600px">
+                            <label>Tổng số buổi thực tế: {{ count($classRoom->lesson) }} / </label>
+                            <span class="label label-success add-lesson" style="cursor:pointer" data-toggle="modal" data-target="#modal-default2" data-id="{{$classRoom->id}}"> Thêm buổi học </span>
                             <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
                                 <thead>
                                     <tr>
-                                        <th class="text-center"><label for="2">Thứ 2 </label></th>
-                                        <th class="text-center"><label for="3">Thứ 3</label></th>
-                                        <th class="text-center"><label for="4">Thứ 4</label></th>
-                                        <th class="text-center"><label for="5">Thứ 5</label></th>
-                                        <th class="text-center"><label for="6">Thứ 6</label></th>
-                                        <th class="text-center"><label for="7">Thứ 7</label></th>
-                                        <th class="text-center"><label for="8">Chủ nhật</label></th>
+                                        <th class="text-center">STT</th>
+                                        <th class="text-center">Thứ</th>
+                                        <th class="text-center">Ngày học</th>
+                                        <th class="text-center">Giờ học</th>
+                                        <th class="text-center">Hành dộng</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        @for($i = 0; $i<7; $i++)
-                                        <td style="width: 100px"><input type="checkbox" class="flat-red" value="{{$i+2}}" 
-                                            @foreach ($lessons as $lesson)
-                                                {{ ($lesson->day == $i) ? "checked " : "" }}
-                                            @endforeach
-                                            >
-                                            <span style="margin-left: 5px">Học</span></td>
-                                        @endfor
-                                    </tr>
-                                    <tr>
-                                        @for($i = 0; $i<7; $i++)
-                                        <td>
-                                            <div class="bootstrap-timepicker" style="padding-right: 0;">
-                                                <div class="form-group">
-                                                    <div class="input-group" style="width: 100%">
-                                                        <input type="text" class="form-control timepicker" name="time_startAt_{{$i + 2}}" value="
-                                                        @foreach ($lessons as $lesson)
-                                                            @if ($lesson->day == $i)
-                                                            {{date_format(date_create($lesson->time), 'H:i:s')}}
-                                                            @endif
-                                                        @endforeach
-                                                        ">
-                                                    </div>
-                                                </div>
+                                    @foreach($classRoom->lesson as $key => $item)
+                                    <tr class="item-{{ $item->id }}">
+                                        <td class="text-center">{{ $key + 1 }}</td>
+                                        <td class="text-center">
+                                            @switch( getdate(date_create($item->start_at)->getTimestamp())['weekday'] )
+                                                @case('Monday')  Thứ hai @break
+                                                @case('Tuesday') Thứ ba @break
+                                                @case('Wednesday') Thứ tư @break
+                                                @case('Thursday') Thứ năm @break
+                                                @case('Friday') Thứ sáu @break
+                                                @case('Saturday') Thứ bảy @break
+                                                @case('Sunday') Chủ nhật @break
+                                            @endswitch
+                                        </td>
+                                        <td class="text-center">
+                                            {{ date_format(date_create($item->start_at), 'd-m-Y') }}
+                                        </td>
+                                        <td class="text-center">{{ date_format(date_create($item->start_at), 'H:i:s') }}</td>
+                                        <td class="text-center">
+                                            <div class="btn btn-success btn-edit-lesson" title="Sửa" data-toggle="modal" data-target="#modal-default" data-id="{{ $item->id }}">
+                                                <i class="fa fa-edit"></i>
+                                            </div>
+        
+                                            <div class="btn btn-danger" title="Xóa" >
+                                                <i class="fa fa-trash"></i>
                                             </div>
                                         </td>
-                                        @endfor
                                     </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
-                        <div class="form-group" id="form-lessons">
-                            <label for="">Bắt đầu từ</label>
-                            <div>
-                                <div class="input-group date" style="width: 100%">
-                                    <div class="input-group-addon">
-                                        <i class="fa fa-calendar"></i>
-                                    </div>
-                                    <input type="text" class="form-control pull-right datepicker" name="day_startAt" id="day_startAt" placeholder="DD-MM-YYYY" value="{{ isset($lessons[0]) ? date_format(date_create($lesson->time), 'd-m-Y') : ''  }}">
-                                </div>
-                            </div> 
-                        </div>
-                        <div class="form-group" id="form-time_limit">
-                            <label for="">Thời lượng (phút)</label>
-                            <div>
-                                <input name="time_limit" type="number" class="form-control" placeholder="Thời lượng" value="{{ isset($lessons[0]) ? $lessons[0]->time_limit : '' }}">
-                            </div>
-                        </div>
-                        {{-- <button type="button" class="btn btn-success btn-detail" data-toggle="modal" data-target="#modal-default" title="Chi tiết" data-id="">
-                            Chi tiết các buổi học <i class="fas fa-cog"></i>
-                        </button> --}}
+
 
                     </div>
                 </form>
@@ -181,13 +285,6 @@
     <!-- /.row -->
 </section>
 @endsection
-
-{{-- @section('ck_editor')
-<script>
-    CKEDITOR.replace('content');
-    // CKEDITOR.replace('description');
-</script> 
-@endsection --}}
 
 @section('my_script')
 <!-- Select2 -->
@@ -201,11 +298,6 @@
 
 <script>
     $(function () {
-        //Flat red color scheme for iCheck
-        $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
-            checkboxClass: 'icheckbox_flat-green',
-            radioClass   : 'iradio_flat-green'
-        });
 
         $('.datepicker').datepicker({
             // autoclose: false,
@@ -218,88 +310,186 @@
             showInputs: false,
         });
 
+        $(document).on('click', '.btn-edit-lesson', function (e) {
+            if ( $('#message') ) {
+                $('#message').remove();
+            }
+
+            var itemId = $(this).attr('data-id');
+            var date = $('.item-' + itemId + ' td:nth-of-type(3)').text().replace(/\s/g, '');
+            var time = $('.item-' + itemId + ' td:nth-of-type(4)').text().replace(/\s/g, '');
+
+            $("input[name='end_at']").val(date);
+            $("input[name='time']").val(time);
+            $('.btn-update-lesson').attr('data-id', itemId);
+        });
+
+        $(document).on('click', '.btn-update-lesson', function (e) {
+
+            var test = $("input[name='time']").val();
+
+            var time = test.split(' ')[0];
+            var dayOrNight = test.split(' ')[1];
+            var hour = time.split(':')[0];
+            var minute = time.split(':')[1];
+                    
+            if (hour < 10) {
+                hour = '0' + hour;
+            }
+
+            if (dayOrNight == 'PM') {
+                hour = hour * 1 + 12;
+            }
+
+            var timeStartAt = hour + ':' + minute + ':00';
+
+            var date = $("input[name='end_at']").val().split('-');
+
+            var d = new Date(date[2] + '-'+ date[1] + '-'+ date[0]);
+
+            var dDay = d.getDate();
+
+            if ( d.getDate() < 10 ) {
+                dDay = '0' + dDay;
+            }
+
+            var dMonth = (d.getMonth() + 1);
+
+            if ( d.getMonth() < 10 ) {
+                dMonth = '0' + dMonth;
+            }
+
+            var startDate = d.getFullYear() + '-' + dMonth + '-' + dDay + ' ' + timeStartAt;
+
+            data = {
+                startDate: startDate,
+            }
+
+            var model = '/admin/lesson/' + $(this).attr('data-id');
+
+            $.ajax({
+                type: 'PUT',
+                url: base_url + model,
+                data: data,
+                dataType : "json",
+                success: function (response) {
+                    successResponseModal(response);
+                    setTimeout(function (){
+                        location.reload()
+                    }, 1500);
+                }, 
+                error: function (e) {
+                    errorResponseModal(e)
+                }
+            });
+
+
+        });
+
+        $(document).on('click', '.add-lesson', function (e) {
+            if ( $('#message') ) {
+                $('#message').remove();
+            }
+
+            var itemId = $(this).attr('data-id');
+
+            $('.btn-add-lesson').attr('data-id', itemId);
+        });
+
+        $(document).on('click', '.btn-add-lesson', function (e) {
+            var class_id = $(this).attr('data-id');
+            var  addTimeLimit= $("input[name='addTimeLimit']").val();
+
+            var test = $("input[name='addTime']").val();
+
+            var time = test.split(' ')[0];
+            var dayOrNight = test.split(' ')[1];
+            var hour = time.split(':')[0];
+            var minute = time.split(':')[1];
+                    
+            if (hour < 10) {
+                hour = '0' + hour;
+            }
+
+            if (dayOrNight == 'PM') {
+                hour = hour * 1 + 12;
+            }
+
+            var timeStartAt = hour + ':' + minute + ':00';
+
+            var date = $("input[name='addEndAt']").val().split('-');
+
+            var d = new Date(date[2] + '-'+ date[1] + '-'+ date[0]);
+
+            var dDay = d.getDate();
+
+            if ( d.getDate() < 10 ) {
+                dDay = '0' + dDay;
+            }
+
+            var dMonth = (d.getMonth() + 1);
+
+            if ( d.getMonth() < 10 ) {
+                dMonth = '0' + dMonth;
+            }
+
+            var addStartDate = d.getFullYear() + '-' + dMonth + '-' + dDay + ' ' + timeStartAt;
+
+            data = {
+                class_id: class_id,
+                addStartDate: addStartDate,
+                addTimeLimit: addTimeLimit
+            }
+
+            var model = '/admin/lesson';
+
+            $.ajax({
+                type: "POST",
+                url: base_url + model,
+                data: data,
+                dataType : "json",
+                success: function (response) {
+                    successResponseModal(response);
+                    setTimeout(function (){
+                        location.reload()
+                    }, 1500);
+                },
+                error: function (e) {
+                    errorResponseModal(e)
+                }
+            });
+
+        });
+
         $(document).on('click', '.update-class', function (e) {
             var name = $("input[name='name']").val();
+            var code = $("input[name='code']").val();
             var course_id = $('#course_id').val(); 
             var teacher_id = $('#teacher_id').val(); 
             var total_number = $("input[name='total_number']").val(); 
             var is_active = ( $("input[name='is_active']").is(':checked') ) ? 1 : 0;
             var time_limit = $("input[name='time_limit']").val(); 
+            var feedback_id = $('#feedback_id').val(); 
 
-            var date = $("input[name='day_startAt']").val().split('-');
-            var dateStartAt = date[2] + '-' + date[1] + '-' + date[0];
-
-            var lessons = [];
-
-            $('input[type="checkbox"].flat-red').each(function (index, value) { 
-                if ( $(this).is(':checked') ) {
-                    // var date = $("'#day_startAt_"+ value.value +"'").val();
-                    var test = $("input[name='time_startAt_"+ value.value +"']").val();
-
-                    var time = test.split(' ')[0];
-                    var dayOrNight = test.split(' ')[1];
-                    var hour = time.split(':')[0];
-                    var minute = time.split(':')[1];
-                    // console.log(time, dayOrNight, hour, minute);
-                    if (hour < 10) {
-                        hour = '0' + hour;
-                    }
-
-                    if (dayOrNight == 'PM') {
-                        hour = hour * 1 + 12;
-                    }
-
-                    var timeStartAt = hour + ':' + minute + ':00';
-
-                    var date = $("input[name='day_startAt']").val().split('-');
-
-                    console.log(date);
-
-                    var d = new Date(date[2] + '-'+ date[1] + '-'+ date[0]);
-
-                    var day = value.value - (d.getDay() + 1);
-
-                    if ( day < 0) {
-                        d.setDate(d.getDate() + 7 + day);
-                    } else {
-                        d.setDate(d.getDate() + day);
-                    }
-
-                    var dMonth = (d.getMonth() + 1);
-
-                    if ( d.getMonth() < 10 ) {
-                        dMonth = '0' + dMonth;
-                    }
-
-                    var startDate = d.getFullYear() + '-' + dMonth + '-' + d.getDate() + ' ' + timeStartAt;
-                    
-                    var lesson = {};
-                    
-                    lesson.lessons = startDate;
-    
-                    lessons.push([
-                        lesson
-                    ]);
-                }
-            });
-
+        
             var data = { 
                 name : name,
+                code : code,
                 course_id : course_id,
                 teacher_id : teacher_id,
                 total_number : total_number,
                 is_active : is_active,
-                lessons : lessons,
                 time_limit : time_limit,
+                feedback_id : feedback_id, 
             };
 
             var model = '/admin/class/' + $(this).attr('data-id');
 
             updateModel(model, data);
 
-            console.log(data);
-
         }); 
+
+        
 
         
     });

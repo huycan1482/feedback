@@ -62,7 +62,6 @@ class CourseController extends Controller
             'code' => 'required|unique:courses,code',
             'subject' => 'required|exists:subjects,id',
             'total_lesson' => 'required|integer|min:1"',
-            'start_at' => 'required|date_format:"Y-m-d H:i:s"',
             'is_active' => 'integer|boolean',
         ], [
             'name.required' => 'Yêu cầu không để trống',
@@ -74,8 +73,6 @@ class CourseController extends Controller
             'total_lesson.required' => 'Yêu cầu không để trống',
             'total_lesson.integer' => 'Sai kiểu dữ liệu',
             'total_lesson.min' => 'Dữ liệu phải lớn hơn 0',
-            'start_at.required' => 'Yêu cầu không để trống',
-            'start_at.date_format' => 'Dữ liệu nhập vào không phù hợp',
             'is_active.integer' => 'Sai kiểu dữ liệu',
             'is_active.boolean' => 'Sai kiểu dữ liệu',
         ]);
@@ -91,7 +88,6 @@ class CourseController extends Controller
             $course->slug = $request->input('name');
             $course->subject_id = $request->input('subject');
             $course->total_lesson = $request->input('total_lesson');
-            $course->start_at = $request->input('start_at');
             $course->is_active = (int)$request->input('is_active');
             $course->user_create = Auth::user()->id;
 
@@ -166,7 +162,6 @@ class CourseController extends Controller
                 'code' => 'required|unique:courses,code,'.$id,
                 'subject' => 'required|exists:subjects,id',
                 'total_lesson' => 'required|integer|min:1"',
-                'start_at' => 'required|date_format:"Y-m-d H:i:s"',
                 'is_active' => 'integer|boolean',
             ], [
                 'name.required' => 'Yêu cầu không để trống',
@@ -178,8 +173,6 @@ class CourseController extends Controller
                 'total_lesson.required' => 'Yêu cầu không để trống',
                 'total_lesson.integer' => 'Sai kiểu dữ liệu',
                 'total_lesson.min' => 'Dữ liệu phải lớn hơn 0',
-                'start_at.required' => 'Yêu cầu không để trống',
-                'start_at.date_format' => 'Dữ liệu nhập vào không phù hợp',
                 'is_active.integer' => 'Sai kiểu dữ liệu',
                 'is_active.boolean' => 'Sai kiểu dữ liệu',
             ]);
@@ -194,7 +187,6 @@ class CourseController extends Controller
                 $course->slug = $request->input('name');
                 $course->subject_id = $request->input('subject');
                 $course->total_lesson = $request->input('total_lesson');
-                $course->start_at = $request->input('start_at');
                 $course->is_active = (int)$request->input('is_active');
                 $course->user_update = Auth::user()->id;
 

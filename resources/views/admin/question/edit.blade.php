@@ -27,36 +27,17 @@
                 <h4 class="modal-title">Chỉnh sửa câu trả lời</h4>
             </div>
             <div class="modal-body">
-
-                <form role="form" action="" method="" enctype="multipart/form-data">
-                    <div class="box-body">
-
-                        <div class="form-group" id="form-answer_content">
-                            <label for="">Nội dung câu trả lời</label>
-                            <div>
-                                <input name="modal-answer-content" type="text" class="form-control" placeholder="Nội dung câu hỏi" value="">
-                            </div>
+                <div class="form-modal">
+                    <div class="form-group" id="form-answer_content">
+                        <label for="">Nội dung câu trả lời</label>
+                        <div>
+                            <input name="modal-answer-content" type="text" class="form-control" placeholder="Nội dung câu hỏi" value="">
                         </div>
-
-                        <div class="form-group" id="form-answer_is_active">
-                            <label>
-                                <input type="checkbox" name="modal-answer-active" value="1" > Kích hoạt
-                            </label>
-                        </div>
-
-                        {{-- <div class="form-group">
-                            <label>
-                                <input type="checkbox" name="" value="1" > Câu trả lời đúng
-                            </label>
-                        </div> --}}
-
                     </div>
-                </form>
-
+                </div>
             </div>
             <div class="modal-footer">
                 <div type="button" class="btn btn-primary btn-update-answer" data-id="">Update</div>
-                {{-- <div type="button" class="btn btn-danger btn-delete-answer" data-id="">Delete</div> --}}
             </div>
         </div>
       <!-- /.modal-content -->
@@ -73,32 +54,14 @@
                 <h4 class="modal-title">Thêm câu trả lời</h4>
             </div>
             <div class="modal-body">
-
-                <form class="form-modal" role="form" action="" method="" enctype="multipart/form-data">
-                    <div class="box-body">
-
-                        <div class="form-group" id="form-add_answer_content">
-                            <label for="">Nội dung câu trả lời</label>
-                            <div>
-                                <input name="modal-add-answer-content" type="text" class="form-control" placeholder="Nội dung câu hỏi" value="">
-                            </div>
+                <div class="form-modal">
+                    <div class="form-group" id="form-add_answer_content">
+                        <label for="">Nội dung câu trả lời</label>
+                        <div>
+                            <input name="modal-add-answer-content" type="text" class="form-control" placeholder="Nội dung câu hỏi" value="">
                         </div>
-
-                        <div class="form-group" id="form-add_answer_active">
-                            <label>
-                                <input type="checkbox" name="modal-add-answer-active" value="1" > Kích hoạt
-                            </label>
-                        </div>
-
-                        {{-- <div class="form-group">
-                            <label>
-                                <input type="checkbox" name="" value="1" > Câu trả lời đúng
-                            </label>
-                        </div> --}}
-
                     </div>
-                </form>
-
+                </div>
             </div>
             <div class="modal-footer">
                 <div type="button" class="btn btn-primary btn-add-answer" >Add</div>
@@ -125,6 +88,13 @@
                 <form role="form" action="{{ route('admin.question.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="box-body">
+
+                        <div class="form-group">
+                            <label for="">Mã câu hỏi</label>
+                            <div>
+                                <input name="code" type="text" class="form-control" placeholder="Mã câu hỏi" value="{{$question->code}}">
+                            </div>
+                        </div>
 
                         <div class="form-group">
                             <label for="">Nội dung câu hỏi</label>
@@ -191,41 +161,45 @@
         //Initialize Select2 Elements
 
         $(document).on('click', '.btn-add-answer', function (e) {
-            if ($('input:radio').length < 4) {
-                var add_answer_content = $("input[name*='modal-add-answer-content']").val();
-                var add_answer_active = ( $("input[name*='modal-add-answer-active']").is(':checked') ) ? 1 : 0;
-                var question_id = $('.update-question').attr('data-id');
+            var add_answer_content = $("input[name='modal-add-answer-content']").val();
 
-                $.ajax({
-                    type: "post",
-                    url: base_url + '/admin/answer',
-                    data: {
-                        'question_id' : question_id,
-                        'add_answer_content' : add_answer_content,
-                        'add_answer_active' : add_answer_active,
-                    },
-                    dataType: "json",
-                    success: function (response) {
-                        successResponseModal(response);
-                        setTimeout(function (){
-                            location.reload()
-                        }, 1500);
-                    }, 
-                    error: function (e) {
-                        errorResponseModal(e)
+            if ($.trim(add_answer_content) != '') {
+                if ($('input:radio').length < 4) {
+                    var add_answer_active = ( $("input[name*='modal-add-answer-active']").is(':checked') ) ? 1 : 0;
+                    var question_id = $('.btn-update-question').attr('data-id');
+
+                    $.ajax({
+                        type: "post",
+                        url: base_url + '/admin/answer',
+                        data: {
+                            'question_id' : question_id,
+                            'add_answer_content' : add_answer_content,
+                            'add_answer_active' : add_answer_active,
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            successResponseModal(response);
+                            setTimeout(function (){
+                                location.reload()
+                            }, 1500);
+                        }, 
+                        error: function (e) {
+                            errorResponseModal(e)
+                        }
+                    });
+
+                } else {
+                    var message = "<div class='pad margin no-print' id='message' ><div class='alert alert-danger alert-dismissible'>"
+                        +"<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>×</button><h4><i class='icon fa fa-check'></i> Thông báo !</h4> Tối đa 4 câu trả lời </div></div>";
+
+                    if ( $('#message') ) {
+                        $('#message').remove();
                     }
-                });
 
-            } else {
-                var message = "<div class='pad margin no-print col-md-11' id='message' ><div class='alert alert-danger alert-dismissible'>"
-                    +"<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>×</button><h4><i class='icon fa fa-check'></i> Thông báo !</h4> Tối đa 4 câu trả lời </div></div>";
-
-                if ( $('#message') ) {
-                    $('#message').remove();
+                    $('.form-modal').before(message);
                 }
-
-                $('.form-modal').before(message);
             }
+            
         });
 
         $(document).on('click', '.btn-detail', function (e) {
@@ -273,17 +247,18 @@
         });
 
         $(document).on('click', '.btn-update-answer', function (e) {
-            var question_id = $('.update-question').attr('data-id');
+            var question_id = $('.btn-update-question').attr('data-id');
             var answer_id = $(this).attr('data-id');
             var answer_content = $("input[name*='modal-answer-content']").val();
-            var answer_active = ( $("input[name*='modal-answer-active']").is(':checked') ) ? 1 : 0;
+            // var answer_active = ( $("input[name*='modal-answer-active']").is(':checked') ) ? 1 : 0;
 
             $.ajax({
                 type: 'PUT',
                 url: base_url + '/admin/answer/' + answer_id,
                 data: {
+                    'question_id' : question_id,
                     'answer_content' : answer_content,
-                    'answer_is_active' : answer_active,
+                    // 'answer_is_active' : answer_active,
                 },
                 dataType: "json",
                 success: function (response) {
@@ -297,6 +272,7 @@
         });
 
         $(document).on('click', '.btn-update-question', function (e) {
+            var code = $("input[name='code']").val();
             var question_id = $('.btn-update-question').attr('data-id');
             var content = $("input[name='content']").val();
             var is_active = ( $("input[name*='is_active']").is(':checked') ) ? 1 : 0;
@@ -305,6 +281,7 @@
                 type: 'PUT',
                 url: base_url + '/admin/question/' + question_id,
                 data: {
+                    'code' : code,
                     'content' : content,
                     'is_active' : is_active,
                 },

@@ -25,6 +25,7 @@ class CreateUsersTable extends Migration
             $table->date('date_of_birth');
             $table->string('code', 255);
             $table->string('phone', 255);
+            $table->string('avatar', 255);
             $table->tinyInteger('is_active');
             $table->rememberToken();
             $table->timestamps();

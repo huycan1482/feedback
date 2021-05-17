@@ -9,7 +9,7 @@
 <section class="content-header">
     <h1>
         Quản lý danh sách Câu trả lời
-        {{-- <small><a href="{{ route('answer.create') }}">Thêm mới</a></small> --}}
+        <small><a class="btn-return" style="cursor: pointer">Quay lại</a></small>
     </h1>
 </section>
 
@@ -184,6 +184,10 @@
                     
                 }
             });
+        });
+
+        $('.btn-return').click(function (e) {
+            history.back();
         });
 
         

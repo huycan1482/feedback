@@ -14,10 +14,15 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
+
+Route::get('/', 'HomeController@index')->name('feedback.index');
+Route::get('/checkIn', 'HomeController@getCheckIn')->name('feedback.getCheckIn');
+Route::get('/feed_back', 'HomeController@getFeedback')->name('feedback.getFeedback');
+Route::get('/profile', 'HomeController@getProfile')->name('feedback.getProfile');
 
 
 // Auth::routes();

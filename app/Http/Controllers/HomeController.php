@@ -23,6 +23,21 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        return view('feedback.home');
+    }
+
+    public function getCheckIn ()
+    {
+        return view ('feedback.checkIn');
+    }
+
+    public function getFeedback ()
+    {
+        return view ('feedback.feedback');
+    }
+
+    public function getProfile ()
+    {
+        return view ('feedback.profile');
     }
 }

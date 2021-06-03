@@ -107,26 +107,29 @@ class StudentController extends Controller
             $user = new User;
             $user->name = $request->input('name');
             $user->code = $request->input('code');
-            $user->gender = $request->input('gender');
+            $user->gender = (int)$request->input('gender');
             $user->date_of_birth = $request->input('date_of_birth');
             $user->phone = $request->input('phone');
             $user->address = $request->input('address');
+            $user->is_active = (int)$request->input('is_active');
             // $user->course_id = $request->input('course_id');
             $user->email = $request->input('email');
             $user->role_id = $role_id;
             $user->password = Hash::make($request->input('password'));
-    
+    // dd($user->save());
             DB::beginTransaction();
 
             try {
                 $user->save();
-
+                
                 $user_id = User::latest()->first()->id;
 
+                
                 $user_class = new UserClass;
                 $user_class->user_id = $user_id;
-                $user_class->class_id = $request->input('classRoom_id');
-
+                $user_class->class_id = (int)$request->input('classRoom_id');
+                $user_class->is_active = 1;
+                // dd($user_class);
                 $user_class->save();
                 
                 DB::commit();

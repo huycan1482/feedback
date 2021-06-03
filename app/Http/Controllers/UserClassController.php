@@ -67,7 +67,7 @@ class UserClassController extends Controller
             $user_class = new UserClass;
             $user_class->class_id = $request->input('classRoom_id');
             $user_class->user_id = $user_id;
-            // $user_class->is_active = 1;
+            $user_class->is_active = 1;
             if ( $user_class->save() ) {
                 return response()->json(['mess' => 'Thêm bản ghi thành công, chạy lại sau 1,5s', 200]);
             } else {

@@ -93,7 +93,7 @@
                                         <h4>Thông tin lớp giảng dạy</h4>
                                     </div>
                                     <div class="box-body table-responsive no-padding">
-                                        <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
+                                        <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info" style="margin-top: 0 !important;">
                                             <thead>
                                                 <th>STT</th>
                                                 <th>Tên Lớp</th>

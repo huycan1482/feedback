@@ -189,8 +189,13 @@ class ClassController extends Controller
             return response()->json(['mess' => 'Bản ghi không tồn tại'], 404);
         } else {
 
-            $data = DB::table();
-            return response()->json(['classRoom' => $classRoom], 200);
+            $data = DB::table('classes')
+            ->selectRaw('users.id as id, users.name as name')
+            ->leftJoin('user_class', 'classes.id', '=', 'user_class.class_id')
+            ->leftJoin('users', 'users.id', '=', 'user_class.user_id')
+            ->where('classes.id', $id)
+            ->get();
+            return response()->json(['classRoom' => $classRoom, 'data' => $data], 200);
         }
     }
 

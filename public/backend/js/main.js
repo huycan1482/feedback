@@ -82,8 +82,6 @@ function successResponse (response) {
     $('.sp-error').remove();
  
     messageResponse('success',response.mess);
-
-    return true;
 }
 
 function errorResponse (e) {

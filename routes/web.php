@@ -19,34 +19,31 @@ use Illuminate\Support\Facades\Route;
 // });
 
 
-Route::get('/', 'HomeController@index')->name('feedback.index');
-Route::get('/checkIn', 'HomeController@getCheckIn')->name('feedback.getCheckIn');
-Route::get('/feed_back', 'HomeController@getFeedback')->name('feedback.getFeedback');
-Route::get('/profile', 'HomeController@getProfile')->name('feedback.getProfile');
+//UserLogin
+Route::get('/login', 'Auth\LoginController@userLogin')->name('user.login');
+Route::post('postUserLogin', 'Auth\LoginController@postUserLogin')->name('user.postUserLogin');
+Route::get('logout', 'Auth\LoginController@userLogout')->name('user.logout');
+
+Route::group(['middleware' => 'checkUserLogin'], function () {
+    //Feedback
+    Route::get('/', 'HomeController@index')->name('feedback.index');
+    Route::get('/checkIn', 'HomeController@getCheckIn')->name('feedback.getCheckIn');
+    Route::get('/feed_back', 'HomeController@getFeedback')->name('feedback.getFeedback');
+    Route::get('/profile', 'HomeController@getProfile')->name('feedback.getProfile');
+});
 
 
-// Auth::routes();
+//Admin login
+Route::get('adminLogin', 'Auth\LoginController@login')->name('admin.login');
+Route::post('postAdminLogin', 'Auth\LoginController@postLogin')->name('admin.postLogin');
+Route::get('adminLogout', 'Auth\LoginController@logout')->name('admin.logout');
 
-//login
-Route::get('login', 'Auth\LoginController@login')->name('admin.login');
-Route::post('postLogin', 'Auth\LoginController@postLogin')->name('admin.postLogin');
-
-//Register
+//Admin Register
 Route::get('register', 'Auth\RegisterController@register')->name('admin.register');
 Route::post('postRegister', 'Auth\RegisterController@postRegister')->name('admin.postRegister');
 
-// //ResetPassword
-// Route::get('checkEmail', 'Auth\ResetPasswordController@checkEmail')->name('admin.checkEmail');
-// Route::post('postCheckEmail', 'Auth\ResetPasswordController@postCheckEmail')->name('admin.postCheckEmail');
-// // Route::get('checkToken', 'Auth\ResetPasswordController@checkToken')->name('admin.checkToken');
-// // Route::post('postCheckToken', 'Auth\ResetPasswordController@postCheckToken')->name('admin.postCheckToken');
-// Route::get('resetPassword', 'Auth\ResetPasswordController@index')->name('admin.resetPassword');
-// Route::post('postResetPassword', 'Auth\ResetPasswordController@postResetPassword')->name('admin.postResetPassword');
 
-// // logout
-// Route::get('logout', 'Auth\LoginController@logout')->name('admin.logout');
-
-Route::group(['prefix' => 'admin' , 'as' => 'admin.', 'middleware' => 'guest'], function () {
+Route::group(['prefix' => 'admin' , 'as' => 'admin.', 'middleware' => 'checkAdminLogin'], function () {
     Route::get('/', 'AdminController@index')->name('dashboard');
     Route::resource('answer', 'AnswerController');
     Route::resource('question', 'QuestionController');

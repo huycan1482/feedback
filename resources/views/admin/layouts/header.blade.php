@@ -251,14 +251,12 @@
                         <!-- Menu Body -->
                         <li class="user-body">
                             <div class="row">
-                                <div class="col-xs-4 text-center">
-                                    <a href="#">Followers</a>
+                                <div class="col-xs-6 text-center">
+                                    <a href="">Profile</a>
                                 </div>
-                                <div class="col-xs-4 text-center">
-                                    <a href="#">Sales</a>
-                                </div>
-                                <div class="col-xs-4 text-center">
-                                    <a href="#">Friends</a>
+                                
+                                <div class="col-xs-6 text-center">
+                                    <a href="{{ route('admin.logout') }}">Logout</a>
                                 </div>
                             </div>
                             <!-- /.row -->

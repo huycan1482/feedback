@@ -40,7 +40,7 @@
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="">
+                    <a href="{{route('user.logout')}}">
                         <i class="fas fa-sign-out-alt"></i>
                         <span>Đăng xuất</span>
                     </a>

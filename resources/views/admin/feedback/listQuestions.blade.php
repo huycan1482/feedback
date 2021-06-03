@@ -24,51 +24,71 @@
                         <h4 class="modal-title">Thông tin chi tiết câu hỏi</h4>
                     </div>
                     <div class="modal-body">
-                        <div class="box">
-                            <div class="box-body table-responsive no-padding">
-                                <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
-                                    <tbody>
-                                        <tr style="width: 100%">
-                                            <td class="" style="width: 30%">
-                                                Nội dung câu hỏi:
-                                            </td>
-                                            <td class="modal-question-content" style="width: 70%">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="box">
+                                    <div class="box-header">
+                                        <h4>Thông tin chung</h4>
+                                    </div>
+                                    <div class="box-body table-responsive no-padding">
+                                        <table class="table-hover table table-bordered table-striped dataTable"
+                                            role="grid" aria-describedby="example1_info" style="margin-top: 0 !important;"> 
+                                            <tbody>
+                                                <tr style="width: 100%">
+                                                    <td class="" style="width: 30%">
+                                                        Nội dung câu hỏi:
+                                                    </td>
+                                                    <td class="modal-question-content" style="width: 70%">
 
-                                            </td>
-                                        </tr>
-                                        <tr style="width: 100%">
-                                            <td class="" style="width: 30%">
-                                                Kích hoạt:
-                                            </td>
-                                            <td class="modal-question-active" style="width: 70%">
+                                                    </td>
+                                                </tr>
+                                                <tr style="width: 100%">
+                                                    <td class="" style="width: 30%">
+                                                        Kích hoạt:
+                                                    </td>
+                                                    <td class="modal-question-active" style="width: 70%">
 
-                                            </td>
-                                        </tr>
-                                        <tr style="width: 100%">
-                                            <td class="" style="width: 30%">
-                                                Người tạo:
-                                            </td>
-                                            <td class="modal-question-" style="width: 70%">
+                                                    </td>
+                                                </tr>
+                                                <tr style="width: 100%">
+                                                    <td class="" style="width: 30%">
+                                                        Người tạo:
+                                                    </td>
+                                                    <td class="modal-question-" style="width: 70%">
 
-                                            </td>
-                                        </tr>
-                                        <tr style="width: 100%">
-                                            <td class="" style="width: 30%">
-                                                Ngày tạo:
-                                            </td>
-                                            <td class="modal-question-createdAt" style="width: 70%">
+                                                    </td>
+                                                </tr>
+                                                <tr style="width: 100%">
+                                                    <td class="" style="width: 30%">
+                                                        Ngày tạo:
+                                                    </td>
+                                                    <td class="modal-question-createdAt" style="width: 70%">
 
-                                            </td>
-                                        </tr>
-                                        <tr style="width: 100%">
-                                            <td class="" style="width: 30%">
-                                                Câu trả lời
-                                            </td>
-                                            <td class="modal-question-answers" style="overflow-wrap: anywhere;width: 70%" >
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="box">
+                                    <div class="box-header">
+                                        <h4>Thông tin Đáp án</h4>
+                                    </div>
+                                    <div class="box-body table-responsive no-padding">
+                                        <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info" style="margin-top: 0 !important;">
+                                            <thead>
+                                                <th>STT</th>
+                                                <th>Nội dung</th>
+                                            </thead>
+                                            <tbody class="modal-answer-data modal-question-answers">
+                                                
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div> 
                             </div>
                         </div>
                     </div>
@@ -184,7 +204,8 @@
                     }
                     response.answers.forEach( function (value, index) {
                         // console.log(value, index);
-                        html += "<div>Câu "+ (index + 1) +": "+ value.content +"</div>"
+                        html += "<tr><td>" + (index + 1) + "</td><td style='overflow-wrap: anywhere'> " + value.content +
+                            "</td></tr>"
                     });
 
                     $('.modal-question-answers').html(html);

@@ -31,7 +31,7 @@
                                         <h4>Thông tin chung</h4>
                                     </div>
                                     <div class="box-body table-responsive no-padding">
-                                        <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
+                                        <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info" style="margin-top: 0 !important;">
                                             <tbody>
                                                 <tr style="width: 100%">
                                                     <td class="" style="width: 30%">

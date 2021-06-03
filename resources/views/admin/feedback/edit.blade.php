@@ -339,11 +339,26 @@
 
             var model = '/admin/feedbackQuestion';
 
-            if (addModel(model, data)) {
-                setTimeout(function (){
-                    location.reload()
-                }, 1500);
-            }
+            // addModel(model, data)
+
+            $.ajax({
+                type: "POST",
+                url: base_url + model,
+                data: data,
+                dataType : "json",
+                success: function (response) {
+                    successResponse(response);
+                    setTimeout(function (){
+                        location.reload()
+                    }, 1500);
+                },
+                error: function (e) {
+                    errorResponse(e)
+                }
+            });
+
+                
+            
 
         });
 

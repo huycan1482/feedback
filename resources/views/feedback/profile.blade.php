@@ -24,10 +24,10 @@
                             <img src="feedback/images/unnamed.png" alt="">
                         </div>
                         <div class="card-info">
-                            <p>Huy</p>
-                            <p>Vai trò: Học viên</p>
-                            <p>SDT: 0936274859</p>
-                            <p>Địa chỉ: Số 1 Hùng Vương</p>
+                            <p>{{ $user->name }}</p>
+                            <p>Vai trò: {{ $user->role->name }}</p>
+                            <p>SDT: {{ $user->phone }}</p>
+                            <p>Địa chỉ: {{ $user->address }}</p>
                         </div>
                     </div>
                 </div>
@@ -40,7 +40,7 @@
             <div class="box">
                 <div class="box-header">
                     <p class="box-title">Sửa thông tin</p>
-                    <div class="btn">Thay đổi</div>
+                    <div class="btn edit-user" data-id="{{ $user->id }}">Thay đổi</div>
                 </div>
                 <div class="box-hr"></div>
                 <div class="box-body">
@@ -49,41 +49,40 @@
                         <div class="row">
                             <div class="col-lg-6 form-group">
                                 <label for="name" class="form-label">Họ và tên</label>
-                                <input type="text" class="form-control" id="name" placeholder="Họ và tên">
+                                <input type="text" class="form-control" id="name" placeholder="Họ và tên" value="{{ $user->name }}">
                             </div>
                             <div class="col-lg-6 form-group">
                                 <label for="code" class="form-label">Chứng minh thư</label>
-                                <input type="text" class="form-control" id="code"
-                                    placeholder="Chứng minh thư">
+                                <input type="text" class="form-control" id="code" placeholder="Chứng minh thư" value="{{ $user->code }}">
                             </div>
                             <div class="col-lg-6 form-group">
                                 <label for="address" class="form-label">Giới tính</label>
-                                <select class="form-control" name="" id="">
+                                <select class="form-select" name="" id="gender" >
                                     <option value="">-- Chọn --</option>
-                                    <option value="1">Nam</option>
-                                    <option value="0">Nữ</option>
+                                    <option value="1" {{ ($user->gender == 1) ? ' selected="selected"' : '' }}>Nam</option>
+                                    <option value="0" {{ ($user->gender == 0) ? ' selected="selected"' : '' }}>Nữ</option>
                                 </select>
                             </div>
                             <div class="col-lg-6 form-group">
                                 <label for="date_of_birth" class="form-label">Ngày sinh</label>
-                                <input type="date" class="form-control" id="date_of_birth" placeholder="Ngày sinh">
+                                <input type="date" class="form-control" id="date_of_birth" placeholder="Ngày sinh" value="{{ date_format(date_create($user->date_of_birth), 'Y-m-d') }}">
                             </div>
                             <div class="col-lg-6 form-group">
                                 <label for="phone" class="form-label">Số điện thoại</label>
-                                <input type="text" class="form-control" id="phone" placeholder="Số điện thoại">
+                                <input type="text" class="form-control" id="phone" placeholder="Số điện thoại" value="{{ $user->phone }}">
                             </div>
                             <div class="col-lg-6 form-group">
                                 <label for="address" class="form-label">Địa chỉ</label>
-                                <input type="text" class="form-control" id="address" placeholder="Địa chỉ">
+                                <input type="text" class="form-control" id="address" placeholder="Địa chỉ" value="{{ $user->address }}">
                             </div>
                         </div>
 
                         <div class="short-hr"></div>
                         <p class="info-title">Thông tin Tài khoản</p>
                         <div class="row">
-                            <div class="col-lg-4 form-group">
+                            <div class="col-lg-4 form-group form-error">
                                 <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="name" placeholder="Email">
+                                <input type="email" class="form-control" id="email" placeholder="Email" value={{ $user->email }}>
                             </div>
                             <div class="col-lg-4 form-group">
                                 <label for="password" class="form-label">Mật khẩu mới**</label>
@@ -108,7 +107,26 @@
                                 </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach( $user->classRoom as $key => $item )
                                     <tr>
+                                        <td scope="row">{{ $key + 1 }}</td>
+                                        <td>{{ $item->name }}</td>
+                                        <td>{{ ( ($item->lesson->sortBy('start_at')->first()->start_at) )}}</td>
+                                        <td>00/00/0000</td>
+                                       
+                                        @if ( $item->is_active == 0 )
+                                            <td><span class="label label-danger">Đã hủy</span></td>
+                                        @elseif ( (strtotime($item->lesson->sortBy('start_at')->first()->start_at) < time()) ) 
+                                            <td><span class="label label-success">Đang học</span></td>
+                                        @elseif ( (strtotime($item->lesson->sortBy('start_at')->first()->start_at) > time()) ) 
+                                            <td><span class="label label-warning">Chờ học</span></td>
+                                        @else
+                                            <td><span class="label label-danger">Hoàn thành</span></td>
+                                        @endif
+                                      
+                                    </tr>
+                                    @endforeach
+                                    {{-- <tr>
                                         <td scope="row">1</td>
                                         <td>Lớp 1 (LH1)</td>
                                         <td>00/00/0000</td>
@@ -128,13 +146,13 @@
                                         <td>00/00/0000</td>
                                         <td>00/00/0000</td>
                                         <td><span class="label label-danger">Đang học</span></td>
-                                    </tr>
+                                    </tr> --}}
                                 </tbody>
                         </table>
                     </form>
                 </div>
                 <div class="box-footer">
-
+                    
                 </div>
             </div>
         </div>
@@ -145,4 +163,66 @@
 @section('js')
 <script src="feedback/js/box.js"></script>
 <!-- BoxJS -->
+
+<script src="feedback/js/form.js"></script>
+
+<script>
+    $(function () {
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $('.edit-user').click(function (e) {
+        var id = $(this).attr('data-id');
+        var name = $('#name').val();
+        var code  = $('#code').val();
+        var gender = $('#gender').val();
+        var date_of_birth = $('#date_of_birth').val();
+
+        console.log(date_of_birth);
+        var phone = $('#phone').val(); 
+        var address = $('#address').val();
+        
+        var email = $('#email').val(); 
+        var password = $('#password').val(); 
+        var password_confirmation = $('#password_confirmation').val(); 
+        
+        var data = { 
+            // id : id,
+            name : name,
+            email : email,
+            password : password,
+            password_confirmation : password_confirmation,
+            address : address,
+            gender : gender,
+            phone : phone,
+            code : code,
+            date_of_birth : date_of_birth,
+
+        };
+
+        var model = '/updateProfile/' + id + '/edit';
+
+        $.ajax({
+            type: 'PUT',
+            url: base_url + model,
+            data: data,
+            dataType : "json",
+
+            success: function (response) {
+                successResponse(response);
+            }, 
+            error: function (e) {
+                errorResponse(e);
+            }
+        });
+        // addModel(model, data);
+    }); 
+
+
+    });
+</script>
 @endsection

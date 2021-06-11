@@ -198,13 +198,13 @@
                                 <td class="text-center">{{ $item->course->code }}</td>
                                 <td class="text-center">
                                     @if ( $item->is_active == 0 )
-                                        <span class="label label-danger">Đã hủy</span>
-                                    @elseif ( (strtotime($item->lesson->first()->start_at) > time()) ) 
-                                        <span class="label label-success">Đang học</span>
-                                    @elseif ( (strtotime($item->lesson->first()->start_at) < time()) ) 
-                                        <span class="label label-warning">Chờ học</span>
+                                        <td><span class="label label-danger">Đã hủy</span></td>
+                                    @elseif ( (strtotime($item->lesson->sortBy('start_at')->first()->start_at) < time()) ) 
+                                        <td><span class="label label-success">Đang học</span></td>
+                                    @elseif ( (strtotime($item->lesson->sortBy('start_at')->first()->start_at) > time()) ) 
+                                        <td><span class="label label-warning">Chờ học</span></td>
                                     @else
-                                        <span class="label label-danger">Hoàn thành</span>
+                                        <td><span class="label label-danger">Hoàn thành</span></td>
                                     @endif
                                 </td>
                                 <td class="text-center">

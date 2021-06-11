@@ -152,8 +152,57 @@ footer p {
     cursor: pointer;
 
     display: none;
+    z-index: 100;
 }
 
+/* notice */
+.notice {
+    position: fixed;
+    right: 5px;
+    top: 75px;
+    width: 280px;
+    padding: 15px;
+    z-index: 99;
+    overflow: hidden;
+    border-radius: 5px;
+    color: #fff;
+    display: none;
+}
+
+.notice-success {
+    background-color: #009432;
+}
+
+.notice-danger {
+    background-color: #EA2027;
+}
+
+.notice-warning {
+    background-color: #FFC312;
+}
+
+.notice-header {
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notice-header p {
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.notice-header .fa-times {
+    cursor: pointer;
+}
+
+.notice-body p {
+    margin-bottom: 0;
+}
+
+.notice-body i {
+    margin: 5px 5px 0 0;
+}
 
 @media  (max-width: 767px) {
 

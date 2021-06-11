@@ -30,6 +30,7 @@ Route::group(['middleware' => 'checkUserLogin'], function () {
     Route::get('/checkIn', 'HomeController@getCheckIn')->name('feedback.getCheckIn');
     Route::get('/feed_back', 'HomeController@getFeedback')->name('feedback.getFeedback');
     Route::get('/profile', 'HomeController@getProfile')->name('feedback.getProfile');
+    Route::put('/updateProfile/{id}/edit', 'HomeController@updateProfile')->name('feedback.updateProfile');
 });
 
 

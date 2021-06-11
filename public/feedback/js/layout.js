@@ -21,7 +21,7 @@ window.addEventListener("scroll",function(){
 
 $('.scroll-up').click( function (e) {
     // $('header').scrollTop(600);
-    console.log(true);
+    // console.log(true);
     $('html, body').animate({
         scrollTop: top +100
     }, 'slow');

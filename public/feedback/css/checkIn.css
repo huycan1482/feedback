@@ -2,6 +2,10 @@
     color: #2c3e50;
 }
 
+.main-content .row > .col-lg-12 > .box {
+    margin-bottom: 0;
+}
+
 .text-center {
     text-align: center;
 }
@@ -33,17 +37,38 @@
     min-width: 100px;
 }
 
-.box-body > div {
-    max-height: 500px;
-    width: 100%;
-    overflow: auto;
+.table-name p {
+    margin-bottom: 0;
 }
 
-.box-footer {
+.form-table {
+    max-height: 500px;
+    /* height: 100%; */
+    width: 100%;
+    overflow: auto;
+    padding: 20px 0;
+}
+
+.form-footer {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
     padding: 20px;
+}
+
+.form-footer .form-check {
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+}
+
+.form-footer input {
+    margin: 0 5px 0 10px !important;
+}
+
+.form-check p {
+    margin-bottom: 6px;
 }
 
 .btn {
@@ -65,4 +90,63 @@ table {
 
 table td {
     color: #525f7f !important;
+}
+
+
+.form-check-input {
+    border-width: .5px !important;
+    padding: 10px;
+    margin: 0 2px;
+}
+
+.form-check-input:checked[type=radio] {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e") !important;
+}
+
+.input-info:checked {
+    background-color: #12CBC4 !important;
+    border-color: #12CBC4 !important;
+}
+
+.input-success:checked {
+    background-color: #009432 !important;
+    border-color: #009432 !important;
+}
+
+.input-danger:checked {
+    background-color: #EA2027 !important;
+    border-color: #EA2027 !important;
+}
+
+.input-warning:checked {
+    background-color: #FFC312 !important;
+    border-color: #FFC312 !important;
+}
+
+.input-info {
+    border-color: #12CBC4 !important;
+}
+
+.input-success {
+    border-color: #009432 !important;
+}
+
+.input-danger {
+    border-color: #EA2027 !important;
+}
+
+.input-warning {
+    border-color: #FFC312 !important;
+}
+
+.form-notice {
+    padding: 20px;
+}
+
+.form-notice table td {
+    width: 50%;
+}
+
+.hidden-checkIn {
+    display: none;
 }

@@ -69,7 +69,8 @@ class ClassController extends Controller
             'course_id' => 'required|exists:courses,id',
             'teacher_id' => 'required|exists:users,id',
             'total_number' => 'required|integer|min:1',
-            'feedback_id' => 'nullable|exists:feedbacks,id',
+            'feedback_id' => 'nullable|array',
+            'feedback_id.*' => 'exists:feedbacks,id',
             'is_active' => 'integer|boolean',
             'lessons' => 'required|array|min:1',
             'time_limit' => 'required|integer|min:1',
@@ -96,6 +97,8 @@ class ClassController extends Controller
             'time_limit.min' => 'Dữ liệu phải lớn hơn 0',
         ]);
 
+        dd($request->all());
+
         $errs = $validator->errors();
 
         if ( $validator->fails() ) {
@@ -107,7 +110,7 @@ class ClassController extends Controller
             $classRoom->slug = $request->input('name');
             $classRoom->course_id = $request->input('course_id');
             $classRoom->teacher_id = $request->input('teacher_id');
-            $classRoom->feedback_id = $request->input('feedback_id');
+            // $classRoom->feedback_id = $request->input('feedback_id');
             $classRoom->total_number = $request->input('total_number');
             $classRoom->is_active = (int)$request->input('is_active'); 
             $classRoom->user_create = Auth::user()->id;

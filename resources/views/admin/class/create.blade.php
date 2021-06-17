@@ -81,8 +81,9 @@
 
                         <div class="form-group" id="form-feedback_id">
                             <label for="">Bài đánh giá cuối khóa</label>
-                            <div>
-                                <select class=" select2 form-control" name="feedback_id" id="feedback_id">
+
+                            <div class="form-group">
+                                <select class="form-control select2" multiple="multiple" data-placeholder="Select a State" style="width: 100%;" name="feedback_id" id="feedback_id">
                                     <option value="">-- Chọn --</option>
                                     @foreach ($feedbacks as $feedback)
                                     <option value="{{ $feedback->id }}">{{ $feedback->code }}</option>
@@ -265,6 +266,8 @@
 
 <script>
     $(function () {
+        $('.select2').select2();
+
         //Flat red color scheme for iCheck
         $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
             checkboxClass: 'icheckbox_flat-green',
@@ -291,6 +294,8 @@
             var total_number = $("input[name='total_number']").val(); 
             var is_active = ( $("input[name='is_active']").is(':checked') ) ? 1 : 0;
             var time_limit = $("input[name='time_limit']").val(); 
+
+            console.log(feedback_id);
 
             var date = $("input[name='day_startAt']").val().split('-');
             var dateStartAt = date[2] + '-' + date[1] + '-' + date[0];

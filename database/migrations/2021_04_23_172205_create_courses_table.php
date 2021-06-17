@@ -19,7 +19,6 @@ class CreateCoursesTable extends Migration
             $table->string('slug', 255);
             $table->string('code', 255);
             $table->unsignedBigInteger('subject_id');
-            // $table->dateTime('start_at');
             $table->integer('total_lesson');
             $table->tinyInteger('is_active');
             $table->unsignedBigInteger('user_create')->nullable();

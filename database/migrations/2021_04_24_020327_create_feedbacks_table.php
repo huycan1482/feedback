@@ -18,8 +18,6 @@ class CreateFeedbacksTable extends Migration
             $table->string('name', 255);
             $table->string('slug', 255);
             $table->string('code', 255);
-            $table->dateTime('start_at');
-            $table->dateTime('end_at');
             $table->tinyInteger('is_active');
             $table->unsignedBigInteger('user_create')->nullable();
             $table->unsignedBigInteger('user_update')->nullable();

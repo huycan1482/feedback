@@ -14,9 +14,6 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
 
 //Admin login
 Route::get('adminLogin', 'Auth\LoginController@login')->name('admin.login');
@@ -47,7 +44,6 @@ Route::group(['prefix' => 'admin' , 'as' => 'admin.', 'middleware' => 'checkAdmi
     Route::resource('lesson', 'LessonController');
     Route::resource('class', 'ClassController');
 });
-// Route::get('/home', 'HomeController@index')->name('home');
 
 
 //UserLogin
@@ -64,4 +60,8 @@ Route::group(['middleware' => 'checkUserLogin'], function () {
     Route::get('/feed_back', 'HomeController@getFeedback')->name('feedback.getFeedback');
     Route::get('/profile', 'HomeController@getProfile')->name('feedback.getProfile');
     Route::put('/updateProfile/{id}/edit', 'HomeController@updateProfile')->name('feedback.updateProfile');
+});
+
+Route::get('/', function () {
+    return redirect()->route('user.login');
 });

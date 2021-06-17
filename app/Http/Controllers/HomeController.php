@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\CheckIn;
 use App\ClassRoom;
+use App\FeedBack;
 use App\Lesson;
 use App\User;
 use Exception;
@@ -295,13 +296,43 @@ class HomeController extends Controller
 
     public function getFeedback ()
     {
-        $classes = ClassRoom::select('classes.*')
-        ->join('user_class', 'user_class.class_id', '=', 'classes.id')
-        ->where('user_class.user_id', Auth::user()->id)
-        ->get();
+        // dd('ad');
+        $classes = ClassRoom::select('classes.id', 'classes.name', 'classes.code')
+            ->join('user_class', 'user_class.class_id', '=', 'classes.id')
+            ->where('user_class.user_id', Auth::user()->id)
+            ->orderBy('user_class.created_at', 'asc')
+            ->get();
+dd($classes->first()->id);
+        $feedBack = FeedBack::findOrFail($classes->first()->id);
 
-        dd($classes);
-        return view ('feedback.feedback');
+        foreach ($feedBack->question as $key => $item) {
+            $arr = [];
+
+            foreach($item->answer as $item2) {
+                $arr [] = [
+                    'id' => $item2->id,
+                    'content' => $item2->content,
+                ];
+            }
+
+            shuffle($arr);
+
+            $data [] = [
+                'id' => $item->id, 
+                'code' => $item->code,
+                'content' => $item->content,
+                'answer' => $arr,
+            ];
+        }
+
+        shuffle($data);
+
+        
+
+        return view ('feedback.feedback', [
+            'classes' => $classes,
+            'data' => $data,
+        ]);
     }
 
     public function getProfile ()

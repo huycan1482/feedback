@@ -17,28 +17,15 @@
                     <i class="fas fa-minus"></i>
                 </div>
                 <div class="box-body">
+                    @foreach($classes as $class)
                     <a class="class-item" href="#">
                         <div>
                             <i class="fas fa-clipboard-list"></i>
-                            <span>Tên lớp học (Mã lớp)</span>
+                            <span>{{ $class->name }} ({{ $class->code }})</span>
                         </div>
                         <i class="fas fa-check"></i>
                     </a>
-                    <a class="class-item" href="#">
-                        <div>
-                            <i class="fas fa-clipboard-list"></i>
-                            <span>Tên lớp học (Mã lớp)</span>
-                        </div>
-                        <i class="fas fa-check"></i>
-                    </a>
-                    <a class="class-item" href="#">
-                        <div>
-                            <i class="fas fa-clipboard-list"></i>
-                            <span>Tên lớp học (Mã lớp)</span>
-                        </div>
-                        <i class="fas fa-check"></i>
-                    </a>
-
+                    @endforeach
                 </div>
             </div>
 

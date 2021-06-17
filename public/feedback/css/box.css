@@ -98,6 +98,7 @@
     margin-right: 5px;
 }
 
+
 /* error */
 .error-text {
     color: #EA2027;
@@ -111,6 +112,37 @@
     margin: 10px 5px;
     font-weight: 600;
 }
+
+
+/* label */
+.label {
+    padding: .2em .6em .3em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
+}
+
+.label-success {
+    background-color: #009432;
+}
+
+.label-danger {
+    background-color: #EA2027;
+}
+
+.label-warning {
+    background-color: #F79F1F;
+}
+
+.label-info {
+    background-color: #12CBC4;
+}
+
 
 @media  (max-width: 1000px) {
     .main-content .col-lg-4 .box{

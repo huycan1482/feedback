@@ -11,24 +11,30 @@
                     <span>Trang chủ</span>
                 </a>
             </li>
+            
+            @can('viewFeedBack', App\User::class)
             <li class="menu-item">
                 <a href="{{ route('feedback.getFeedback') }}">
                     <i class="fas fa-scroll"></i>
                     <span>Khảo sát học tập</span>
                 </a>
-                
             </li>  
+            @endcan
+            
+            @can('viewCheckIn', App\User::class)
             <li class="menu-item">
                 <a href="{{ route('feedback.getCheckIn') }}">
                     <i class="fas fa-scroll"></i>
                     <span>Điểm danh</span>
                 </a>
             </li>   
+            @endcan
+            
         </ul>
         <div class="menu-account">
             <div class="account-toggle">
                 <i class="fas fa-user"></i>
-                <span>Xin chào, Huy</span>
+                <span>Xin chào</span>
                 <i class="fas fa-sort-down"></i>
             </div>
             

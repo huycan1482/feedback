@@ -7,8 +7,8 @@
 <link rel="stylesheet" href="feedback/css/box.css">
 <!-- Css Layout -->
 <link rel="stylesheet" href="feedback/css/checkIn.css">
-<!-- Calendar -->
-<link rel="stylesheet" href="feedback/css/calendar.css">
+{{-- <!-- Calendar -->
+<link rel="stylesheet" href="feedback/css/calendar.css"> --}}
 @endsection
 
 @section('content')
@@ -21,28 +21,15 @@
                     <i class="fas fa-minus"></i>
                 </div>
                 <div class="box-body">
-                    <a class="class-item" href="#">
+                    @foreach($classes as $class_item)
+                    <a class="class-item" href="{{ route('feedback.getCheckInId', ['id' => $class_item->id]) }}">
                         <div>
                             <i class="fas fa-chalkboard"></i>
-                            <span>Tên lớp học (Mã lớp)</span>
+                            <span>{{ $class_item->name }} ({{ $class_item->code }})</span>
                         </div>
                         <i class="fas fa-check"></i>
                     </a>
-                    <a class="class-item" href="#">
-                        <div>
-                            <i class="fas fa-chalkboard"></i>
-                            <span>Tên lớp học (Mã lớp)</span>
-                        </div>
-                        <i class="fas fa-check"></i>
-                    </a>
-                    <a class="class-item" href="#">
-                        <div>
-                            <i class="fas fa-chalkboard"></i>
-                            <span>Tên lớp học (Mã lớp)</span>
-                        </div>
-                        <i class="fas fa-check"></i>
-                    </a>
-
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -55,17 +42,17 @@
                             <div class="box-info">
                                 <i class="fas fa-book-open"></i>
                                 <span>Lớp học: </span>
-                                <span>Lớp học / Mã lớp</span>
+                                <span>{{ $class->name }}/{{ $class->code }}</span>
                             </div>
                             <div class="box-info">
                                 <i class="fas fa-bookmark"></i>
                                 <span>Khóa học: </span>
-                                <span>Khóa học / Mã khóa</span>
+                                <span>{{ $class->course }}/{{ $class->course_code }}</span>
                             </div>
                             <div class="box-info">
                                 <i class="fas fa-book"></i>
                                 <span>Môn học: </span>
-                                <span>Môn học / Mã môn</span>
+                                <span>{{ $class->subject }}/{{ $class->subject_code }}</span>
                             </div>
                         </div>
                         <div class="col-lg-4">
@@ -77,29 +64,29 @@
                             <div class="box-info">
                                 <i class="fas fa-concierge-bell"></i>
                                 <span>Tống số buổi: </span>
-                                <span>20</span>
+                                <span>{{ $class->total_number }}</span>
                             </div>
                             <div class="box-info">
                                 <i class="fas fa-users"></i>
                                 <span>Tổng số học viên: </span>
-                                <span>20</span>
+                                <span>??</span>
                             </div>
                         </div>
                         <div class="col-lg-4">
                             <div class="box-info">
                                 <i class="fas fa-hourglass-start"></i>
                                 <span>Ngày bắt đầu: </span>
-                                <span>00/00/0000</span>
+                                <span>{{ date_format(date_create($class->start_at), 'd-m-Y') }}</span>
                             </div>
                             <div class="box-info">
                                 <i class="fas fa-hourglass-end"></i>
                                 <span>Ngày kết thúc: </span>
-                                <span>00/00/0000</span>
+                                <span>{{ date_format(date_create($class->end_at), 'd-m-Y') }}</span>
                             </div>
                             <div class="box-info">
                                 <i class="fas fa-hourglass-end"></i>
                                 <span>Số buổi còn lại: </span>
-                                <span>20</span>
+                                <span>{{ $class->number }}</span>
                             </div>
                         </div>
                     </div>
@@ -114,336 +101,52 @@
                                     <th scope="col" class="text-center col">STT</th>
                                     <th scope="col" class="text-center col">Họ và tên</th>
                                     <th scope="col" class="text-center col">Ngày sinh</th>
-                                    <th scope="col" class="text-center col">1/2</th>
-                                    <th scope="col" class="text-center col">00/00</th>
-                                    <th scope="col" class="text-center col">00/00</th>
-                                    <th scope="col" class="text-center col">00/00</th>
-                                    <th scope="col" class="text-center col">00/00</th>
-                                    <th scope="col" class="text-center col">00/00</th>
-                                    <th scope="col" class="text-center col">00/00</th>
-                                    <th scope="col" class="text-center col">00/00</th>
-                                    <th scope="col" class="text-center col">00/00</th>
-
+                                    @foreach($lessons as $key => $lesson)
+                                    <th scope="col" class="text-center col {{ ($key != 0) ? 'hidden_checkIn' : '' }}">{{date_format(date_create($lesson->start_at), 'd-m-Y')}}</th>
+                                    @endforeach
                                 </tr>
                             </thead>
                             <tbody>
+
+                                @foreach($students as $key => $student)
                                 <tr>
-                                    <td scope="row" class="text-center table-stt">1</td>
+                                    <td scope="row" class="text-center table-stt">{{ $key + 1 }}</td>
                                     <td class="text-center table-name">
-                                        <p>Mark</p>   
-                                        <span class="label label-info">00</span>
-                                        <span class="label label-warning">00</span>
-                                        <span class="label label-danger">00</span>
+                                        <p>{{ $student->name }}</p>   
+                                        
+                                        @foreach($user_checkIn[$student->id] as $item)
+                                        {{-- {{dd($user_checkIn)}} --}}
+                                        <span class="label label-info">{{$item->di_hoc}}</span>
+                                        <span class="label label-warning">{{$item->di_muon}}</span>
+                                        <span class="label label-danger">{{$item->vang_mat}}</span>
+                                        @endforeach
+
                                     </td>
-                                    <td class=" table-date text-center">00/00/0000</td>
+                                    <td class=" table-date text-center">{{ date_format(date_create($student->date_of_birth), 'd-m-Y') }}</td>
+                                    
+                                    @foreach($checkIn[$student->id] as $key => $item)
                                     <td class="text-center">
                                         <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_1_1" value="1" checked disabled>
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_1_1" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_1_1" value="3">
+                                            {{-- {{dd($item->is_check)}} --}}
+                                        @if($item->is_check == null)
+                                            <input type="radio" class="form-check-input input-info" name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}"
+                                                id="{{$student->id}}_1" value="1" data-id="{{ $student->id }}">
+                                            <input type="radio" class="form-check-input input-warning" name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}"
+                                                id="{{$student->id}}_2" value="2" data-id="{{ $student->id }}">
+                                            <input type="radio" class="form-check-input input-danger" name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}"
+                                                id="{{$student->id}}_3" value="3" data-id="{{ $student->id }}">
+                                        @elseif($item->is_check == 1)
+                                            <input type="radio" class="form-check-input input-info hidden_checkIn" name="" checked >
+                                        @elseif($item->is_check == 2)
+                                            <input type="radio" class="form-check-input input-warning hidden_checkIn" name="" checked >
+                                        @else
+                                            <input type="radio" class="form-check-input input-danger hidden_checkIn" name="" checked >
+                                        @endif
                                         </div>
                                     </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_1_2" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_1_2" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_1_2" value="3">
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_1_3" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_1_3" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_1_3" value="3">
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_1_1" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_1_1" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_1_1" value="3">
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_1_2" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_1_2" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_1_2" value="3">
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_1_3" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_1_3" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_1_3" value="3">
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_1_1" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_1_1" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_1_1" value="3">
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_1_2" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_1_2" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_1_2" value="3">
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_1_3" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_1_3" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_1_3" value="3">
-                                        </div>
-                                    </td>
-
-                                </tr>
-                                <tr>
-                                    <td scope="row" class="text-center table-stt">1</td>
-                                    <td class=" table-name">Mark</td>
-                                    <td class=" table-date text-center">00/00/0000</td>
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_2_1" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_2_1" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_2_1" value="3">
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_2_2" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_2_2" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_2_2" value="3">
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_2_3" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_2_3" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_2_3" value="3">
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_2_1" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_2_1" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_2_1" value="3">
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_2_2" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_2_2" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_2_2" value="3">
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_2_3" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_2_3" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_2_3" value="3">
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_2_1" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_2_1" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_2_1" value="3">
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_2_2" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_2_2" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_2_2" value="3">
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_2_3" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_2_3" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_2_3" value="3">
-                                        </div>
-                                    </td>
-
-                                </tr>
-                                <tr>
-                                    <td scope="row" class="text-center table-stt">1</td>
-                                    <td class=" table-name">Mark</td>
-                                    <td class=" table-date text-center">00/00/0000</td>
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_3_1" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_3_1" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_3_1" value="3">
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_3_2" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_3_2" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_3_2" value="3">
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_3_3" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_3_3" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_3_3" value="3">
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_3_1" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_3_1" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_3_1" value="3">
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_3_2" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_3_2" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_3_2" value="3">
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_3_3" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_3_3" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_3_3" value="3">
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_3_1" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_3_1" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_3_1" value="3">
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_3_2" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_3_2" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_3_2" value="3">
-                                        </div>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input input-info" id=""
-                                                name="check_3_3" value="1">
-                                            <input type="radio" class="form-check-input input-warning" id=""
-                                                name="check_3_3" value="2">
-                                            <input type="radio" class="form-check-input input-danger" id=""
-                                                name="check_3_3" value="3">
-                                        </div>
-                                    </td>
-
-                                </tr>
+                                    @endforeach
+                                
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -474,7 +177,7 @@
                             <form action="" class="col-lg-8">
                                 <div class=" form-group">
                                     <label for="phone" class="form-label">Ghi chú hôm nay</label>
-                                    <textarea name="" id="" cols="30" rows="10"
+                                    <textarea name="" id="note" cols="30" rows="10"
                                         class="form-control"></textarea>
                                 </div>
                             </form>
@@ -503,337 +206,13 @@
                         </div>
                         <div>
                             <div class="btn btn-danger btn-reset">Tải lại</div>
-                            <div class="btn btn-primary btn-save">Lưu</div>
+                            <div class="btn btn-primary btn-save" data-id="{{$lessons->first()->id}}">Lưu</div>
                         </div>
                     </div>
 
                 </div>
 
                 <div class="box-footer">
-                    <!-- <div class="calendar">
-                        <div class="calendar-header">
-                            <i class="fas fa-calendar-alt"></i>
-                            <p>Lịch làm việc</p>
-                        </div>
-                        <div class="calendar-body">
-                            <div class="calendar-title">
-                                <div class="calendar-left">
-                                    <div>
-                                        <div class="calendar-prev-btn my-btn">
-                                            <i class="fas fa-chevron-left"></i>
-                                        </div>
-                                        <div class="calendar-next-btn my-btn">
-                                            <i class="fas fa-chevron-right"></i>
-                                        </div>
-                                    </div>
-                                    <div class="calendar-today my-btn">
-                                        Hôm nay
-                                    </div>
-                                </div>
-                                <div class="calendar-center">
-                                    <p>
-                                        Tháng 6, Năm 2021
-                                    </p>
-                                </div>
-                                <div class="calendar-right">
-                                    <div class="calendar-month my-btn">
-                                        Tháng
-                                    </div>
-                                    <div class="calendar-year my-btn">
-                                        Năm
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="calendar-main">
-                                <table>
-                                    <thead>
-                                        <th>Thứ 2</th>
-                                        <th>Thứ 3</th>
-                                        <th>Thứ 4</th>
-                                        <th>Thứ 5</th>
-                                        <th>Thứ 6</th>
-                                        <th>Thứ 7</th>
-                                        <th>Chủ nhật</th>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-                                            <td>
-                                                <p class="calendar-table-date">1</p>
-                                                <p class="calendar-table-notice label label-danger">
-                                                    Lorem ipsum dolor sit amet askdjasdh akjsdhushn
-                                                </p>
-                                            </td>
-
-                                        </tr>
-
-                                    </tbody>
-                                </table>
-                            </div>
-
-
-                        </div>
-                    </div> -->
 
                     <div id="calendar" style="padding: 20px">
 
@@ -852,33 +231,69 @@
 {{-- FullCalendar --}}
 <script src="feedback/js/box.js"></script>
 <!-- BoxJS -->
-<script src="feedback/js/calendar.js"></script>
+{{-- <script src="feedback/js/calendar.js"></script> --}}
 
-<script>
+<script type="text/javascript">
     $(function () {
 
         // page is now ready, initialize the calendar...
 
         $('#calendar').fullCalendar({
             // put your options and callbacks here
-            events: [{
-                    title: 'event1',
-                    start: '2021-06-06'
-                },
-                {
-                    title: 'event2',
-                    start: '2021-06-06',
-                    end: '2021-06-08'
-                },
-                {
-                    title: 'event3',
-                    start: '2010-01-09T12:30:00',
-                    allDay: false // will make the time show
-                }
+            events: [
+                {!! $events !!}
             ]
-        })
+        });
 
     });
+</script>
+
+<script src="feedback/js/form.js"></script>
+
+<script type="text/javascript">
+    $(function () {
+        $(document).on('click', '.btn-save', function () {  
+            var date = new Date();
+
+            var today = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+
+            var id = $(this).attr('data-id');
+
+            var inputs_checkIn = $('[name*="05-06-2021"]:checked');
+
+            var note = $('#note').val();
+
+            var checkIn = [];
+
+            inputs_checkIn.each( function (index, value) {
+                checkIn[index] = { 'id': $(this).attr('data-id'), 'val': value.value };
+            });
+
+            var data = {
+                id: id,
+                checkIn: checkIn,
+                note: note,
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: base_url + '/postCheckIn',
+                data: data,
+                dataType : 'json',
+
+                success: function (response) {
+                    console.log(response);
+                    successResponse(response);
+                },
+                error: function (e) {
+                    errorResponse(e)
+                }
+            });
+
+
+        });
+    });
+    
 </script>
 
 @endsection

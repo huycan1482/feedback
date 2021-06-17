@@ -158,15 +158,14 @@ footer p {
 /* notice */
 .notice {
     position: fixed;
+    top: 5px;
     right: 5px;
-    top: 75px;
     width: 280px;
     padding: 15px;
     z-index: 99;
     overflow: hidden;
     border-radius: 5px;
     color: #fff;
-    display: none;
 }
 
 .notice-success {
@@ -177,7 +176,7 @@ footer p {
     background-color: #EA2027;
 }
 
-.notice-warning {
+.notice-danger {
     background-color: #FFC312;
 }
 
@@ -202,6 +201,10 @@ footer p {
 
 .notice-body i {
     margin: 5px 5px 0 0;
+}
+
+.selected-item {
+    
 }
 
 @media  (max-width: 767px) {

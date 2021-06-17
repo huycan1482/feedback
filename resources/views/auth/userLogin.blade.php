@@ -51,7 +51,7 @@
                                 <span class="error-text">{{$errors->first('password')}}</span>
                             </div>
                             <div class="form-group form-check">
-                                <input type="checkbox" class="form-check-input" id="remember">
+                                <input type="checkbox" class="form-check-input" id="remember" name="remember">
                                 <label class="form-check-label" for="remember">Ghi nhớ đăng nhập</label>
                             </div>
                             

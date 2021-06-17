@@ -5,7 +5,19 @@ $.ajaxSetup({
 });
 
 function addModel(model, data) {
+    $.ajax({
+        type: 'POST',
+        url: base_url + model,
+        data: data,
+        dataType : 'json',
 
+        success: function (response) {
+            successResponse(response);
+        },
+        error: function (e) {
+            errorResponse(e)
+        }
+    });
 }
 
 function updateModel(model, data) {
@@ -82,7 +94,7 @@ function messageResponse(status, mess) {
 
     $('.notice').fadeIn();
 
-    $('.notice').delay(1500).fadeOut();
+    $('.notice').delay(2000).fadeOut();
 
 }
 

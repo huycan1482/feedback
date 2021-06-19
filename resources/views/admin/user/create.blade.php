@@ -31,9 +31,9 @@
                     <div class="box-body">
 
                         <div class="form-group " id="form-name">
-                            <label class="" for="">Tên học viên</label>
+                            <label class="" for="">Tên người dùng</label>
                             <div>
-                                <input name="name" type="text" class="form-control " placeholder="Tên học viên">
+                                <input name="name" type="text" class="form-control " placeholder="Tên người dùng">
                             </div>
                         </div>
 
@@ -181,6 +181,12 @@
 
         $('.select2').select2();
 
+        $('.datepicker').datepicker({
+            // autoclose: false,
+            format: 'dd-mm-yyyy',
+            forceParse: false,
+        });
+
         $('.add-user').click(function (e) {
             var name = $("input[name='name']").val();
             var email = $("input[name='email']").val(); 
@@ -193,6 +199,11 @@
             var code = $("input[name='code']").val(); 
             var is_active = ( $("input[name='is_active']").is(':checked') ) ? 1 : 0;
 
+            if ($("input[name='date-of-birth']").val() != '') { 
+                var date = $("input[name='date-of-birth']").val().split('-');
+                var date_of_birth = date[2] + '-' + date[1] + '-' + date[0];
+            }
+
             var data = { 
                 name : name,
                 email : email,
@@ -204,6 +215,7 @@
                 phone : phone,
                 code : code,
                 is_active : is_active,
+                date_of_birth: date_of_birth,
             };
 
             var model = '/admin/user';

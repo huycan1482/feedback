@@ -13,16 +13,16 @@ class CreateQuestionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('questions', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('code', 255);
-            $table->string('content', 255);
-            $table->string('slug', 255);
-            $table->tinyInteger('is_active');
-            $table->unsignedBigInteger('user_create')->nullable();
-            $table->unsignedBigInteger('user_update')->nullable();
-            $table->timestamps();
-        });
+        // Schema::create('questions', function (Blueprint $table) {
+        //     $table->bigIncrements('id');
+        //     $table->string('code', 255);
+        //     $table->string('content', 255);
+        //     $table->string('slug', 255);
+        //     $table->tinyInteger('is_active');
+        //     $table->unsignedBigInteger('user_create')->nullable();
+        //     $table->unsignedBigInteger('user_update')->nullable();
+        //     $table->timestamps();
+        // });
     }
 
     /**

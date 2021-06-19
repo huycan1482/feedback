@@ -110,7 +110,7 @@
                                 <td class="text-center">{{ $key + 1}}</td>
                                 <td class="text-center">{{ $class->name }}</td>
                                 <td class="text-center">{{ $class->course->code }}</td>
-                                <td class="text-center">{{ $class->user->name }}</td>
+                                <td class="text-center">{{ isset($class->user->name)  ? $class->user->name : '' }}</td>
                                 <td class="text-center">{{ $class->total_number }}</td>
                                 <td class="text-center">
                                     <span class="label label-{{ ($class->is_active == 1) ? 'success' : 'danger' }}">{{ ($class->is_active == 1) ? 'Hiển thị' : 'Ẩn' }}</span>

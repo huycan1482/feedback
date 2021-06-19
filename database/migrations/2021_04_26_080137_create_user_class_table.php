@@ -13,15 +13,15 @@ class CreateUserClassTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_class', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('class_id');
-            $table->tinyInteger('is_active');
-            $table->unsignedBigInteger('user_create')->nullable();
-            $table->unsignedBigInteger('user_update')->nullable();
-            $table->timestamps();
-        });
+        // Schema::create('user_class', function (Blueprint $table) {
+        //     $table->bigIncrements('id');
+        //     $table->unsignedBigInteger('user_id');
+        //     $table->unsignedBigInteger('class_id');
+        //     $table->tinyInteger('is_active');
+        //     $table->unsignedBigInteger('user_create')->nullable();
+        //     $table->unsignedBigInteger('user_update')->nullable();
+        //     $table->timestamps();
+        // });
     }
 
     /**

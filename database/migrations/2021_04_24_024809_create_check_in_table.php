@@ -13,13 +13,13 @@ class CreateCheckInTable extends Migration
      */
     public function up()
     {
-        Schema::create('check_in', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('lesson_id');
-            $table->tinyInteger('is_check');
-            $table->timestamps();
-        });
+        // Schema::create('check_in', function (Blueprint $table) {
+        //     $table->bigIncrements('id');
+        //     $table->unsignedBigInteger('user_id');
+        //     $table->unsignedBigInteger('lesson_id');
+        //     $table->tinyInteger('is_check');
+        //     $table->timestamps();
+        // });
     }
 
     /**

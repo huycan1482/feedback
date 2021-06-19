@@ -3,10 +3,31 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes; 
 
 class ClassRoom extends Model
 {
+    use SoftDeletes;
+
+    protected $dates = ['deleted_at'];
+    
     protected $table = 'classes';
+
+    protected static function boot() {
+        parent::boot();
+    
+        static::deleting(function($classRoom) {
+            $classRoom->lessons()->delete();
+            $classRoom->user_class()->delete();
+            $classRoom->feedback_details()->delete();
+        });
+
+        static::restoring(function($classRoom) {
+            $classRoom->lessons()->withTrashed()->restore();
+            $classRoom->user_class()->withTrashed()->restore();
+            $classRoom->feedback_details()->withTrashed()->restore();
+        });
+    }
 
     public function user ()
     {
@@ -23,8 +44,19 @@ class ClassRoom extends Model
         return $this->belongsToMany('App\User', 'user_class', 'class_id', 'user_id')->withPivot('class_id', 'user_id', 'id');
     }
 
-    public function lesson ()
+    public function lessons ()
     {
         return $this->hasMany('App\Lesson', 'class_id', 'id')->orderBy('start_at', 'asc');
+    }
+
+
+    public function user_class ()
+    {
+        return $this->hasMany('App\UserClass', 'class_id', 'id');
+    }
+
+    public function feedback_details ()
+    {
+        return $this->hasMany('App\UserClass', 'class_id', 'id');
     }
 }

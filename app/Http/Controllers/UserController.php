@@ -18,7 +18,12 @@ class UserController extends Controller
      */
     public function index()
     {
+        $user = User::withTrashed()->find(4);
+        $user->restore();
+        // User::withTrashed()->find(4)->restore();
         $users = User::latest()->get();
+        // dd(User::find(4)->classes);
+        // $users = User::withTrashed()->latest()->get();
         return view ('admin.user.index', [
             'users' => $users,
         ]);
@@ -81,7 +86,7 @@ class UserController extends Controller
             'date_of_birth.required' => 'Yêu cầu không để trống',
             'date_of_birth.date_format' => 'Sai kiểu dữ liệu',
             'phone.required' => 'Yêu cầu không để trống',
-            'phone.size' => 'Sai kiểu dữ liệu',
+            'phone.size' => 'ĐỌ dài 10 chữ số',
             'address.required' => 'Yêu cầu không để trống',
             'is_active.integer' => 'Sai kiểu dữ liệu',
             'is_active.boolean' => 'Sai kiểu dữ liệu',
@@ -242,7 +247,17 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::find($id);
+        // User::destroy($id);
+
+        // $user->classes->delete;
+
+        // foreach ($user->classes as $item) {
+        //     $item->delete();
+        // }
+
+        $user->delete();
+
     }
 
     

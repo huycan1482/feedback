@@ -97,7 +97,7 @@ class ClassController extends Controller
             'time_limit.min' => 'Dữ liệu phải lớn hơn 0',
         ]);
 
-        dd($request->all());
+        // dd($request->all());
 
         $errs = $validator->errors();
 
@@ -298,7 +298,7 @@ class ClassController extends Controller
                 $classRoom->user_update = Auth::user()->id;
 
                 if (!empty($request->input('time_limit'))) {
-                    $classRoom->lesson()->update([
+                    $classRoom->lessons()->update([
                         'time_limit' => $request->input('time_limit'),
                     ]);
                 }

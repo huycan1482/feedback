@@ -13,17 +13,17 @@ class CreateAnswersTable extends Migration
      */
     public function up()
     {
-        Schema::create('answers', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('question_id');
-            $table->string('code', 255);
-            $table->text('content');
-            $table->tinyInteger('type');
-            $table->tinyInteger('is_true');
-            $table->unsignedBigInteger('user_create')->nullable();
-            $table->unsignedBigInteger('user_update')->nullable();
-            $table->timestamps();
-        });
+        // Schema::create('answers', function (Blueprint $table) {
+        //     $table->bigIncrements('id');
+        //     $table->unsignedBigInteger('question_id');
+        //     $table->string('code', 255);
+        //     $table->text('content');
+        //     $table->tinyInteger('type');
+        //     $table->tinyInteger('is_true');
+        //     $table->unsignedBigInteger('user_create')->nullable();
+        //     $table->unsignedBigInteger('user_update')->nullable();
+        //     $table->timestamps();
+        // });
     }
 
     /**

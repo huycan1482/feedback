@@ -13,16 +13,16 @@ class CreateFeedbackeDetailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('feedback_details', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('feedback_id');
-            $table->unsignedBigInteger('class_id');
-            $table->dateTime('start_at');
-            $table->dateTime('end_at');
-            $table->unsignedBigInteger('user_create')->nullable();
-            $table->unsignedBigInteger('user_update')->nullable();
-            $table->timestamps();
-        });
+        // Schema::create('feedback_details', function (Blueprint $table) {
+        //     $table->bigIncrements('id');
+        //     $table->unsignedBigInteger('feedback_id');
+        //     $table->unsignedBigInteger('class_id');
+        //     $table->dateTime('start_at');
+        //     $table->dateTime('end_at');
+        //     $table->unsignedBigInteger('user_create')->nullable();
+        //     $table->unsignedBigInteger('user_update')->nullable();
+        //     $table->timestamps();
+        // });
     }
 
     /**

@@ -308,7 +308,7 @@ dd($classes->first()->id);
         foreach ($feedBack->question as $key => $item) {
             $arr = [];
 
-            foreach($item->answer as $item2) {
+            foreach($item->answers as $item2) {
                 $arr [] = [
                     'id' => $item2->id,
                     'content' => $item2->content,

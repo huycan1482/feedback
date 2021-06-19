@@ -13,13 +13,13 @@ class CreateUserAnswerTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_answer', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('question_id');
-            $table->unsignedBigInteger('answer_id');
-            $table->unsignedBigInteger('feedbackDetail_id');
-            $table->timestamps();
-        });
+        // Schema::create('user_answer', function (Blueprint $table) {
+        //     $table->bigIncrements('id');
+        //     $table->unsignedBigInteger('question_id');
+        //     $table->unsignedBigInteger('answer_id');
+        //     $table->unsignedBigInteger('feedbackDetail_id');
+        //     $table->timestamps();
+        // });
     }
 
     /**

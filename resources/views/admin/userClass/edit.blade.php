@@ -58,7 +58,7 @@
                             <div>
                                 <select class="form-control" id="is_active" name="is_active">
                                     <option value="1" {{ $userClass->is_active == 1 ? 'selected' : '' }}>
-                                        {{ (strtotime($userClass->classRoom->lesson->first()->start_at) > time()) ? 'Đang học' : 'Chờ học' }}</option>
+                                        {{ (strtotime($userClass->classRoom->lessons->first()->start_at) > time()) ? 'Đang học' : 'Chờ học' }}</option>
                                     <option value="0" {{ $userClass->is_active == 2 ? 'selected' : '' }}>Hủy</option>
                                 </select>
                             </div>

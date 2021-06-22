@@ -33,6 +33,12 @@ class FeedBack extends Model
             ->orderBy('feedback_question.id', 'asc');
     }
 
+    public function classRoom ()
+    {
+        return $this->belongsToMany('App\ClassRoom', 'feedback_details', 'feedback_id', 'class_id')
+            ->withPivot('id', 'feedback_id', 'class_id');
+    }
+
     public function feedback_details ()
     {
         return $this->hasMany('App\FeedbackDetail', 'feedback_id', 'id');
@@ -41,5 +47,15 @@ class FeedBack extends Model
     public function feedback_question ()
     {
         return $this->hasMany('App\FeedbackQuestion', 'feedback_id', 'id');
+    }
+
+    public function userCreate ()
+    {
+        return $this->belongsTo('App\User', 'user_create', 'id');
+    }
+
+    public function userUpdate ()
+    {
+        return $this->belongsTo('App\User', 'user_update', 'id');
     }
 }

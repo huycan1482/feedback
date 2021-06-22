@@ -85,6 +85,8 @@ class QuestionController extends Controller
             $created_time = date('Y-m-d H:i:s', $current_date->getTimestamp());
             $question->created_at = $created_time;
 
+            // dd($request['answers'] );
+
             DB::beginTransaction();
 
             try {
@@ -92,12 +94,14 @@ class QuestionController extends Controller
 
                 $latestQuestion = Question::where([ 'created_at' => $created_time ]);
 
-                foreach ($request['answers'] as $item) {
+                foreach ($request['answers'] as $key => $item) {    
                     $answer = new Answer;
+                    $answer->code = $request->input('code').'-'.$key.'-'.time();
                     $answer->question_id = $latestQuestion->first()->id;
                     $answer->content = $item['0'];
                     $answer->type = 1;
                     $answer->is_true = (int)$item['1'];
+                    $answer->user_create = Auth::user()->id;
                     $answer->save();
                 }
 
@@ -227,7 +231,17 @@ class QuestionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $question = Question::find($id);
+
+        if ( empty($question) ) {
+            return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
+        }
+    
+        if( $question->delete() ) {
+            return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
+        } else {
+            return response()->json(['mess' => 'Xóa bản không thành công'], 400);
+        }
     }
 
     public function getListAnswers ($id)

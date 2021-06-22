@@ -107,8 +107,8 @@ class UserPolicy
         return $user->role->name == 'user';
     }
 
-    public function postFeedBack ()
+    public function postFeedBack (User $user)
     {
-
+        return $user->role->name == 'user';
     }
 }

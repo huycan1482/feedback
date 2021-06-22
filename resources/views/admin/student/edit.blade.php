@@ -191,7 +191,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($student->classRoom as $key => $item)
+                            @foreach($student->classRooms as $key => $item)
                             <tr>
                                 <td class="text-center">{{ $key + 1 }}</td>
                                 <td class="text-center">{{ $item->name }}</td>
@@ -199,9 +199,9 @@
                                 <td class="text-center">
                                     @if ( $item->is_active == 0 )
                                         <td><span class="label label-danger">Đã hủy</span></td>
-                                    @elseif ( (strtotime($item->lesson->sortBy('start_at')->first()->start_at) < time()) ) 
+                                    @elseif ( (strtotime($item->lessons->sortBy('start_at')->first()->start_at) < time()) ) 
                                         <td><span class="label label-success">Đang học</span></td>
-                                    @elseif ( (strtotime($item->lesson->sortBy('start_at')->first()->start_at) > time()) ) 
+                                    @elseif ( (strtotime($item->lessons->sortBy('start_at')->first()->start_at) > time()) ) 
                                         <td><span class="label label-warning">Chờ học</span></td>
                                     @else
                                         <td><span class="label label-danger">Hoàn thành</span></td>

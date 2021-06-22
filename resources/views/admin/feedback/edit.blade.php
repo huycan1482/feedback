@@ -81,7 +81,7 @@
     <!-- /.modal-dialog -->
 </div>
 
-<div class="modal fade" id="modal-default">
+{{-- <div class="modal fade" id="modal-default">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -113,7 +113,7 @@
       <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
-</div>
+</div> --}}
 
 <section class="content">
     <div class="row">
@@ -144,30 +144,6 @@
                             </div>
                         </div>
 
-                        <div class="form-group " id="form-start_at">
-                            <label for="">Ngày bắt đầu</label>
-                            <div>
-                                <div class="input-group date">
-                                    <div class="input-group-addon">
-                                        <i class="fa fa-calendar"></i>
-                                    </div>
-                                    <input type="text" class="form-control pull-right datepicker" name="start_at" placeholder="DD-MM-YYYY" value="{{ date_format(date_create($feedback->start_at), 'd-m-Y') }}">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group " id="form-end_at">
-                            <label for="">Ngày kết thúc</label>
-                            <div>
-                                <div class="input-group date">
-                                    <div class="input-group-addon">
-                                        <i class="fa fa-calendar"></i>
-                                    </div>
-                                    <input type="text" class="form-control pull-right datepicker" name="end_at" placeholder="DD-MM-YYYY" value="{{ date_format(date_create($feedback->end_at), 'd-m-Y') }}">
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="checkbox form-group">
                             <label>
                                 <input type="checkbox" name="is_active" id="is_active" {{ ($feedback->is_active == 1) ? 'checked' : '' }}> Kích hoạt
@@ -185,7 +161,7 @@
                                         <th class="text-center">STT</th>
                                         <th class="text-center">Mã câu hỏi</th>
                                         <th class="text-center">Nội dung</th>
-                                        <th class="text-center">Thứ tự</th>
+                                        {{-- <th class="text-center">Thứ tự</th> --}}
                                         <th class="text-center">Hành động</th>
                                     </tr>
                                 </thead>
@@ -196,12 +172,12 @@
                                         <td class="text-center">{{ $key + 1}}</td>
                                         <td class="text-center">{{ $item->code }}</td>
                                         <td class="text-center">{{ $item->content }}</td>
-                                        <td class="text-center">{{ $item->position }}</td>
+                                        {{-- <td class="text-center">{{ $item->position }}</td> --}}
                                         <td class="text-center">
         
-                                            <div class="btn btn-primary btn-edit-question" title="Sửa" data-id="{{$item->feedbackQuestionId}}" data-toggle="modal" data-target="#modal-default">
+                                            {{-- <div class="btn btn-primary btn-edit-question" title="Sửa" data-id="{{$item->feedbackQuestionId}}" data-toggle="modal" data-target="#modal-default">
                                                 <i class="fa fa-edit"></i>
-                                            </div>
+                                            </div> --}}
 
                                             <div class="btn btn-danger btn-del-question" title="Xóa" data-id="{{$item->feedbackQuestionId}}"> 
                                                 <i class="fa fa-trash"></i>
@@ -421,20 +397,14 @@
         });
 
         $(document).on('click', '.update-feedback', function (e) {
-            var date1 = $("input[name='start_at']").val().split('-');
-            var date2 = $("input[name='end_at']").val().split('-');
 
             var name = $("input[name='name']").val();
             var code = $("input[name='code']").val();
-            var start_at = date1[2] + '-'+ date1[1] + '-'+ date1[0];
-            var end_at = date2[2] + '-'+ date2[1] + '-'+ date2[0];
             var is_active = ( $("input[name='is_active']").is(':checked') ) ? 1 : 0;
 
             data = {
                 name: name,
                 code: code,
-                start_at: start_at,
-                end_at: end_at,
                 is_active : is_active
             };
 

@@ -18,13 +18,17 @@
                 </div>
                 <div class="box-body">
                     @foreach($classes as $class)
-                    <a class="class-item" href="#">
-                        <div>
-                            <i class="fas fa-clipboard-list"></i>
-                            <span>{{ $class->name }} ({{ $class->code }})</span>
-                        </div>
-                        <i class="fas fa-check"></i>
-                    </a>
+                        @foreach ($class->feedback as $item)
+                        
+                        <a class="class-item" href="{{ route('feedback.getFeedbackId', ['class_id' => $class->id, 'feedback_id' => $item->id]) }}">
+                            <div>
+                                <i class="fas fa-clipboard-list"></i>
+                                <span>{{$class->name}} ({{$class->code}}) /{{ $item->name }} ({{ $item->code }})</span>
+                            </div>
+                            <i class="fas fa-check"></i>
+                        </a>
+                        @endforeach
+                    
                     @endforeach
                 </div>
             </div>
@@ -36,52 +40,11 @@
                 </div>
                 <div class="box-body list-questions">
 
-                    <a class="questions" href="#feedback1">
-                        1
-                    </a>
-                    <a class="questions" href="#feedback2">
-                        2
-                    </a>
-                    <a class="questions" href="#">
-                        1
-                    </a>
-                    <a class="questions" href="#">
-                        1
-                    </a>
-                    <a class="questions" href="#">
-                        1
-                    </a>
-
-                    <a class="questions" href="#">
-                        54
-                    </a>
-                    <a class="questions" href="#">
-                        134
-                    </a>
-                    <a class="questions" href="#">
-                        115
-                    </a>
-                    <a class="questions" href="#">
-                        12
-                    </a>
-                    <a class="questions" href="#">
-                        11
-                    </a>
-                    <a class="questions" href="#">
-                        1
-                    </a>
-                    <a class="questions" href="#">
-                        9
-                    </a>
-                    <a class="questions" href="#">
-                        1
-                    </a>
-                    <a class="questions" href="#">
-                        1
-                    </a>
-                    <a class="questions" href="#">
-                        1
-                    </a>
+                    @foreach ($data as $key => $item)
+                    <a class="questions" href="{{ Request::url() }}#feedback{{$item['id']}}">
+                        {{ $key + 1 }}
+                    </a> 
+                    @endforeach
 
 
                 </div>
@@ -98,17 +61,17 @@
                             <div class="box-info">
                                 <i class="fas fa-book-open"></i>
                                 <span>Lớp học: </span>
-                                <span>Lớp học / Mã lớp</span>
+                                <span>{{ $classRoom->name }} / {{ $classRoom->code }}</span>
                             </div>
                             <div class="box-info">
                                 <i class="fas fa-bookmark"></i>
                                 <span>Khóa học: </span>
-                                <span>Khóa học / Mã khóa</span>
+                                <span>{{ $classRoom->course }} / {{ $classRoom->course_code }}</span>
                             </div>
                             <div class="box-info">
                                 <i class="fas fa-book"></i>
                                 <span>Môn học: </span>
-                                <span>Môn học / Mã môn</span>
+                                <span>{{ $classRoom->subject }}</span> / {{ $classRoom->subject_code }}</span>
                             </div>
                             <div class="box-info">
                                 <i class="fas fa-user-tie"></i>
@@ -138,98 +101,35 @@
                 </div>
                 <div class="box-body">
                     <div>
-                        <div class="feed-back" id="feedback1">
-                            <div class="feedback-question"><span>1. (CH9): </span>Câu hỏi 9</div>
+                        @foreach ($data as $key => $item)
+                        <div class="feed-back" id="feedback{{ $item['id'] }}">
+                            <div class="feedback-question">
+                                <span>{{ $key + 1 }}. ({{ $item['code'] }}): </span>{{ $item['content'] }}
+                            </div>
                             <div class="feedback-answers">
                                 <div class="row">
+                                    @foreach ($item['answers'] as $answer)
                                     <div class="col-lg-6 answer-items">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="question1"
-                                                id="answer1">
-                                            <label class="form-check-label" for="answer1">
-                                                Đáp án 1
+                                            <input class="form-check-input" type="radio" name="question_{{ $item['id'] }}"
+                                                id="answer_{{ $answer['id'] }}">
+                                            <label class="form-check-label" for="answer_{{ $answer['id'] }}">
+                                                {{ $answer['content'] }}
                                             </label>
                                         </div>
                                     </div>
-                                    <div class="col-lg-6 answer-items">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="question1"
-                                                id="answer2">
-                                            <label class="form-check-label" for="answer2">
-                                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque est expedita neque et totam omnis consequatur, aliquid doloremque voluptates incidunt, adipisci ullam eos molestias quasi eveniet dicta accusamus hic ex.
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 answer-items">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="question1"
-                                                id="answer3">
-                                            <label class="form-check-label" for="answer3">
-                                                Đáp án 3
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 answer-items">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="question1"
-                                                id="answer4">
-                                            <label class="form-check-label" for="answer4">
-                                                Đáp án 4
-                                            </label>
-                                        </div>
-                                    </div>
+                                    @endforeach
 
                                 </div>
                             </div>
                         </div>
-                        <div class="feed-back" id="feedback2">
-                            <div class="feedback-question"><span>1. (CH9): </span>Câu hỏi 9</div>
-                            <div class="feedback-answers">
-                                <div class="row">
-                                    <div class="col-lg-6 answer-items">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="question1"
-                                                id="answer1">
-                                            <label class="form-check-label" for="answer1">
-                                                Đáp án 1
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 answer-items">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="question1"
-                                                id="answer2">
-                                            <label class="form-check-label" for="answer2">
-                                                đáp án
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 answer-items">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="question1"
-                                                id="answer3">
-                                            <label class="form-check-label" for="answer3">
-                                                Đáp án 3
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 answer-items">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="question1"
-                                                id="answer4">
-                                            <label class="form-check-label" for="answer4">
-                                                Đáp án 4
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
                 <div class="box-footer">
-
+                    <div style="margin: 20px; display: flex; justify-content: flex-end">
+                        <div class="btn btn-primary btn-save" feedback-id="{{ $feedback_id->id }}" feedbackDetail="{{ $feedback_detail }}">Hoàn thành</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -240,4 +140,52 @@
 @section('js')
 <script src="feedback/js/box.js"></script>
 <!-- BoxJS -->
+<script src="feedback/js/form.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+        $(document).on('click', '.btn-save', function (e) {
+            var feedback_id = $(this).attr('feedback-id');   
+            var feedback_detail = $(this).attr('feedbackDetail');
+            // console.log($('div[id*=feedback]').length);
+
+            var feedback = [];
+
+            $('input[type="radio"]:checked').each(function (index, value) {
+
+                var question_id = value.name.split('_')[1];
+                var answer_id = value.id.split('_')[1];
+
+                feedback [index] = {
+                    'question_id' : question_id,
+                    'answer_id' : answer_id
+                };
+            });
+
+            // console.log(feedback);
+
+            var data = {
+                feedback_id: feedback_id,
+                feedback_detail : feedback_detail,
+                feedback: feedback,
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: base_url + '/postFeedBack',
+                data: data,
+                dataType : 'json',
+
+                success: function (response) {
+                    console.log(response);
+                    successResponse(response);
+                },
+                error: function (e) {
+                    errorResponse(e)
+                }
+            });
+        });
+    });
+</script>
 @endsection

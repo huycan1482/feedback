@@ -49,6 +49,11 @@ class ClassRoom extends Model
         return $this->hasMany('App\Lesson', 'class_id', 'id')->orderBy('start_at', 'asc');
     }
 
+    public function feedback ()
+    {
+        return $this->belongsToMany('App\FeedBack', 'feedback_details', 'class_id', 'feedback_id')->withPivot('class_id', 'feedback_id', 'id');
+    }
+
 
     public function user_class ()
     {
@@ -58,5 +63,15 @@ class ClassRoom extends Model
     public function feedback_details ()
     {
         return $this->hasMany('App\UserClass', 'class_id', 'id');
+    }
+
+    public function userCreate ()
+    {
+        return $this->belongsTo('App\User', 'user_create', 'id');
+    }
+
+    public function userUpdate ()
+    {
+        return $this->belongsTo('App\User', 'user_update', 'id');
     }
 }

@@ -178,13 +178,14 @@
                             </div>
                         </div>
 
+
                         <div class="form-group" id="form-feedback_id">
                             <label for="">Bài đánh giá cuối khóa</label>
-                            <div>
-                                <select class=" select2 form-control" name="feedback_id" id="feedback_id">
+                            <div class="form-group">
+                                <select class="form-control select2" multiple="multiple" data-placeholder="Chọn bài đánh giá" style="width: 100%;" name="feedback_id" id="feedback_id">
                                     <option value="">-- Chọn --</option>
                                     @foreach ($feedbacks as $feedback)
-                                    <option value="{{ $feedback->id }}">{{ $feedback->code }}</option>
+                                    <option value="{{ $feedback->id }}" {{ $classRoom->feedback->contains("id", $feedback->id) ? 'selected' : '' }}>{{ $feedback->code }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -193,7 +194,7 @@
                         <div class="form-group" id="form-time_limit">
                             <label for="">Thời lượng các buổi học (phút)</label>
                             <div>
-                                <input name="time_limit" type="number" class="form-control" placeholder="{{ $classRoom->lesson[0]->time_limit }}">
+                                <input name="time_limit" type="number" class="form-control" placeholder="{{ $classRoom->lessons[0]->time_limit }}">
                             </div>
                         </div>
                         
@@ -228,7 +229,7 @@
                     <div class="box-body">
 
                         <div class="" id="form-" style="overflow: auto; max-height: 600px">
-                            <label>Tổng số buổi thực tế: {{ count($classRoom->lesson) }} / </label>
+                            <label>Tổng số buổi thực tế: {{ count($classRoom->lessons) }} / </label>
                             <span class="label label-success add-lesson" style="cursor:pointer" data-toggle="modal" data-target="#modal-default2" data-id="{{$classRoom->id}}"> Thêm buổi học </span>
                             <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
                                 <thead>
@@ -241,7 +242,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($classRoom->lesson as $key => $item)
+                                    @foreach($classRoom->lessons as $key => $item)
                                     <tr class="item-{{ $item->id }}">
                                         <td class="text-center">{{ $key + 1 }}</td>
                                         <td class="text-center">
@@ -298,6 +299,7 @@
 
 <script>
     $(function () {
+        $('.select2').select2();
 
         $('.datepicker').datepicker({
             // autoclose: false,
@@ -309,6 +311,8 @@
         $('.timepicker').timepicker({
             showInputs: false,
         });
+
+        // $('.select2-search__field').attr('placeholder', 'Chọn bài đánh giá');
 
         $(document).on('click', '.btn-edit-lesson', function (e) {
             if ( $('#message') ) {

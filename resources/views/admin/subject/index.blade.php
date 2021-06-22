@@ -97,7 +97,7 @@
                                 <th class="text-center">STT</th>
                                 <th class="text-center">Tên</th>
                                 <th class="text-center">Mã môn</th>
-                                {{-- <th class="text-center"></th> --}}
+
                                 <th class="text-center">Người tạo</th>
                                 <th class="text-center">Trạng thái</th>
                                 <th class="text-center">Hành động</th>
@@ -109,8 +109,7 @@
                                 <td class="text-center">{{ $key + 1}}</td>
                                 <td class="text-center">{{ $subject->name }}</td>
                                 <td class="text-center">{{ $subject->code }}</td>
-                                {{-- <td class="text-center"></td> --}}
-                                <td class="text-center"></td>
+                                <td class="text-center">{{ (asset($subject->userCreate->name)) ? $subject->userCreate->name : 'Trống' }}</td>
                                 <td class="text-center">
                                     <span class="label label-{{ ($subject->is_active == 1) ? 'success' : 'danger' }}">{{ ($subject->is_active == 1) ? 'Hiển thị' : 'Ẩn' }}</span>
                                 </td>

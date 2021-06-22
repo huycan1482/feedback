@@ -107,18 +107,18 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach( $user->classRoom as $key => $item )
+                                    @foreach( $user->classRooms as $key => $item )
                                     <tr>
                                         <td scope="row">{{ $key + 1 }}</td>
                                         <td>{{ $item->name }}</td>
-                                        <td>{{ ( ($item->lesson->sortBy('start_at')->first()->start_at) )}}</td>
+                                        <td>{{ ( ($item->lessons->sortBy('start_at')->first()->start_at) )}}</td>
                                         <td>00/00/0000</td>
                                        
                                         @if ( $item->is_active == 0 )
                                             <td><span class="label label-danger">Đã hủy</span></td>
-                                        @elseif ( (strtotime($item->lesson->sortBy('start_at')->first()->start_at) < time()) ) 
+                                        @elseif ( (strtotime($item->lessons->sortBy('start_at')->first()->start_at) < time()) ) 
                                             <td><span class="label label-success">Đang học</span></td>
-                                        @elseif ( (strtotime($item->lesson->sortBy('start_at')->first()->start_at) > time()) ) 
+                                        @elseif ( (strtotime($item->lessons->sortBy('start_at')->first()->start_at) > time()) ) 
                                             <td><span class="label label-warning">Chờ học</span></td>
                                         @else
                                             <td><span class="label label-danger">Hoàn thành</span></td>

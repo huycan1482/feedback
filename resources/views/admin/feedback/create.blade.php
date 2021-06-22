@@ -110,30 +110,6 @@
                             </div>
                         </div>
 
-                        <div class="form-group " id="form-start_at">
-                            <label for="">Ngày bắt đầu</label>
-                            <div>
-                                <div class="input-group date">
-                                    <div class="input-group-addon">
-                                        <i class="fa fa-calendar"></i>
-                                    </div>
-                                    <input type="text" class="form-control pull-right datepicker" name="start_at" placeholder="DD-MM-YYYY">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group " id="form-end_at">
-                            <label for="">Ngày kết thúc</label>
-                            <div>
-                                <div class="input-group date">
-                                    <div class="input-group-addon">
-                                        <i class="fa fa-calendar"></i>
-                                    </div>
-                                    <input type="text" class="form-control pull-right datepicker" name="end_at" placeholder="DD-MM-YYYY">
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="checkbox form-group">
                             <label>
                                 <input type="checkbox" name="is_active" id="is_active"> Kích hoạt
@@ -309,19 +285,7 @@
             var questionsId = [];
             var name = $('[name="name"]').val();
             var code = $('[name="code"]').val();
-            var start_at = '';
-            var end_at = '';
             var is_active = ( $("input[name='is_active']").is(':checked') ) ? 1 : 0;
-
-            if ($("input[name='start_at']").val() != '') { 
-                var date_start_at = $("input[name='start_at']").val().split('-');
-                var start_at = date_start_at[2] + '-' + date_start_at[1] + '-' + date_start_at[0];
-            }
-
-            if ($("input[name='end_at']").val() != '') { 
-                var date_end_at = $("input[name='end_at']").val().split('-');
-                var end_at = date_end_at[2] + '-' + date_end_at[1] + '-' + date_end_at[0];
-            }
 
             $('[class*="question-"]').children('td:last-child').each(function (index, value) {
                 questionsId.push($(this).children('div').attr('data-id'));
@@ -330,8 +294,6 @@
             data = {
                 name: name,
                 code: code,
-                start_at: start_at,
-                end_at: end_at,
                 is_active : is_active,
                 question_id : questionsId
             };

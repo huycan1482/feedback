@@ -14,6 +14,10 @@
 @section('content')
 <div class="main-content">
     <div class="row">
+        {{-- {{dd(isset($classes))}} --}}
+        @if (!isset($classes))
+        <h1>Không có lớp</h1>
+        @else  
         <div class="col-lg-12">
             <div class="box">
                 <div class="drop-box-header">
@@ -59,7 +63,7 @@
                             <div class="box-info">
                                 <i class="fas fa-bell"></i>
                                 <span>Trạng thái: </span>
-                                <span>Đang học</span>
+                                <span>{{ (strtotime($class->start_at) > strtotime(date("Y-m-d"))) ? 'Chờ học' : 'Đang học' }}</span>
                             </div>
                             <div class="box-info">
                                 <i class="fas fa-concierge-bell"></i>
@@ -101,9 +105,11 @@
                                     <th scope="col" class="text-center col">STT</th>
                                     <th scope="col" class="text-center col">Họ và tên</th>
                                     <th scope="col" class="text-center col">Ngày sinh</th>
-                                    @foreach($lessons as $key => $lesson)
-                                    <th scope="col" class="text-center col {{ ($key != 0) ? 'hidden_checkIn' : '' }}">{{date_format(date_create($lesson->start_at), 'd-m-Y')}}</th>
-                                    @endforeach
+                                    @if (!empty($lessons->first()))
+                                        @foreach($lessons as $key => $lesson)
+                                        <th scope="col" class="text-center col {{ ($key != 0) ? 'hidden_checkIn' : '' }}">{{date_format(date_create($lesson->start_at), 'd-m-Y')}}</th>
+                                        @endforeach
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -124,27 +130,29 @@
                                     </td>
                                     <td class=" table-date text-center">{{ date_format(date_create($student->date_of_birth), 'd-m-Y') }}</td>
                                     
-                                    @foreach($checkIn[$student->id] as $key => $item)
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            {{-- {{dd($item->is_check)}} --}}
-                                        @if($item->is_check == null)
-                                            <input type="radio" class="form-check-input input-info" name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}"
-                                                id="{{$student->id}}_1" value="1" data-id="{{ $student->id }}">
-                                            <input type="radio" class="form-check-input input-warning" name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}"
-                                                id="{{$student->id}}_2" value="2" data-id="{{ $student->id }}">
-                                            <input type="radio" class="form-check-input input-danger" name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}"
-                                                id="{{$student->id}}_3" value="3" data-id="{{ $student->id }}">
-                                        @elseif($item->is_check == 1)
-                                            <input type="radio" class="form-check-input input-info hidden_checkIn" name="" checked >
-                                        @elseif($item->is_check == 2)
-                                            <input type="radio" class="form-check-input input-warning hidden_checkIn" name="" checked >
-                                        @else
-                                            <input type="radio" class="form-check-input input-danger hidden_checkIn" name="" checked >
-                                        @endif
-                                        </div>
-                                    </td>
-                                    @endforeach
+                                    @if ($checkIn[$student->id] != null)
+                                        @foreach($checkIn[$student->id] as $key => $item)
+                                        <td class="text-center">
+                                            <div class="form-check">
+                                                {{-- {{dd($item->is_check)}} --}}
+                                            @if($item->is_check == null)
+                                                <input type="radio" class="form-check-input input-info" name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}"
+                                                    id="{{$student->id}}_1" value="1" data-id="{{ $student->id }}">
+                                                <input type="radio" class="form-check-input input-warning" name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}"
+                                                    id="{{$student->id}}_2" value="2" data-id="{{ $student->id }}">
+                                                <input type="radio" class="form-check-input input-danger" name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}"
+                                                    id="{{$student->id}}_3" value="3" data-id="{{ $student->id }}">
+                                            @elseif($item->is_check == 1)
+                                                <input type="radio" class="form-check-input input-info hidden_checkIn" name="" checked >
+                                            @elseif($item->is_check == 2)
+                                                <input type="radio" class="form-check-input input-warning hidden_checkIn" name="" checked >
+                                            @else
+                                                <input type="radio" class="form-check-input input-danger hidden_checkIn" name="" checked >
+                                            @endif
+                                            </div>
+                                        </td>
+                                        @endforeach
+                                    @endif
                                 
                                 @endforeach
                             </tbody>
@@ -206,7 +214,7 @@
                         </div>
                         <div>
                             <div class="btn btn-danger btn-reset">Tải lại</div>
-                            <div class="btn btn-primary btn-save" data-id="{{$lessons->first()->id}}">Lưu</div>
+                            <div class="btn btn-primary btn-save" data-id="{{ (empty($lessons->first())) ? '' : $lessons->first()->id}}">Lưu</div>
                         </div>
                     </div>
 
@@ -220,6 +228,8 @@
                 </div>
             </div>
         </div>
+        @endif 
+        
     </div>
 </div>
 @endsection
@@ -241,7 +251,10 @@
         $('#calendar').fullCalendar({
             // put your options and callbacks here
             events: [
+
+                @if (isset($classes))
                 {!! $events !!}
+                @endif  
             ]
         });
 
@@ -259,7 +272,7 @@
 
             var id = $(this).attr('data-id');
 
-            var inputs_checkIn = $('[name*="05-06-2021"]:checked');
+            var inputs_checkIn = $('[name*="05-06-2021"]:checked')  ;
 
             var note = $('#note').val();
 

@@ -94,7 +94,7 @@ function messageResponse(status, mess) {
 
     $('.notice').fadeIn();
 
-    $('.notice').delay(2000).fadeOut();
+    $('.notice').delay(2500).fadeOut();
 
 }
 

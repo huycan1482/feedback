@@ -21,6 +21,7 @@ class CourseController extends Controller
      */
     public function index()
     {
+       
         $courses = Course::latest()->get();
         return view ('admin.course.index', [
             'courses' => $courses,
@@ -207,6 +208,16 @@ class CourseController extends Controller
      */
     public function destroy($id)
     {
-        Course::destroy($id);
+        $course = Course::find($id);
+
+        if ( empty($course) ) {
+            return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
+        }
+    
+        if( $course->delete() ) {
+            return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
+        } else {
+            return response()->json(['mess' => 'Xóa bản không thành công'], 400);
+        }
     }
 }

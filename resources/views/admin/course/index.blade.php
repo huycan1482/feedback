@@ -149,7 +149,7 @@
                                 <td class="text-center">{{ $course->name }}</td>
                                 <td class="text-center">{{ $course->code }}</td>
                                 <td class="text-center">{{ $course->subject->name }}</td>
-                                <td class="text-center"></td>
+                                <td class="text-center">{{ (asset($course->userCreate->name)) ? $course->userCreate->name : 'Trống' }}</td>
                                 <td class="text-center">
                                     <span class="label label-{{ ($course->is_active == 1) ? 'success' : 'danger' }}">{{ ($course->is_active == 1) ? 'Hiển thị' : 'Ẩn' }}</span>
                                 </td>

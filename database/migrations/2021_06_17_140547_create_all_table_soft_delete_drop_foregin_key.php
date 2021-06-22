@@ -125,7 +125,7 @@ class CreateAllTableSoftDeleteDropForeginKey extends Migration
             $table->bigIncrements('id');
             $table->string('name', 255)->nullable();
             $table->string('slug', 255)->nullable();
-            $table->text('notice')->nullable();
+            $table->text('note')->nullable();
             $table->dateTime('start_at');
             $table->integer('time_limit');
             $table->unsignedBigInteger('class_id');
@@ -221,6 +221,7 @@ class CreateAllTableSoftDeleteDropForeginKey extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('feedback_id');
             $table->unsignedBigInteger('class_id');
+            $table->tinyInteger('is_active');
             $table->dateTime('start_at');
             $table->dateTime('end_at');
             $table->unsignedBigInteger('user_create')->nullable();

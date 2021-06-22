@@ -236,8 +236,8 @@
                     data: {}, 
                     dataType: "json", 
                     success: function (response) { 
-                        $('div.data-id-' + delete_id).remove();
-                        // messageResponse('success', response.mess);
+                        $('div[data-id="'+ delete_id +'"]').remove();
+                        messageResponse('success', response.mess);
                     },
                     error: function (e) { 
                         messageResponse('danger', e.responseJSON.mess);

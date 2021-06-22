@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\FeedbackQuestion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class FeedbackQuestionController extends Controller
@@ -59,6 +60,7 @@ class FeedbackQuestionController extends Controller
             $feedbackQuestion->question_id = $request->input('question_id');
             $feedbackQuestion->feedback_id = $request->input('feedback_id');
             $feedbackQuestion->position = 0;
+            $feedbackQuestion->user_create = Auth::user()->id;
 
             if ($feedbackQuestion->save()) {
                 return response()->json(['mess' => 'Thêm bản ghi thành công, tải lại sau 1.5s', 200]);
@@ -137,12 +139,12 @@ class FeedbackQuestionController extends Controller
      */
     public function destroy($id)
     {
-        $feedbackQuestion = FeedbackQuestion::find($id);
+        $feedbackQuestion = FeedbackQuestion::withTrashed()->find($id);
         if ( empty($feedbackQuestion) ) {
             return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
         }
 
-        if( FeedbackQuestion::destroy($id) != 0 ) {
+        if( $feedbackQuestion->forceDelete() ) {
             return response()->json(['mess' => 'Xóa bản ghi thành công, tải lại trong 1.5s'], 200);
         } else {
             return response()->json(['mess' => 'Xóa bản không thành công'], 400);

@@ -58,6 +58,8 @@ Route::group(['middleware' => 'checkUserLogin'], function () {
     Route::get('/checkIn/{id}', 'HomeController@getCheckInId')->name('feedback.getCheckInId');
     Route::post('/postCheckIn', 'HomeController@postCheckIn')->name('feedback.postCheckIn');
     Route::get('/feed_back', 'HomeController@getFeedback')->name('feedback.getFeedback');
+    Route::get('/feed_back/{class_id}_{feedback_id}', 'HomeController@getFeedbackId')->name('feedback.getFeedbackId');
+    Route::post('/postFeedBack', 'HomeController@postFeedback')->name('feedback.postFeedback');
     Route::get('/profile', 'HomeController@getProfile')->name('feedback.getProfile');
     Route::put('/updateProfile/{id}/edit', 'HomeController@updateProfile')->name('feedback.updateProfile');
 });

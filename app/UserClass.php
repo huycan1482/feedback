@@ -22,4 +22,14 @@ class UserClass extends Model
     {
         return $this->belongsTo('App\ClassRoom', 'class_id', 'id');
     } 
+
+    public function userCreate ()
+    {
+        return $this->belongsTo('App\User', 'user_create', 'id');
+    }
+
+    public function userUpdate ()
+    {
+        return $this->belongsTo('App\User', 'user_update', 'id');
+    }
 }

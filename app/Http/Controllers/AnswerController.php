@@ -6,6 +6,7 @@ use App\Answer;
 use App\Question;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class AnswerController extends Controller
@@ -45,7 +46,7 @@ class AnswerController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'question_id' => 'required|exists:answers,id',
+            'question_id' => 'required|exists:questions,id',
             'add_answer_content' => 'required',
             'add_answer_active' => 'integer|boolean',
         ], [
@@ -72,6 +73,7 @@ class AnswerController extends Controller
             $answer->content = $request->input('add_answer_content');
             $answer->type = 1;
             $answer->is_true = (int)$request->input('add_answer_active');
+            $answer->user_create = Auth::user()->id;
 
             if ($answer->save()) {
                 return response()->json(['mess' => 'Thêm bản ghi thành công', 200]);
@@ -139,7 +141,9 @@ class AnswerController extends Controller
             } else {
                 $answer->content = $request->input('answer_content');
                 $answer->type = 1;
-                $answer->is_true = (int)$request->input('answer_is_active');
+                // $answer->is_true = (int)$request->input('answer_is_active');
+                $answer->is_true = 1;
+                $answer->user_update = Auth::user()->id;
                 if ($answer->save()) {
                     return response()->json(['mess' => 'Sửa bản ghi thành công', 200]);
                 } else {
@@ -158,12 +162,12 @@ class AnswerController extends Controller
      */
     public function destroy($id)
     {
-        $answer = Answer::find($id);
+        $answer = Answer::withTrashed()->find($id);
         if ( empty($answer) ) {
             return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
         }
     
-        if( Answer::destroy($id) != 0 ) {
+        if( $answer->forceDelete() ) {
             return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
         } else {
             return response()->json(['mess' => 'Xóa bản không thành công'], 400);

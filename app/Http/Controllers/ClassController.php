@@ -7,6 +7,7 @@ use App\Course;
 use App\FeedBack;
 use App\Lesson;
 use App\User;
+use Carbon\Carbon;
 use DateTime;
 use Exception;
 use Illuminate\Support\Str;
@@ -60,6 +61,7 @@ class ClassController extends Controller
      */
     public function store(Request $request)
     {
+
         // dd($request->all()); 
         $request['trueName'] = $request->input('name');
         $request['name'] = Str::slug($request->input('name'));
@@ -81,7 +83,7 @@ class ClassController extends Controller
             'code.unique' => 'Dữ liệu trùng',
             'course_id.required' => 'Yêu cầu không để trống',
             'course_id.exists' => 'Dữ liệu không tồn tại',
-            'feedback_id.exists' => 'Dữ liệu không tồn tại',
+            'feedback_id.array' => 'Dữ liệu không tồn tại',
             'teacher_id.required' => 'Yêu cầu không để trống',
             'teacher_id.unique' => 'Dữ liệu bị trùng',
             'total_number.required' => 'Yêu cầu không để trống',
@@ -119,6 +121,8 @@ class ClassController extends Controller
             $created_time = date('Y-m-d H:i:s', $current_date->getTimestamp());
             $classRoom->created_at = $created_time;
 
+            // dd($request->input('feedback_id'));
+
             DB::beginTransaction();
 
             try {
@@ -126,6 +130,12 @@ class ClassController extends Controller
                 
                 $courseTotalLessons = Course::where('id', '=', $request->input('course_id'))->first()->total_lesson;
                 $latestClass = ClassRoom::where([ 'created_at' => $created_time ])->first()->id;
+                
+                $feedback_details = ClassRoom::find($latestClass);
+                $feedback_details->feedback()->attach($request->input('feedback_id'), [
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
 
                 $day = 0;
                 $i = 0;
@@ -229,6 +239,7 @@ class ClassController extends Controller
         // ->orderBy('day', 'asc')
         // ->get();
 
+
         return view ('admin.class.edit', [
             'classRoom' => $classRoom,
             'teachers' => $teachers,
@@ -260,7 +271,8 @@ class ClassController extends Controller
                 'course_id' => 'required|exists:courses,id',
                 'teacher_id' => 'required|exists:users,id',
                 'total_number' => 'required|integer|min:1',
-                'feedback_id' => 'nullable|exists:feedbacks,id',
+                'feedback_id' => 'nullable|array',
+                'feedback_id.*' => 'exists:feedbacks,id',
                 'is_active' => 'integer|boolean',
                 'time_limit' => 'nullable|integer|min:1',
             ], [
@@ -270,7 +282,7 @@ class ClassController extends Controller
                 'code.unique' => 'Dữ liệu trùng',
                 'course_id.required' => 'Yêu cầu không để trống',
                 'course_id.exists' => 'Dữ liệu không tồn tại',
-                'feedback_id.exists' => 'Dữ liệu không tồn tại',
+                'feedback_id.array' => 'Dữ liệu không tồn tại',
                 'teacher_id.required' => 'Yêu cầu không để trống',
                 'teacher_id.exists' => 'Dữ liệu không tồn tại',
                 'total_number.required' => 'Yêu cầu không để trống',
@@ -292,7 +304,9 @@ class ClassController extends Controller
                 $classRoom->slug = $request->input('name');
                 $classRoom->course_id = $request->input('course_id');
                 $classRoom->teacher_id = $request->input('teacher_id');
-                $classRoom->feedback_id = $request->input('feedback_id');
+                // $classRoom->feedback_id = $request->input('feedback_id');
+
+                $classRoom->feedback()->syncWithoutDetaching($request->input('feedback_id'));
                 $classRoom->total_number = $request->input('total_number');
                 $classRoom->is_active = (int)$request->input('is_active'); 
                 $classRoom->user_update = Auth::user()->id;
@@ -321,6 +335,16 @@ class ClassController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $class = ClassRoom::find($id);
+
+        if ( empty($class) ) {
+            return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
+        }
+    
+        if( $class->delete() ) {
+            return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
+        } else {
+            return response()->json(['mess' => 'Xóa bản không thành công'], 400);
+        }
     }
 }

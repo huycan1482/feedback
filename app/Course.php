@@ -32,4 +32,15 @@ class Course extends Model
     {
         return $this->belongsTo('App\Subject', 'subject_id', 'id');
     }
+
+
+    public function userCreate ()
+    {
+        return $this->belongsTo('App\User', 'user_create', 'id');
+    }
+
+    public function userUpdate ()
+    {
+        return $this->belongsTo('App\User', 'user_update', 'id');
+    }
 }

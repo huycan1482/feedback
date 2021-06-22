@@ -7,6 +7,7 @@ use App\ClassRoom;
 use App\FeedBack;
 use App\Lesson;
 use App\User;
+use App\UserAnswer;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -45,6 +46,11 @@ class HomeController extends Controller
 
             $classes = ClassRoom::where('teacher_id', '=', Auth()->user()->id)->orderBy('id', 'asc')->get();
 
+            if (empty($classes->first())) {
+                return view ('feedback.checkIn');
+            }
+
+
             $class = DB::table('classes')
             ->selectRaw('classes.id, classes.name, classes.code, courses.name as course, courses.code as course_code, subjects.name as subject, subjects.code as subject_code, 
             count(lessons.id) as total_number,
@@ -74,6 +80,9 @@ class HomeController extends Controller
             ->whereRaw("classes.id = ".$classes->first()->id." and date(now()) > lessons.start_at")
             ->orderBy('lessons.start_at', 'asc')
             ->get();
+ 
+            $checkIn = [];
+            $user_checkIn = [];
 
             foreach ($students as $key => $student) {
                 $checkIn [$student->id] = DB::select("select classes.code, lessons.id, lessons.start_at, test.is_check, test.id from classes
@@ -91,7 +100,7 @@ class HomeController extends Controller
                     ");
             }
 
-            // dd($checkIn);
+            // dd($checkIn, $user_checkIn);
 
             $notes = Lesson::whereRaw("lessons.class_id =". $classes->first()->id ." and lessons.note is not null")->get();
 
@@ -124,6 +133,10 @@ class HomeController extends Controller
         $currentUser = User::findOrFail(Auth()->user()->id);
 
         if ( $currentUser->can('viewCheckIn', User::class) ) {
+
+            if (empty(ClassRoom::find($id))) {
+                return view ('feedback.checkIn');
+            }
 
             $classes = ClassRoom::where('teacher_id', '=', Auth()->user()->id)->orderBy('id', 'asc')->get();
 
@@ -296,14 +309,37 @@ class HomeController extends Controller
 
     public function getFeedback ()
     {
-        // dd('ad');
-        $classes = ClassRoom::select('classes.id', 'classes.name', 'classes.code')
-            ->join('user_class', 'user_class.class_id', '=', 'classes.id')
+        $classes = ClassRoom::join('user_class', 'user_class.class_id', '=', 'classes.id')
             ->where('user_class.user_id', Auth::user()->id)
             ->orderBy('user_class.created_at', 'asc')
             ->get();
-dd($classes->first()->id);
-        $feedBack = FeedBack::findOrFail($classes->first()->id);
+
+        foreach ($classes as $item) {
+            if (!empty($item->feedback->first())) {
+                $first_feedback = $item->feedback->first()->id;
+                $first_class = $item->id;
+                break;
+            }
+        }
+
+        $classRoom = DB::table('classes')
+            ->selectRaw('classes.id, classes.name, classes.code, courses.name as course, courses.code as course_code, subjects.name as subject, subjects.code as subject_code, 
+            count(lessons.id) as total_number,
+            (select count(lessons.id) from lessons
+            where lessons.class_id = 5 and date(now()) < lessons.start_at) as number,
+            (select lessons.start_at from lessons
+            where lessons.class_id = 5 order by lessons.start_at asc limit 1 ) as start_at,
+            (select lessons.start_at from lessons
+            where lessons.class_id = 5 order by lessons.start_at desc limit 1 ) as end_at')
+            ->join('lessons', 'lessons.class_id', '=', 'classes.id')
+            ->join('courses', 'courses.id', '=', 'classes.course_id')
+            ->join('subjects', 'subjects.id', '=', 'courses.subject_id')
+            ->where('classes.id', $first_class)
+            ->groupBy('classes.id', 'classes.code', 'classes.name', 'courses.name', 'subjects.name', 'course_code', 'subject_code')
+            ->get()->first(); 
+
+    
+        $feedBack = FeedBack::findOrFail($first_feedback);
 
         foreach ($feedBack->question as $key => $item) {
             $arr = [];
@@ -321,18 +357,136 @@ dd($classes->first()->id);
                 'id' => $item->id, 
                 'code' => $item->code,
                 'content' => $item->content,
-                'answer' => $arr,
+                'answers' => $arr,
             ];
         }
 
         shuffle($data);
 
-        
+        foreach ($feedBack->classRoom as $item) {
+            if ($item->id == $first_class) {
+                $feedback_detail = $item->pivot->id;
+                break;
+            }
+        }
 
         return view ('feedback.feedback', [
             'classes' => $classes,
             'data' => $data,
+            'classRoom' => $classRoom,
+            'feedback_detail' => $feedback_detail,
+            'feedback_id' => $feedBack,
         ]);
+    }
+
+    public function getFeedbackId($class_id, $feedback_id)
+    {
+        $classes = ClassRoom::join('user_class', 'user_class.class_id', '=', 'classes.id')
+            ->where('user_class.user_id', Auth::user()->id)
+            ->orderBy('user_class.created_at', 'asc')
+            ->get();
+
+        ClassRoom::findOrFail($class_id);
+
+        $classRoom = DB::table('classes')
+            ->selectRaw('classes.id, classes.name, classes.code, courses.name as course, courses.code as course_code, subjects.name as subject, subjects.code as subject_code, 
+            count(lessons.id) as total_number,
+            (select count(lessons.id) from lessons
+            where lessons.class_id = 5 and date(now()) < lessons.start_at) as number,
+            (select lessons.start_at from lessons
+            where lessons.class_id = 5 order by lessons.start_at asc limit 1 ) as start_at,
+            (select lessons.start_at from lessons
+            where lessons.class_id = 5 order by lessons.start_at desc limit 1 ) as end_at')
+            ->join('lessons', 'lessons.class_id', '=', 'classes.id')
+            ->join('courses', 'courses.id', '=', 'classes.course_id')
+            ->join('subjects', 'subjects.id', '=', 'courses.subject_id')
+            ->where('classes.id', $class_id)
+            ->groupBy('classes.id', 'classes.code', 'classes.name', 'courses.name', 'subjects.name', 'course_code', 'subject_code')
+            ->get()->first(); 
+    
+        $feedBack = FeedBack::findOrFail($feedback_id);
+
+        foreach ($feedBack->question as $key => $item) {
+            $arr = [];
+
+            foreach($item->answers as $item2) {
+                $arr [] = [
+                    'id' => $item2->id,
+                    'content' => $item2->content,
+                ];
+            }
+
+            shuffle($arr);
+
+            $data [] = [
+                'id' => $item->id, 
+                'code' => $item->code,
+                'content' => $item->content,
+                'answers' => $arr,
+            ];
+        }
+
+        shuffle($data);
+
+        foreach ($feedBack->classRoom as $item) {
+            if ($item->id == $class_id) {
+                $feedback_detail = $item->pivot->id;
+                break;
+            }
+        }
+
+        return view ('feedback.feedback', [
+            'classes' => $classes,
+            'data' => $data,
+            'classRoom' => $classRoom,
+            'feedback_detail' => $feedback_detail,
+            'feedback_id' => $feedBack,
+        ]);
+    }
+
+    public function postFeedback (Request $request)
+    {
+        // dd(count($request->input('feedback')));
+        
+        $validator = Validator::make($request->all(), [
+            'feedback_id' => 'required|exists:feedbacks,id',
+            'feedback' => 'required|array',
+            'feedback_detail' => 'required|exists:feedback_details,id'
+        ], [
+            'feedback_id.required' => 'Yêu cầu không để trống',
+            'feedback_id.exists' => 'User không tồn tại',
+            'feedback.required' => 'Yêu cầu không để trống',
+            'feedback.array' => 'Sai kiểu dữ liệu',
+
+            'feedback_detail.required' => 'Yêu cầu không để trống',
+            'feedback_detail.exists' => 'Dữ liệu không tồn tại',
+        ]);
+
+        $errs = $validator->errors();
+
+        $feedback = FeedBack::find($request->input('feedback_id'));
+    
+        if ( $validator->fails() ) {
+            return response()->json(['errors' => $errs, 'mess' => 'Gửi bản ghi lỗi'], 400);
+        } else if ($feedback->question->count() != count($request->input('feedback'))) {
+            return response()->json(['mess' => 'Gửi bản ghi lỗi, bạn chưa hoàn thành bài làm'], 400);
+        } else {
+            // dd($feedback,  count($request->input('feedback')));
+            foreach ($request->input('feedback') as $item) {
+                // dd($item['question_id']);
+                $user_answer = new UserAnswer;
+                $user_answer->user_id = Auth::user()->id;
+                $user_answer->feedBackDetail_id = $request->input('feedback_detail');
+                $user_answer->question_id = $item['question_id'];
+                $user_answer->answer_id = $item['answer_id'];
+
+                // $user_answer->save();
+            }
+        }
+
+
+       
+
     }
 
     public function getProfile ()

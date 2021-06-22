@@ -30,4 +30,15 @@ class FeedbackDetail extends Model
         return $this->hasMany('App\UserAnswer', 'feedBackDetail_id', 'id');
     }
 
+
+    public function userCreate ()
+    {
+        return $this->belongsTo('App\User', 'user_create', 'id');
+    }
+
+    public function userUpdate ()
+    {
+        return $this->belongsTo('App\User', 'user_update', 'id');
+    }
+
 }

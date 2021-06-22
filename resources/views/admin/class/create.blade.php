@@ -83,7 +83,7 @@
                             <label for="">Bài đánh giá cuối khóa</label>
 
                             <div class="form-group">
-                                <select class="form-control select2" multiple="multiple" data-placeholder="Select a State" style="width: 100%;" name="feedback_id" id="feedback_id">
+                                <select class="form-control select2" multiple="multiple" data-placeholder="Chọn bài đánh giá" style="width: 100%;" name="feedback_id" id="feedback_id">
                                     <option value="">-- Chọn --</option>
                                     @foreach ($feedbacks as $feedback)
                                     <option value="{{ $feedback->id }}">{{ $feedback->code }}</option>
@@ -284,6 +284,7 @@
         $('.timepicker').timepicker({
             showInputs: false,
         });
+
 
         $('.add-class').click(function (e) {
             var name = $("input[name='name']").val();

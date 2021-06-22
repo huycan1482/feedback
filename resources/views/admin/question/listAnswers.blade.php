@@ -108,7 +108,7 @@
                                 <td class="text-center">{{ $key + 1}}</td>
                                 <td class="text-center">{!! Str::limit($answer->content, 50) !!}</td>
                                 {{-- <td class="text-center"></td> --}}
-                                <td class="text-center"></td>
+                                <td class="text-center">{{ (asset($answer->userCreate->name)) ? $answer->userCreate->name : 'Trống' }}</td>
                                 <td class="text-center">
                                     <span class="label label-{{ ($answer->is_true == 1) ? 'success' : 'danger' }}">{{ ($answer->is_true == 1) ? 'Đúng' : 'Sai' }}</span>
                                 </td>

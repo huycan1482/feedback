@@ -238,6 +238,16 @@ class TeacherController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::find($id);
+
+        if ( empty($user) ) {
+            return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
+        }
+    
+        if( $user->delete() ) {
+            return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
+        } else {
+            return response()->json(['mess' => 'Xóa bản không thành công'], 400);
+        }
     }
 }

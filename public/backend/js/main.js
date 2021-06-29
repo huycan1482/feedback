@@ -139,3 +139,69 @@ function messageResponseModal(status, mess, reload) {
 
     $('.form-modal').before(message);
 }
+
+
+function restore (model, id)
+{
+    var result = confirm("Bạn có chắc chắn muốn khôi phục bản ghi ?");
+    if (result) { 
+        $.ajax({
+            url: base_url + '/admin/'+model+'/'+id,
+            type: 'GET',
+            data: {}, 
+            dataType: "json", 
+            success: function (response) { 
+                $('.item-'+id).closest('tr').remove();
+                messageFade('success', response.mess, 'Tải lại sau 1,5s');
+                setTimeout(function (){
+                    location.reload()
+                }, 1500);
+            },
+            error: function (e) { 
+                messageFade('danger', e.responseJSON.mess, 'Tải lại sau 1,5s');
+            }
+        });
+    }
+}
+
+function forceDelete (model, id)
+{
+    var result = confirm("Bạn có chắc chắn muốn vĩnh viễn bản ghi và dữ liệu liên quan ?");
+    if (result) { 
+        $.ajax({
+            url: base_url + '/admin/'+model+'/'+id,
+            type: 'GET',
+            data: {}, 
+            dataType: "json", 
+            success: function (response) { 
+                $('.item-'+id).closest('tr').remove();
+                messageFade('success', response.mess, 'Tải lại sau 1,5s');
+                setTimeout(function (){
+                    location.reload()
+                }, 1500);
+            },
+            error: function (e) { 
+                messageFade('danger', e.responseJSON.mess, 'Tải lại sau 1,5s');
+            }
+        });
+    }
+}
+
+function messageFade (status, mess, reload)
+{
+    $("html, body").animate({
+        scrollTop: 0
+    }, "slow");
+
+    var message = "<div class='pad margin no-print col-md-3' id='message' style='position: fixed; right: -5px; z-index:10; top: 40px; width: '><div class='alert alert-" + status + " alert-dismissible'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>×</button><h4><i class='icon fa fa-check'></i> Thông báo !</h4>"
+    + mess +" <br> "+ reload +" </div></div>";
+
+
+    if ( $('#message') ) {
+        $('#message').remove();
+    }
+
+    $('.content-header').after(message);
+
+    
+}

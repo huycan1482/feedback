@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Role;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -18,14 +19,14 @@ class UserController extends Controller
      */
     public function index()
     {
-        $user = User::withTrashed()->find(4);
+        // $user = User::withTrashed()->find(4);
         // $user->restore();
         // User::withTrashed()->find(4)->restore();
-        $users = User::latest()->get();
-        // dd(User::find(4)->classes);
-        // $users = User::withTrashed()->latest()->get();
+        $users = User::where('id', '<>', Auth::user()->id)->latest()->get();
+        $usersWithTrashed = User::onlyTrashed()->latest()->get();
         return view ('admin.user.index', [
             'users' => $users,
+            'usersWithTrashed' => $usersWithTrashed,
         ]);
     }
 
@@ -114,10 +115,7 @@ class UserController extends Controller
             } else {
                 return response()->json(['mess' => 'Thêm bản ghi lỗi'], 502);
             }
-            
         }
-
-        
     }
 
     /**
@@ -259,6 +257,44 @@ class UserController extends Controller
             return response()->json(['mess' => 'Xóa bản không thành công'], 400);
         }
 
+    }
+
+    public function forceDelete ($id)
+    {
+        $currentUser = User::findOrFail(Auth()->user()->id);
+
+        $user = User::withTrashed()->find($id);
+
+        if ( $currentUser->can('forceDelete', User::class) ) {
+            if ( empty($user) ) {
+                return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
+            }
+        
+            if( $user->forceDelete() ) {
+                return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
+            } else {
+                return response()->json(['mess' => 'Xóa bản không thành công'], 400);
+            }
+        }
+    }
+
+    public function restore ($id)
+    {
+        $currentUser = User::findOrFail(Auth()->user()->id);
+
+        $user = User::withTrashed()->find($id);
+
+        if ( $currentUser->can('restore', User::class) ) {
+            if ( empty($user) ) {
+                return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
+            }
+        
+            if( $user->restore() ) {
+                return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
+            } else {
+                return response()->json(['mess' => 'Xóa bản không thành công'], 400);
+            }
+        }
     }
 
     

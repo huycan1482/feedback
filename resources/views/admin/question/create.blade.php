@@ -18,69 +18,13 @@
     </h1>
 </section>
 
-<div class="modal fade" id="modal-default1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Thêm câu trả lời</h4>
-            </div>
-            <div class="modal-body">
-                <div class="form-modal">
-                    <div class="form-group" id="form-add_answer_content">
-                        <label for="">Nội dung câu trả lời</label>
-                        <div>
-                            <input name="modal-add-answer-content" type="text" class="form-control" placeholder="Nội dung câu hỏi" value="" style="margin-left: 10px">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <div type="button" class="btn btn-primary btn-add-answer" >Add</div>
-                <div type="button" class="btn btn-danger" data-dismiss="modal">Close</div>
-            </div>
-        </div>
-      <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-
-<div class="modal fade" id="modal-default2">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Sửa câu trả lời</h4>
-            </div>
-            <div class="modal-body">
-                <div class="form-modal">
-                    <div class="form-group" id="form-add_answer_content">
-                        <label for="">Nội dung câu trả lời</label>
-                        <div>
-                            <input name="modal-edit-answer-content" type="text" class="form-control" placeholder="Nội dung câu trả lời" value="" style="margin-left: 10px">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <div type="button" class="btn btn-success btn-edit-answer" >Edit</div>
-                <div type="button" class="btn btn-danger" data-dismiss="modal">Close</div>
-            </div>
-        </div>
-      <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-
 <section class="content">
     <div class="row">
         <!-- left column -->
-        <div class="col-md-8">
+        <div class="col-md-7">
             <!-- general form elements -->
 
-            <div class="box box-primary">
+            <div class="box box-info">
                 <div class="box-header with-border">
                     <h3 class="box-title">Thông tin câu hỏi</h3>
                 </div>
@@ -103,21 +47,10 @@
                                 <input name="content" type="text" class="form-control" placeholder="Nội dung câu hỏi">
                             </div>
                         </div>
-
-                        <div class="">
-                            <label for="">
-                                <span>Danh sách câu trả lời </span>
-                                <span class="label label-success" data-toggle="modal" data-target="#modal-default1" style="margin-left: 10px; cursor: pointer;"> Thêm đáp án</span>
-                            </label>
-                            <div class="answer">
-                                <div></div>
-                            </div>
-
-                        </div>
                         
                         <div class="checkbox form-group" id="form-is_active">
                             <label>
-                                <input type="checkbox" name="is_active" value="1"> Kích hoạt
+                                <input type="checkbox" name="is_active" value="1" checked="checked"> Kích hoạt
                             </label>
                         </div>
                     </div>
@@ -133,6 +66,44 @@
             <!-- /.box -->
             
 
+        </div>
+        <div class="col-md-5">
+            <!-- general form elements -->
+
+            <div class="box box-success">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Thông tin câu trả lời</h3>
+                </div>
+                <div class="box-body">
+                    <div class="answer">
+                        <div class="form-group" id="form-password">
+                            <label for="answer_100"> Câu trả lời 1 (100%) </label>
+                            <div>
+                                <input id="answer_100" name="answer_100" type="text" class="form-control" placeholder="Câu trả lời 1">
+                            </div>
+                        </div>
+                        <div class="form-group" id="form-password">
+                            <label for="answer_66"> Câu trả lời 2 (66.66%) </label>
+                            <div>
+                                <input id="answer_66" name="answer_66" type="text" class="form-control" placeholder="Câu trả lời 2">
+                            </div>
+                        </div>
+                        <div class="form-group" id="form-password">
+                            <label for="answer_33"> Câu trả lời 3 (33.33%) </label>
+                            <div>
+                                <input id="answer_33" name="answer_33" type="text" class="form-control" placeholder="Câu trả lời 3">
+                            </div>
+                        </div>
+                        <div class="form-group" id="form-password">
+                            <label for="answer_0"> Câu trả lời 4 (0%) </label>
+                            <div>
+                                <input id="answer_0" name="answer_0" type="text" class="form-control" placeholder="Câu trả lời 4">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
         <!--/.col (right) -->
     </div>
@@ -154,67 +125,32 @@
 <script>
     $(function () {
         
-        let data_id = 1;
-        let current_id = 0;
-
-        $('.btn-add-answer').click(function (e) {
-            
-            var val = $("input[name='modal-add-answer-content']").val();
-
-            if ($.trim(val) != '') {
-                if ($('input:radio').length < 4) {
-                    $('.answer > div:last-child').after("<div class='data-id-"+ data_id +"'>" +
-                            "<input type='radio' class='minimal data-id-" + data_id + "' name='answer-"+ data_id +"' value='"+ val +"' checked>" + 
-                            "<div class='answer-content'><p class='data-id-"+ data_id +"'>"+ val +"</p></div>" +
-                            "<div class='answer-icon'><i class='fas fa-edit' data-id="+ data_id +" data-toggle='modal' data-target='#modal-default2'></i><i class='fas fa-trash-alt' data-id="+ data_id +"></i></div></div>");
-                        data_id++;
-                } else {
-                    var message = "<div class='pad margin no-print' id='message' ><div class='alert alert-danger alert-dismissible'>"
-                        +"<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>×</button><h4><i class='icon fa fa-check'></i> Thông báo !</h4> Tối đa 4 câu trả lời </div></div>";
-
-                    if ( $('#message') ) {
-                        $('#message').remove();
-                    }
-
-                    $('#modal-default1 .form-modal').before(message);
-                }
-            }
-            
-            
-        });
-
-        $(document).on('click', '.fa-edit', function(e) {
-            var edit_id = $(this).attr('data-id');
-            var value = $('p.data-id-' + edit_id).text();
-            $("input[name*='modal-edit-answer-content']").val(value);
-            current_id = edit_id;
-        });
-
-        $(document).on('click', '.btn-edit-answer', function(e) {
-            var answer_content = $("input[name='modal-edit-answer-content']").val();
-            $("p.data-id-" + current_id).text(answer_content);
-            $("input.data-id-" + current_id).val(answer_content);
-            $('#modal-default2').modal('hide');
-        });
-
-        $(document).on('click', '.fa-trash-alt', function(e) {
-            var delete_id = $(this).attr('data-id');
-            $('div.data-id-' + delete_id).remove();
-        });
+        
 
         $('.add-question').click(function (e) {
             var code = $("input[name='code']").val();
             var content = $("input[name='content']").val();
             var is_active = ( $("input[name*='is_active']").is(':checked') ) ? 1 : 0;
-            var answers = [];
+            var answer_100 = $('#answer_100').val();
+            var answer_66 = $('#answer_66').val();
+            var answer_33 = $('#answer_33').val();
+            var answer_0 = $('#answer_0').val();
 
-            $('input:radio').each(function (index, value) {
-                console.log(index, value.value);
-                answers.push([
-                    value.value,
-                    (value.checked) ? 1 : 0,
-                ]);
-            });
+            // $('input:radio').each(function (index, value) {
+            //     console.log(index, value.value);
+            //     answers.push([
+            //         value.value,
+            //         (value.checked) ? 1 : 0,
+            //     ]);
+            // });
+
+            var answers = [] ;
+            answers.push(
+                {'value' : answer_100, 'point' : 100},
+                {'value' : answer_66, 'point' : 66.66},
+                {'value' : answer_33, 'point' : 33.33},
+                {'value' : answer_0, 'point' : 0},
+            );
 
             $.ajax({
                 type: "post",
@@ -222,8 +158,8 @@
                 data: {
                     'code' : code,
                     'content' : content,
-                    'answers' : answers,
                     'is_active' : is_active,
+                    'answers' : answers,
                 },
                 dataType: "json",
                 success: function (response) {

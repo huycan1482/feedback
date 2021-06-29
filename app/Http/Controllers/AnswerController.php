@@ -140,9 +140,9 @@ class AnswerController extends Controller
                 return response()->json(['errors' => $errs, 'mess' => 'Sửa bản ghi lỗi'], 400);
             } else {
                 $answer->content = $request->input('answer_content');
-                $answer->type = 1;
+                // $answer->type = 1;
                 // $answer->is_true = (int)$request->input('answer_is_active');
-                $answer->is_true = 1;
+                // $answer->is_true = 1;
                 $answer->user_update = Auth::user()->id;
                 if ($answer->save()) {
                     return response()->json(['mess' => 'Sửa bản ghi thành công', 200]);

@@ -50,7 +50,6 @@ class HomeController extends Controller
                 return view ('feedback.checkIn');
             }
 
-
             $class = DB::table('classes')
             ->selectRaw('classes.id, classes.name, classes.code, courses.name as course, courses.code as course_code, subjects.name as subject, subjects.code as subject_code, 
             count(lessons.id) as total_number,
@@ -169,6 +168,9 @@ class HomeController extends Controller
             ->whereRaw("classes.id = ".$id." and date(now()) > lessons.start_at")
             ->orderBy('lessons.start_at', 'asc')
             ->get();
+
+            $checkIn = [];
+            $user_checkIn = [];
 
             foreach ($students as $key => $student) {
                 $checkIn [$student->id] = DB::select("select classes.code, lessons.id, lessons.start_at, test.is_check, test.id from classes
@@ -309,10 +311,32 @@ class HomeController extends Controller
 
     public function getFeedback ()
     {
-        $classes = ClassRoom::join('user_class', 'user_class.class_id', '=', 'classes.id')
-            ->where('user_class.user_id', Auth::user()->id)
+        // dd(FeedBack::find(1)->pivot);
+
+        $classes = ClassRoom::select('classes.*')
+            ->join('user_class', 'user_class.class_id', '=', 'classes.id')
+            ->leftJoin('feedback_details', 'classes.id', 'feedback_details.class_id')
+            ->where([['user_class.user_id', Auth::user()->id], ['feedback_details.is_active', '=', 1]]) 
+            ->groupBy('classes.id')
             ->orderBy('user_class.created_at', 'asc')
             ->get();
+            // dd($classes[0]);
+
+        foreach ( $classes as $key => $item ) {
+            $checkFeedback = ClassRoom::selectRaw('count(check_in.id) * 100 / count(lessons.id) as percent')
+            ->join('user_class', 'user_class.class_id', '=', 'classes.id')
+            ->join('lessons', 'classes.id', '=', 'lessons.class_id')
+            ->leftJoin('check_in', 'lessons.id', '=', 'check_in.lesson_id')
+            ->where([['user_class.user_id', '=', Auth::user()->id], ['classes.id', '=', $item->id]])
+            ->get();
+
+            if ($checkFeedback->first()->percent < 80) {
+                $classes->forget($key);
+                
+            }
+        }
+
+        dd($classes);
 
         foreach ($classes as $item) {
             if (!empty($item->feedback->first())) {
@@ -321,6 +345,8 @@ class HomeController extends Controller
                 break;
             }
         }
+
+        // dd($first_feedback);
 
         $classRoom = DB::table('classes')
             ->selectRaw('classes.id, classes.name, classes.code, courses.name as course, courses.code as course_code, subjects.name as subject, subjects.code as subject_code, 
@@ -381,8 +407,11 @@ class HomeController extends Controller
 
     public function getFeedbackId($class_id, $feedback_id)
     {
-        $classes = ClassRoom::join('user_class', 'user_class.class_id', '=', 'classes.id')
-            ->where('user_class.user_id', Auth::user()->id)
+        $classes = ClassRoom::select('classes.*')
+            ->join('user_class', 'user_class.class_id', '=', 'classes.id')
+            ->leftJoin('feedback_details', 'classes.id', 'feedback_details.class_id')
+            ->where([['user_class.user_id', Auth::user()->id], ['feedback_details.is_active', '=', 1]]) 
+            ->groupBy('classes.id')
             ->orderBy('user_class.created_at', 'asc')
             ->get();
 
@@ -447,7 +476,7 @@ class HomeController extends Controller
     public function postFeedback (Request $request)
     {
         // dd(count($request->input('feedback')));
-        
+
         $validator = Validator::make($request->all(), [
             'feedback_id' => 'required|exists:feedbacks,id',
             'feedback' => 'required|array',

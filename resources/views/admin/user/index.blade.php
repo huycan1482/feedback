@@ -24,7 +24,7 @@
                         <h4 class="modal-title">Thông tin chi tiết Người dùng</h4>
                     </div>
                     <div class="modal-body">
-                        <div class="box">
+                        <div class="box box-info">
                             <div class="box-body table-responsive no-padding">
                                 <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info" style="margin-top: 0 !important;">
                                     <tbody>
@@ -82,7 +82,7 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    <table id="example1" class="table table-bordered table-striped">
+                    <table id="" class="table table-bordered table-striped example1">
                         <thead>
                             <tr>
                                 <th class="text-center">STT</th>
@@ -132,6 +132,44 @@
                             </tr> --}}
                         </tfoot>
                     </table>
+
+                    @can('forceDelete', App\User::class)
+                    <h3>Danh sách đã bị xóa</h3>
+
+                    <table id="" class="table table-bordered table-striped example1">
+                        <thead>
+                            <tr>
+                                <th class="text-center">STT</th>
+                                <th class="text-center">Tên</th>
+                                <th class="text-center">Email</th>
+                                <th class="text-center">Chức năng</th>
+                                {{-- <th class="text-center">Trạng thái</th> --}}
+                                <th class="text-center">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($usersWithTrashed as $key => $user)
+                            <tr class="item-{{ $user->id }}">
+                                <td class="text-center">{{ $key + 1}}</td>
+                                <td class="text-center">{{ $user->name }}</td>
+                                <td class="text-center">{{ $user->email }}</td>
+                                <td class="text-center">{{ $user->role->name }}</td>
+                                <td class="text-center">
+                                    <a href="javascript:void(0)" onclick="restore('user/restore', '{{ $user->id }}' )" class="btn btn-primary" title="Khôi phục">
+                                        <i class="fas fa-trash-restore"></i>
+                                    </a>
+
+                                    <a href="javascript:void(0)" onclick = "forceDelete('user/forceDelete', '{{ $user->id }}' )" class="btn btn-danger" title="Xóa">
+                                        <i class="fas fa-ban"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    @endcan
+
+                    
                 </div>
                 <!-- /.box-body -->
             </div>
@@ -147,7 +185,7 @@
 <script src="backend/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 <script>
     $(function() {
-        $('#example1').DataTable();
+        $('.example1').DataTable();
 
         $.ajaxSetup({
             headers: {

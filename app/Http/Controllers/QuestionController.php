@@ -98,9 +98,10 @@ class QuestionController extends Controller
                     $answer = new Answer;
                     $answer->code = $request->input('code').'-'.$key.'-'.time();
                     $answer->question_id = $latestQuestion->first()->id;
-                    $answer->content = $item['0'];
-                    $answer->type = 1;
-                    $answer->is_true = (int)$item['1'];
+                    $answer->content = $item['value'];
+                    // $answer->type = 1;
+                    // $answer->is_true = (int)$item['1'];
+                    $answer->point = $item['point'];
                     $answer->user_create = Auth::user()->id;
                     $answer->save();
                 }
@@ -111,24 +112,6 @@ class QuestionController extends Controller
                 DB::rollBack();
                 return response()->json(['mess' => 'Thêm bản ghi lỗi'], 502);
             }
-
-            // try {
-            //     DB::transaction(function () use ($question, $request, $created_time) {
-            //         $question->save();
-            //         $latestQuestion = Question::where([ 'created_at' => $created_time ]);
-            //         foreach ($request['answers'] as $item) {
-            //             $answer = new Answer;
-            //             $answer->question_id = $latestQuestion->first()->id;
-            //             $answer->content = $item['0'];
-            //             $answer->is_check = (int)$item['1'];
-                        
-            //             $answer->save();
-            //         }
-            //     });
-
-            // } catch (Exception $e) {
-            //     return response()->json(['mess' => 'Thêm bản ghi lỗi', 502]);
-            // }
             
 
             return response()->json(['mess' => 'Thêm bản ghi thành công', 200]);
@@ -150,7 +133,6 @@ class QuestionController extends Controller
 
         return response()->json(['question' => $question, 'answers' => $answers], 200);
 
-        
     }
 
     /**

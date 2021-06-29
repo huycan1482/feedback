@@ -38,6 +38,8 @@ Route::group(['prefix' => 'admin' , 'as' => 'admin.', 'middleware' => 'checkAdmi
 
     Route::resource('teacher', 'TeacherController');
     Route::resource('user', 'UserController');
+    Route::get('user/forceDelete/{id}', 'UserController@forceDelete')->name('user.forceDelete');
+    Route::get('user/restore/{id}', 'UserController@restore')->name('user.restore');
     Route::resource('student', 'StudentController');
     Route::resource('userClass', 'UserClassController');
 

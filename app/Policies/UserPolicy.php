@@ -75,9 +75,9 @@ class UserPolicy
      * @param  \App\User  $model
      * @return mixed
      */
-    public function restore(User $user, User $model)
+    public function restore(User $user)
     {
-        //
+        return $user->role->name == 'admin';
     }
 
     /**
@@ -87,10 +87,12 @@ class UserPolicy
      * @param  \App\User  $model
      * @return mixed
      */
-    public function forceDelete(User $user, User $model)
+    public function forceDelete(User $user)
     {
-        //
+        return $user->role->name == 'admin';
     }
+
+    
 
     public function viewCheckIn(User $user)
     {

@@ -26,7 +26,7 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-lg-6">
-                                <div class="box">
+                                <div class="box box-info">
                                     <div class="box-header">
                                         <h4>Thông tin chung</h4>
                                     </div>
@@ -34,6 +34,14 @@
                                         <table class="table-hover table table-bordered table-striped dataTable"
                                             role="grid" aria-describedby="example1_info" style="margin-top: 0 !important;"> 
                                             <tbody>
+                                                <tr style="width: 100%">
+                                                    <td class="" style="width: 30%">
+                                                        Mã câu hỏi:
+                                                    </td>
+                                                    <td class="modal-question-code" style="width: 70%">
+
+                                                    </td>
+                                                </tr>
                                                 <tr style="width: 100%">
                                                     <td class="" style="width: 30%">
                                                         Nội dung câu hỏi:
@@ -52,14 +60,6 @@
                                                 </tr>
                                                 <tr style="width: 100%">
                                                     <td class="" style="width: 30%">
-                                                        Người tạo:
-                                                    </td>
-                                                    <td class="modal-question-" style="width: 70%">
-
-                                                    </td>
-                                                </tr>
-                                                <tr style="width: 100%">
-                                                    <td class="" style="width: 30%">
                                                         Ngày tạo:
                                                     </td>
                                                     <td class="modal-question-createdAt" style="width: 70%">
@@ -73,7 +73,7 @@
                             </div>
 
                             <div class="col-lg-6">
-                                <div class="box">
+                                <div class="box box-success">
                                     <div class="box-header">
                                         <h4>Thông tin Đáp án</h4>
                                     </div>
@@ -202,6 +202,8 @@
                     var html = '';
                     // console.log(response.question);
                     $('.modal-question-content').html(response.question.content);
+                    $('.modal-question-code').html(response.question.code);
+                    $('.modal-question-createdAt').html(response.question.created_at);
                     if (response.question.is_active == 1) {
                         $('.modal-question-active').html(
                             "<span class='label label-success'> Hiển thị </span>");

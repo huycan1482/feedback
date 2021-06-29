@@ -106,6 +106,7 @@
                         <div class="form-group" style="display: block;">
                             <label for="">
                                 <span>Danh sách câu trả lời </span>
+                                <span class="label label-success" data-toggle="modal" data-target="#modal-default2" style="margin-left: 10px; cursor: pointer;"> Thêm đáp án</span>
                             </label>
                             <div class="answer" style="width: 100%">
                                 @foreach($answers as $key => $answer)
@@ -115,8 +116,8 @@
                                         <p class="" data-id="{{ $answer->id }}">{{$answer->content}} / ({{$answer->point}}%)</p>
                                     </div>
                                     <div class="">
-                                        <button type="button" class="btn btn-success btn-detail" data-toggle="modal" data-target="#modal-default1" title="Chi tiết" data-id="{{$answer->id}}" style="margin-right: 5px">
-                                            <i class="fa fa-edit"></i>
+                                        <button type="button" class="btn btn-warning btn-detail" data-toggle="modal" data-target="#modal-default1" title="Chi tiết" data-id="{{$answer->id}}" style="margin-right: 5px">
+                                            <i class="fas fa-cog"></i>
                                         </button>
                                         {{-- <a class="btn btn-danger btn-delete" title="Xóa" data-id="{{$answer->id}}">
                                             <i class="fa fa-trash"></i>
@@ -159,6 +160,48 @@
     $(function () {
         //Initialize Select2 Elements
 
+        $(document).on('click', '.btn-add-answer', function (e) {
+            var add_answer_content = $("input[name='modal-add-answer-content']").val();
+
+            if ($.trim(add_answer_content) != '') {
+                if ($('input:radio').length < 4) {
+                    var add_answer_active = ( $("input[name*='modal-add-answer-active']").is(':checked') ) ? 1 : 0;
+                    var question_id = $('.btn-update-question').attr('data-id');
+
+                    $.ajax({
+                        type: "post",
+                        url: base_url + '/admin/answer',
+                        data: {
+                            'question_id' : question_id,
+                            'add_answer_content' : add_answer_content,
+                            'add_answer_active' : add_answer_active,
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            successResponseModal(response);
+                            setTimeout(function (){
+                                location.reload()
+                            }, 1500);
+                        }, 
+                        error: function (e) {
+                            errorResponseModal(e)
+                        }
+                    });
+
+                } else {
+                    var message = "<div class='pad margin no-print' id='message' ><div class='alert alert-danger alert-dismissible'>"
+                        +"<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>×</button><h4><i class='icon fa fa-check'></i> Thông báo !</h4> Tối đa 4 câu trả lời </div></div>";
+
+                    if ( $('#message') ) {
+                        $('#message').remove();
+                    }
+
+                    $('.form-modal').before(message);
+                }
+            }
+            
+        });
+
         $(document).on('click', '.btn-detail', function (e) {
             var itemId = $(this).attr('data-id');
 
@@ -181,6 +224,27 @@
                 }
             });
         })
+
+        $(document).on('click', '.btn-delete', function (e) {
+
+            var result = confirm("Bạn có chắc chắn muốn xóa ?");
+            if (result) { 
+                var delete_id = $(this).attr('data-id');
+                $.ajax({
+                    url: base_url + '/admin/answer/' + delete_id, 
+                    type: 'DELETE',
+                    data: {}, 
+                    dataType: "json", 
+                    success: function (response) { 
+                        $('div[data-id="'+ delete_id +'"]').remove();
+                        messageResponse('success', response.mess);
+                    },
+                    error: function (e) { 
+                        messageResponse('danger', e.responseJSON.mess);
+                    }
+                });
+            }
+        });
 
         $(document).on('click', '.btn-update-answer', function (e) {
             var question_id = $('.btACn-update-question').attr('data-id');

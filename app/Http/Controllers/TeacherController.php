@@ -21,8 +21,14 @@ class TeacherController extends Controller
             ->where('roles.name', '=', 'teacher')
             ->latest('users.created_at')->get('users.*');
 
+        $teacherWithTrashed = User::onlyTrashed()
+        ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
+        ->where('roles.name', '=', 'teacher')
+        ->latest('users.created_at')->get('users.*');
+
         return view ('admin.teacher.index', [
             'teachers' => $teachers,
+            'teacherWithTrashed' => $teacherWithTrashed,
         ]);
     }
 

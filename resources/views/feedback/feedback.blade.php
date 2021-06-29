@@ -18,8 +18,9 @@
                 </div>
                 <div class="box-body">
                     @foreach($classes as $class)
+                    {{-- {{dd($class->pivot)}} --}}
                         @foreach ($class->feedback as $item)
-                        
+                        @if ($item->pivot->is_active == 1)
                         <a class="class-item" href="{{ route('feedback.getFeedbackId', ['class_id' => $class->id, 'feedback_id' => $item->id]) }}">
                             <div>
                                 <i class="fas fa-clipboard-list"></i>
@@ -27,6 +28,7 @@
                             </div>
                             <i class="fas fa-check"></i>
                         </a>
+                        @endif
                         @endforeach
                     
                     @endforeach

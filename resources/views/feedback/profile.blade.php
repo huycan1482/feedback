@@ -107,46 +107,48 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach( $user->classRooms as $key => $item )
-                                    <tr>
-                                        <td scope="row">{{ $key + 1 }}</td>
-                                        <td>{{ $item->name }}</td>
-                                        <td>{{ ( ($item->lessons->sortBy('start_at')->first()->start_at) )}}</td>
-                                        <td>00/00/0000</td>
-                                       
-                                        @if ( $item->is_active == 0 )
-                                            <td><span class="label label-danger">Đã hủy</span></td>
-                                        @elseif ( (strtotime($item->lessons->sortBy('start_at')->first()->start_at) < time()) ) 
-                                            <td><span class="label label-success">Đang học</span></td>
-                                        @elseif ( (strtotime($item->lessons->sortBy('start_at')->first()->start_at) > time()) ) 
-                                            <td><span class="label label-warning">Chờ học</span></td>
-                                        @else
-                                            <td><span class="label label-danger">Hoàn thành</span></td>
-                                        @endif
-                                      
-                                    </tr>
-                                    @endforeach
-                                    {{-- <tr>
-                                        <td scope="row">1</td>
-                                        <td>Lớp 1 (LH1)</td>
-                                        <td>00/00/0000</td>
-                                        <td>00/00/0000</td>
-                                        <td><span class="label label-success">Đang học</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td scope="row">2</td>
-                                        <td>Lớp 2 (LH2)</td>
-                                        <td>00/00/0000</td>
-                                        <td>00/00/0000</td>
-                                        <td><span class="label label-warning">Đang học</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td scope="row">3</td>
-                                        <td>Lớp 3 (LH3)</td>
-                                        <td>00/00/0000</td>
-                                        <td>00/00/0000</td>
-                                        <td><span class="label label-danger">Đang học</span></td>
-                                    </tr> --}}
+                                    {{-- {{dd($user->classes->first())}} --}}
+                                    @if ((!empty($user->classes->first())))
+                                        @foreach( $user->classes as $key => $item )
+                                        <tr>
+                                            <td scope="row">{{ $key + 1 }}</td>
+                                            <td>{{ $item->name }}</td>
+                                            <td>{{ ( ($item->lessons->sortBy('start_at')->first()->start_at) )}}</td>
+                                            <td>{{ ( ($item->lessons->SortByDesc('start_at')->first()->start_at) )}}</td>
+                                        
+                                            @if ( $item->is_active == 0 )
+                                                <td><span class="label label-danger">Đã hủy</span></td>
+                                            @elseif ( (strtotime($item->lessons->sortBy('start_at')->first()->start_at) < time()) ) 
+                                                <td><span class="label label-success">Đang dạy</span></td>
+                                            @elseif ( (strtotime($item->lessons->sortBy('start_at')->first()->start_at) > time()) ) 
+                                                <td><span class="label label-warning">Chờ dạy</span></td>
+                                            @else
+                                                <td><span class="label label-danger">Hoàn thành</span></td>
+                                            @endif
+                                        
+                                        </tr>
+                                        @endforeach
+                                    @else  
+                                        @foreach( $user->classRooms as $key => $item )
+                                        <tr>
+                                            <td scope="row">{{ $key + 1 }}</td>
+                                            <td>{{ $item->name }}</td>
+                                            <td>{{ ( ($item->lessons->sortBy('start_at')->first()->start_at) )}}</td>
+                                            <td>{{ ( ($item->lessons->SortByDesc('start_at')->first()->start_at) )}}</td>
+                                        
+                                            @if ( $item->is_active == 0 )
+                                                <td><span class="label label-danger">Đã hủy</span></td>
+                                            @elseif ( (strtotime($item->lessons->sortBy('start_at')->first()->start_at) < time()) ) 
+                                                <td><span class="label label-success">Đang học</span></td>
+                                            @elseif ( (strtotime($item->lessons->sortBy('start_at')->first()->start_at) > time()) ) 
+                                                <td><span class="label label-warning">Chờ học</span></td>
+                                            @else
+                                                <td><span class="label label-danger">Hoàn thành</span></td>
+                                            @endif
+                                        
+                                        </tr>
+                                        @endforeach
+                                    @endif
                                 </tbody>
                         </table>
                     </form>

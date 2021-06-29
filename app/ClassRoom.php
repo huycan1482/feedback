@@ -51,7 +51,7 @@ class ClassRoom extends Model
 
     public function feedback ()
     {
-        return $this->belongsToMany('App\FeedBack', 'feedback_details', 'class_id', 'feedback_id')->withPivot('class_id', 'feedback_id', 'id');
+        return $this->belongsToMany('App\FeedBack', 'feedback_details', 'class_id', 'feedback_id')->withPivot('class_id', 'feedback_id', 'id', 'is_active');
     }
 
 

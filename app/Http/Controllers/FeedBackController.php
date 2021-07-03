@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\FeedBack;
 use App\FeedbackQuestion;
 use App\Question;
+use App\User;
 use DateTime;
 use Exception;
 use Illuminate\Support\Str;
@@ -22,9 +23,19 @@ class FeedBackController extends Controller
      */
     public function index()
     {
+
+        $currentUser = User::findOrFail(Auth()->user()->id);
+
+        $feedbacksWithTrashed = '';
+
+        if ( $currentUser->can('checkAdmin', User::class) ) {
+            $feedbacksWithTrashed = FeedBack::onlyTrashed()->latest()->get();
+        }
+
         $feedbacks = FeedBack::latest()->get();
         return view ('admin.feedback.index', [
-            'feedbacks' => $feedbacks
+            'feedbacks' => $feedbacks,
+            'feedbacksWithTrashed' => $feedbacksWithTrashed
         ]);
     }
 
@@ -268,7 +279,7 @@ class FeedBackController extends Controller
      */
     public function destroy($id)
     {
-        $feedback = Feedback::find($id);
+        $feedback = FeedBack::find($id);
 
         if ( empty($feedback) ) {
             return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
@@ -283,10 +294,52 @@ class FeedBackController extends Controller
 
     public function getListQuestions($id)
     {
-        $feedback = Feedback::findOrFail($id);
+        $feedback = FeedBack::findOrFail($id);
         
         return view ('admin.feedback.listQuestions', [
             'feedback' => $feedback
         ]);
+    }
+
+    public function forceDelete ($id)
+    {
+        $currentUser = User::findOrFail(Auth()->user()->id);
+
+        $feedback = FeedBack::withTrashed()->find($id);
+
+        if ( $currentUser->can('forceDelete', FeedBack::class) ) {
+            if ( empty($feedback) ) {
+                return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
+            }
+        
+            if( $feedback->forceDelete() ) {
+                return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
+            } else {
+                return response()->json(['mess' => 'Xóa bản không thành công'], 400);
+            }
+        } else {
+            return response()->json(['mess' => 'Xóa bản ghi lỗi'], 403);
+        }
+    }
+
+    public function restore ($id)
+    {
+        $currentUser = User::findOrFail(Auth()->user()->id);
+
+        $feedback = FeedBack::withTrashed()->find($id);
+
+        if ( $currentUser->can('restore', FeedBack::class) ) {
+            if ( empty($feedback) ) {
+                return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
+            }
+        
+            if( $feedback->restore() ) {
+                return response()->json(['mess' => 'Khôi bản ghi thành công'], 200);
+            } else {
+                return response()->json(['mess' => 'Khôi bản không thành công'], 400);
+            }
+        } else {
+            return response()->json(['mess' => 'Khôi phục bản ghi lỗi'], 403);
+        }
     }
 }

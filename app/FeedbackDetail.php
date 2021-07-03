@@ -9,7 +9,7 @@ class FeedbackDetail extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'feebback_details';
+    protected $table = 'feedback_details';
 
     protected $dates = ['deleted_at'];
 

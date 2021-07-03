@@ -144,7 +144,7 @@
                         </tfoot>
                     </table>
 
-                    {{-- @can('forceDelete', App\ClassRoom::class) --}}
+                    @can('forceDelete', App\ClassRoom::class)
                     <div>
                         <h3 style="display: inline; margin-right: 5px">Danh sách đã bị xóa </h3>
                         <small>(Tải lại sau khi xóa mềm)</small>
@@ -190,7 +190,7 @@
 
                         </tfoot>
                     </table>
-                    {{-- @endcan --}}
+                    @endcan
 
                 </div>
                 <!-- /.box-body -->

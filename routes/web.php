@@ -47,6 +47,8 @@ Route::group(['prefix' => 'admin' , 'as' => 'admin.', 'middleware' => 'checkAdmi
     Route::get('subject/restore/{id}', 'SubjectController@restore')->name('subject.restore');
 
     Route::resource('course', 'CourseController');
+    Route::get('course/forceDelete/{id}', 'CourseController@forceDelete')->name('course.forceDelete');
+    Route::get('course/restore/{id}', 'CourseController@restore')->name('course.restore');
 
     Route::resource('feedback', 'FeedbackController');
     Route::resource('feedbackQuestion', 'FeedbackQuestionController');

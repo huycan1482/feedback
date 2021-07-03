@@ -50,12 +50,14 @@
                                 <input type="password" class="form-control" id="password" placeholder="Password" name="password" value="{{old('password')}}">
                                 <span class="error-text">{{$errors->first('password')}}</span>
                             </div>
+
+                            <p class="error-alert">{{ session('msg') ? session('msg') : '' }}</p>
+
                             <div class="form-group form-check">
                                 <input type="checkbox" class="form-check-input" id="remember" name="remember">
                                 <label class="form-check-label" for="remember">Ghi nhớ đăng nhập</label>
                             </div>
                             
-                            <p class="error-alert"></p>
 
                             <button type="submit" class="btn btn-primary btn-block">Đăng nhập</button>
                         </form>

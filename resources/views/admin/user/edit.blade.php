@@ -87,7 +87,7 @@
                     <!-- /.box-body -->
 
                     <div class="box-footer">
-                        <div class="btn btn-info add-user">Add</div>
+                        <div class="btn btn-info btn-update-user" data-id="{{ $user->id }}">Update</div>
                         <button type="reset" class="btn btn-danger">Reset</button>
                     </div>
                 </form>

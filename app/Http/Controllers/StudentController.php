@@ -56,7 +56,7 @@ class StudentController extends Controller
             'name' => 'required',
             'code' => 'required|unique:users,code',
             'gender' => 'required|integer|min:1|max:3',
-            'date_of_birth' => 'required|date_format:"Y-m-d"',
+            'date_of_birth' => 'required|date_format:"Y-m-d"|before:(today - 864002)',
             'phone' => 'required|size:10',
             'address' => 'required',
             'email' => 'required|string|email|max:255|unique:users,email',
@@ -116,7 +116,7 @@ class StudentController extends Controller
             $user->email = $request->input('email');
             $user->role_id = $role_id;
             $user->password = Hash::make($request->input('password'));
-    // dd($user->save());
+
             DB::beginTransaction();
 
             try {

@@ -71,7 +71,7 @@
                                             </div> --}}
                                             <div class="feedback-item feedback-close">
                                                 <i class="far fa-calendar-check"></i>
-                                                <span>Ngày bắt đầu khảo sát: </span>
+                                                <span>Thời gian khảo sát: </span>
                                                 <span></span>
                                             </div>
                                         </div>
@@ -180,7 +180,7 @@
                     console.log(response);
 
                     $('.feedback-feedbackName > span:last-child').html(response.feedback.name + ' / ' + response.feedback.code);
-                    $('.feedback-close > span:last-child').html(response.feedback.start_at);
+                    $('.feedback-close > span:last-child').html(response.feedback.time + ' (phút)');
 
                     var html = '';
 

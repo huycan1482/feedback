@@ -4,7 +4,7 @@
 
 <section class="content-header">
     <h1>
-        Sửa - Người dùng
+        Sửa - Nhân viên
         <small><a href="{{ route('admin.user.index') }}">Danh sách</a></small>
     </h1>
 </section>
@@ -26,7 +26,7 @@
                     <div class="box-body">
 
                         <div class="form-group " id="form-name">
-                            <label class="" for="">Tên học viên</label>
+                            <label class="" for="">Tên </label>
                             <div>
                                 <input name="name" type="text" class="form-control " placeholder="Tên học viên" value="{{ $user->name }}">
                             </div>

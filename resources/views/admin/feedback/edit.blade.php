@@ -144,6 +144,13 @@
                             </div>
                         </div>
 
+                        <div class="form-group" id="form-time">
+                            <label for="">Thời gian đánh giá</label>
+                            <div>
+                                <input name="time" type="number" class="form-control" placeholder="Thời gian đánh giá" value="{{ $feedback->time }}">
+                            </div>
+                        </div>
+
                         <div class="checkbox form-group">
                             <label>
                                 <input type="checkbox" name="is_active" id="is_active" {{ ($feedback->is_active == 1) ? 'checked' : '' }}> Kích hoạt
@@ -400,11 +407,13 @@
 
             var name = $("input[name='name']").val();
             var code = $("input[name='code']").val();
+            var time = $("input[name='time']").val();
             var is_active = ( $("input[name='is_active']").is(':checked') ) ? 1 : 0;
 
             data = {
                 name: name,
                 code: code,
+                time: time,
                 is_active : is_active
             };
 

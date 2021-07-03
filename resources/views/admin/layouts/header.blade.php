@@ -249,7 +249,7 @@
                             </p>
                         </li>
                         <!-- Menu Body -->
-                        <li class="user-body">
+                        {{-- <li class="user-body">
                             <div class="row">
                                 <div class="col-xs-6 text-center">
                                     <a href="">Profile</a>
@@ -260,14 +260,14 @@
                                 </div>
                             </div>
                             <!-- /.row -->
-                        </li>
+                        </li> --}}
                         <!-- Menu Footer-->
                         <li class="user-footer">
                             <div class="pull-left">
-                                {{-- <a href="{{ route('admin.user.edit', ['id' => Auth::user()->id ]) }}" class="btn btn-default btn-flat">Profile</a> --}}
+                                <a href="{{ route('admin.user.edit', ['id' => Auth::user()->id ]) }}" class="btn btn-default btn-flat">Profile</a>
                             </div>
                             <div class="pull-right">
-                                {{-- <a href="{{route('admin.logout')}}" class="btn btn-default btn-flat">Sign out</a> --}}
+                                <a href="{{route('admin.logout')}}" class="btn btn-default btn-flat">Sign out</a>
                             </div>
                         </li>
                     </ul>

@@ -8,7 +8,7 @@
 @section('content')
 <section class="content-header">
     <h1>
-        Quản lý danh sách Người dùng
+        Quản lý danh sách Nhân viên
         <small><a href="{{ route('admin.user.create') }}">Thêm mới</a></small>
     </h1>
 </section>
@@ -21,7 +21,7 @@
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Thông tin chi tiết Người dùng</h4>
+                        <h4 class="modal-title">Thông tin chi tiết Nhân viên</h4>
                     </div>
                     <div class="modal-body">
                         <div class="box box-info">

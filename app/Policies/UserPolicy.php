@@ -92,7 +92,10 @@ class UserPolicy
         return $user->role->name == 'admin';
     }
 
-    
+    public function checkAdmin (User $user)
+    {
+        return $user->role->name == 'admin';
+    }
 
     public function viewCheckIn(User $user)
     {

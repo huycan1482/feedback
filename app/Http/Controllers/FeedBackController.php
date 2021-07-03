@@ -49,7 +49,6 @@ class FeedBackController extends Controller
      */
     public function store(Request $request)
     {
-
         $request['trueName'] = $request->input('name');
         $request['name'] = Str::slug($request->input('name'));
         $validator = Validator::make($request->all(), [
@@ -58,6 +57,7 @@ class FeedBackController extends Controller
             'is_active' => 'integer|boolean',
             'question_id' => 'required|min:1|array',
             'question_id.*' => 'exists:questions,id',
+            'time' => 'required|min:0|integer',
         ], [
             'name.required' => 'Yêu cầu không để trống',
             'name.unique' => 'Dữ liệu trùng',
@@ -69,6 +69,9 @@ class FeedBackController extends Controller
             'question_id.min' => 'Yêu cầu có ít nhất 1 câu hỏi',
             'question_id.array' => 'Sai kiểu định dạng',
             'question_id.*.exists' => 'Dữ liệu không tồn tại',
+            'time.required' => 'Yêu cầu không để trống',
+            'time.min' => 'Thời gian phải lớn hơn 0',
+            'time.integer' => 'Sai kiểu dữ liệu',
         ]);
 
         // dd($request->input('question_id'));
@@ -78,12 +81,15 @@ class FeedBackController extends Controller
         if ( $validator->fails() ) {
             return response()->json(['errors' => $errs, 'mess' => 'Thêm bản ghi lỗi'], 400);
         } else {
+
             $feedback = new Feedback;
             $feedback->name = $request->input('trueName');
             $feedback->slug = $request->input('name');
             $feedback->code = $request->input('code');
+            $feedback->time = (int)$request->input('time');
             $feedback->is_active = (int)$request->input('is_active');
             $feedback->user_create = Auth::user()->id;
+            // dd($request->all());
 
             $current_date = new DateTime();
             $created_time = date('Y-m-d H:i:s', $current_date->getTimestamp());
@@ -96,12 +102,11 @@ class FeedBackController extends Controller
                 $feedback->save();
 
                 $latestFeedBack = FeedBack::where([ 'created_at' => $created_time ])->first()->id;
-
                 foreach ($request->input('question_id') as $item) {
                     $feedback_question = new FeedbackQuestion;
                     $feedback_question->question_id = $item;
                     $feedback_question->feedback_id = $latestFeedBack;
-                    $feedback_question->position = 1;
+                    // $feedback_question->position = 1;
                     $feedback_question->user_create = Auth::user()->id;
                     $feedback_question->save();
                 }
@@ -220,6 +225,7 @@ class FeedBackController extends Controller
                 'name' => 'required|unique:feedbacks,slug,'.$id,
                 'code' => 'required|unique:feedbacks,code,'.$id,
                 'is_active' => 'integer|boolean',
+                'time' => 'required|min:0|integer',
             ], [
                 'name.required' => 'Yêu cầu không để trống',
                 'name.unique' => 'Dữ liệu trùng',
@@ -227,6 +233,9 @@ class FeedBackController extends Controller
                 'code.unique' => 'Dữ liệu trùng',
                 'is_active.integer' => 'Sai kiểu dữ liệu',
                 'is_active.boolean' => 'Sai kiểu dữ liệu',
+                'time.required' => 'Yêu cầu không để trống',
+                'time.min' => 'Thời gian phải lớn hơn 0',
+                'time.integer' => 'Sai kiểu dữ liệu',
             ]);
 
             $errs = $validator->errors();
@@ -237,6 +246,7 @@ class FeedBackController extends Controller
                 $feedback->name = $request->input('trueName');
                 $feedback->slug = $request->input('name');
                 $feedback->code = $request->input('code');
+                $feedback->time = $request->input('time');
                 $feedback->is_active = (int)$request->input('is_active');
                 $feedback->user_update = Auth::user()->id;
 

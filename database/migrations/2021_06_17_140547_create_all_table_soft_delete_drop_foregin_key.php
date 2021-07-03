@@ -160,7 +160,7 @@ class CreateAllTableSoftDeleteDropForeginKey extends Migration
         //     $table->string('name', 255);
         //     $table->string('slug', 255);
         //     $table->string('code', 255);
-        //     $table->integer('number');
+        //     $table->integer('time');
         //     $table->tinyInteger('is_active');
         //     $table->unsignedBigInteger('user_create')->nullable();
         //     $table->unsignedBigInteger('user_update')->nullable();

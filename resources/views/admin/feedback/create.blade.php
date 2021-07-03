@@ -110,6 +110,13 @@
                             </div>
                         </div>
 
+                        <div class="form-group" id="form-time">
+                            <label for="">Thời gian đánh giá (phút)</label>
+                            <div>
+                                <input name="time" type="number" class="form-control" placeholder="Thời gian đánh giá">
+                            </div>
+                        </div>
+
                         <div class="checkbox form-group">
                             <label>
                                 <input type="checkbox" name="is_active" id="is_active"> Kích hoạt
@@ -285,6 +292,7 @@
             var questionsId = [];
             var name = $('[name="name"]').val();
             var code = $('[name="code"]').val();
+            var time = $('[name="time"]').val();
             var is_active = ( $("input[name='is_active']").is(':checked') ) ? 1 : 0;
 
             $('[class*="question-"]').children('td:last-child').each(function (index, value) {
@@ -294,6 +302,7 @@
             data = {
                 name: name,
                 code: code,
+                time : time,
                 is_active : is_active,
                 question_id : questionsId
             };

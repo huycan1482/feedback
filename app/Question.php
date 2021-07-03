@@ -15,13 +15,11 @@ class Question extends Model
         static::deleting(function($question) {
             $question->answers()->delete();
             $question->feedback_question()->delete();
-            $question->user_answers()->delete();
         });
 
         static::restoring(function($question) {
             $question->answers()->withTrashed()->restore();
             $question->feedback_question()->withTrashed()->restore();
-            $question->user_answers()->withTrashed()->restore();
         });
     }
 
@@ -34,12 +32,6 @@ class Question extends Model
     {
         return $this->hasMany('App\FeedbackQuestion', 'question_id', 'id');
     }
-
-    public function user_answers ()
-    {
-        return $this->hasMany('App\UserAnswer', 'question_id', 'id');
-    }
-
 
     public function userCreate ()
     {

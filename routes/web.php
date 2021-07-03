@@ -39,7 +39,10 @@ Route::group(['prefix' => 'admin' , 'as' => 'admin.', 'middleware' => 'checkAdmi
     
     Route::get('/', 'AdminController@index')->name('dashboard');
     Route::resource('answer', 'AnswerController');
+
     Route::resource('question', 'QuestionController');
+    Route::get('question/forceDelete/{id}', 'QuestionController@forceDelete')->name('question.forceDelete');
+    Route::get('question/restore/{id}', 'QuestionController@restore')->name('question.restore');
     Route::get('listAnswers/{id}', 'QuestionController@getListAnswers')->name('question.getListAnswer');
 
     Route::resource('subject', 'SubjectController');

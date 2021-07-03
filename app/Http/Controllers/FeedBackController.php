@@ -28,7 +28,7 @@ class FeedBackController extends Controller
 
         $feedbacksWithTrashed = '';
 
-        if ( $currentUser->can('checkAdmin', User::class) ) {
+        if ( $currentUser->can('forceDelete', FeedBack::class) ) {
             $feedbacksWithTrashed = FeedBack::onlyTrashed()->latest()->get();
         }
 

@@ -333,7 +333,7 @@ class UserController extends Controller
                 return response()->json(['mess' => 'Xóa bản không thành công'], 400);
             }
         } else {
-            return response()->json(['mess' => 'Thêm bản ghi lỗi'], 403);
+            return response()->json(['mess' => 'Xóa bản ghi lỗi'], 403);
         }
     }
 
@@ -354,7 +354,7 @@ class UserController extends Controller
                 return response()->json(['mess' => 'Khôi bản không thành công'], 400);
             }
         } else {
-            return response()->json(['mess' => 'Thêm bản ghi lỗi'], 403);
+            return response()->json(['mess' => 'Khôi phục bản ghi lỗi'], 403);
         }
     }
 }

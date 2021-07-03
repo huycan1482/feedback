@@ -89,7 +89,7 @@
                                 <th class="text-center">Tên</th>
                                 <th class="text-center">Email</th>
                                 <th class="text-center">Chức năng</th>
-                                {{-- <th class="text-center">Trạng thái</th> --}}
+                                <th class="text-center">Trạng thái</th>
                                 <th class="text-center">Hành động</th>
                             </tr>
                         </thead>
@@ -101,9 +101,9 @@
                                 <td class="text-center">{{ $user->email }}</td>
                                 {{-- <td class="text-center"></td> --}}
                                 <td class="text-center">{{ $user->role->name }}</td>
-                                {{-- <td class="text-center">
+                                <td class="text-center">
                                     <span class="label label-{{ ($user->is_active == 1) ? 'success' : 'danger' }}">{{ ($user->is_active == 1) ? 'Hiển thị' : 'Ẩn' }}</span>
-                                </td> --}}
+                                </td>
                                 <td class="text-center">
 
                                     <button type="button" class="btn btn-warning btn-detail" data-toggle="modal" data-target="#modal-default" title="Chi tiết" data-id="{{$user->id}}">
@@ -143,7 +143,7 @@
                                 <th class="text-center">Tên</th>
                                 <th class="text-center">Email</th>
                                 <th class="text-center">Chức năng</th>
-                                {{-- <th class="text-center">Trạng thái</th> --}}
+                                <th class="text-center">Trạng thái</th>
                                 <th class="text-center">Hành động</th>
                             </tr>
                         </thead>
@@ -154,6 +154,9 @@
                                 <td class="text-center">{{ $user->name }}</td>
                                 <td class="text-center">{{ $user->email }}</td>
                                 <td class="text-center">{{ $user->role->name }}</td>
+                                <td class="text-center">
+                                    <span class="label label-{{ ($user->is_active == 1) ? 'success' : 'danger' }}">{{ ($student->is_active == 1) ? 'Hiển thị' : 'Ẩn' }}</span>
+                                </td>
                                 <td class="text-center">
                                     <a href="javascript:void(0)" onclick="restore('user/restore', '{{ $user->id }}' )" class="btn btn-primary" title="Khôi phục">
                                         <i class="fas fa-trash-restore"></i>

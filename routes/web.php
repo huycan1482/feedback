@@ -14,7 +14,6 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-
 //Admin login
 Route::get('adminLogin', 'Auth\LoginController@login')->name('admin.login');
 Route::post('postAdminLogin', 'Auth\LoginController@postLogin')->name('admin.postLogin');

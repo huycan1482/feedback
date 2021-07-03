@@ -66,7 +66,7 @@ class LoginController extends Controller
             $roles [] = $item->id; 
         }
 
-        if (Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password'), 'role_id' => $roles], $remember)) {
+        if (Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password'), 'active' => 1, 'role_id' => $roles], $remember)) {
             return redirect()->route('feedback.getProfile');
         }
 
@@ -104,8 +104,8 @@ class LoginController extends Controller
             $roles [] = $item->id; 
         }
 
-        if (Auth::attempt(['email' =>  $request->input('email'), 'password' => $request->input('password'), 'role_id' => $roles], $remember)) {
-            return redirect()->route('admin.question.index');
+        if (Auth::attempt(['email' =>  $request->input('email'), 'password' => $request->input('password'), 'active' => 1, 'role_id' => $roles], $remember)) {
+            return redirect()->route('admin.dashboard');
         }
 
         return redirect()->back()->with('msg', 'Email hoặc Password không chính xác');

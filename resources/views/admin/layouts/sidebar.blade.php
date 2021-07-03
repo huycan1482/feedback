@@ -26,11 +26,12 @@
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu" data-widget="tree">
             <li class="">
-                <a href="">
+                <a href="{{ route('admin.dashboard') }}">
                   <i class="fa fa-chart-pie"></i>
                     <span> Thống kê</span>
                 </a>
             </li>
+
             <li class="treeview">
                 <a href="#">
                     <i class="fas fa-users"></i> <span>Người dùng</span>
@@ -39,11 +40,16 @@
                     </span>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="{{ route('admin.user.index') }}"><i class="fas fa-user"></i> Quản lí Tài khoản</a></li>
+
+                    @can('checkAdmin', App\User::class)
+                    <li><a href="{{ route('admin.user.index') }}"><i class="fas fa-user"></i> Quản lí Nhân viên</a></li>
+                    @endcan
+                    
                     <li><a href="{{ route('admin.student.index') }}"><i class="fas fa-user-graduate"></i>Học viên</a></li>
                     <li><a href="{{ route('admin.teacher.index') }}"><i class="fas fa-user-tie"></i>Giảng viên</a></li>
                 </ul>
             </li>
+    
             <li class="treeview">
                 <a href="#">
                     <i class="fas fa-graduation-cap"></i> <span> Đào tạo</span>

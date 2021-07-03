@@ -23,11 +23,24 @@ class StudentController extends Controller
      */
     public function index()
     {
+        $currentUser = User::findOrFail(Auth()->user()->id);
+
+        $studentsWithTrashed = '';
+
+        if ( $currentUser->can('checkAdmin', User::class) ) {
+            $studentsWithTrashed = User::onlyTrashed()
+                ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
+                ->where('roles.name', '=', 'user')
+                ->latest('users.created_at')->get('users.*');
+        }
+
         $students = User::leftJoin('roles', 'users.role_id', '=', 'roles.id')
             ->where('roles.name', '=', 'user')
-            ->latest('users.created_at')->get('users.*');
+            ->latest('users.created_at')->get('users.*');   
+
         return view('admin.student.index', [
             'students' => $students,
+            'studentsWithTrashed' => $studentsWithTrashed,
         ]);
     }
 
@@ -280,6 +293,48 @@ class StudentController extends Controller
             return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
         } else {
             return response()->json(['mess' => 'Xóa bản không thành công'], 400);
+        }
+    }
+
+    public function forceDelete ($id)
+    {
+        $currentUser = User::findOrFail(Auth()->user()->id);
+
+        $user = User::withTrashed()->find($id);
+
+        if ( $currentUser->can('forceDelete', User::class) ) {
+            if ( empty($user) ) {
+                return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
+            }
+        
+            if( $user->forceDelete() ) {
+                return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
+            } else {
+                return response()->json(['mess' => 'Xóa bản không thành công'], 400);
+            }
+        } else {
+            return response()->json(['mess' => 'Xóa bản ghi lỗi'], 403);
+        }
+    }
+
+    public function restore ($id)
+    {
+        $currentUser = User::findOrFail(Auth()->user()->id);
+
+        $user = User::withTrashed()->find($id);
+
+        if ( $currentUser->can('restore', User::class) ) {
+            if ( empty($user) ) {
+                return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
+            }
+        
+            if( $user->restore() ) {
+                return response()->json(['mess' => 'Khôi bản ghi thành công'], 200);
+            } else {
+                return response()->json(['mess' => 'Khôi bản không thành công'], 400);
+            }
+        } else {
+            return response()->json(['mess' => 'Khôi phục bản ghi lỗi'], 403);
         }
     }
 }

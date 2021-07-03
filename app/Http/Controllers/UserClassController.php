@@ -62,7 +62,7 @@ class UserClassController extends Controller
         if ( $validator->fails() ) {
             return response()->json(['errors' => $errs, 'mess' => 'Thêm bản ghi lỗi'], 400);
         } else if (!empty($check)) {
-            return response()->json(['mess' => 'Thêm bản ghi lỗi, học viên đã đăn kí lớp học'], 400);
+            return response()->json(['mess' => 'Thêm bản ghi lỗi, học viên đã đăng kí lớp học'], 400);
         } else {
             $user_class = new UserClass;
             $user_class->class_id = $request->input('classRoom_id');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Subject;
+use App\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,9 +18,19 @@ class SubjectController extends Controller
      */
     public function index()
     {
+        $currentUser = User::findOrFail(Auth()->user()->id);
+
+        $subjectsWithTrashed = '';
+
+        if ( $currentUser->can('forceDelete', Subject::class) ) {
+            $subjectsWithTrashed = Subject::onlyTrashed()->latest()->get();
+        }
+
         $subjects = Subject::latest()->get();
+
         return view ('admin.subject.index', [
             'subjects' => $subjects,
+            'subjectsWithTrashed' => $subjectsWithTrashed,
         ]);
     }
 
@@ -168,6 +179,48 @@ class SubjectController extends Controller
             return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
         } else {
             return response()->json(['mess' => 'Xóa bản không thành công'], 400);
+        }
+    }
+
+    public function forceDelete ($id)
+    {
+        $currentUser = User::findOrFail(Auth()->user()->id);
+
+        $subject = Subject::withTrashed()->find($id);
+
+        if ( $currentUser->can('forceDelete', Subject::class) ) {
+            if ( empty($subject) ) {
+                return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
+            }
+        
+            if( $subject->forceDelete() ) {
+                return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
+            } else {
+                return response()->json(['mess' => 'Xóa bản không thành công'], 400);
+            }
+        } else {
+            return response()->json(['mess' => 'Xóa bản ghi lỗi'], 403);
+        }
+    }
+
+    public function restore ($id)
+    {
+        $currentUser = User::findOrFail(Auth()->user()->id);
+
+        $subject = Subject::withTrashed()->find($id);
+
+        if ( $currentUser->can('restore', Subject::class) ) {
+            if ( empty($subject) ) {
+                return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
+            }
+        
+            if( $subject->restore() ) {
+                return response()->json(['mess' => 'Khôi bản ghi thành công'], 200);
+            } else {
+                return response()->json(['mess' => 'Khôi bản không thành công'], 400);
+            }
+        } else {
+            return response()->json(['mess' => 'Khôi phục bản ghi lỗi'], 403);
         }
     }
 }

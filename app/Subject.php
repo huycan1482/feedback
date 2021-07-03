@@ -13,13 +13,14 @@ class Subject extends Model
         parent::boot();
     
         static::deleting(function($subject) {
-            $subject->classes()->delete();
+            $subject->courses()->delete();
         });
 
         static::restoring(function($subject) {
-            $subject->classes()->withTrashed()->restore();
+            $subject->courses()->withTrashed()->restore();
         });
     }
+
 
     public function courses () 
     {

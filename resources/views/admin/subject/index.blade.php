@@ -141,6 +141,51 @@
                             </tr> --}}
                         </tfoot>
                     </table>
+
+                    @can('forceDelete', App\Subject::class)
+                    <div>
+                        <h3 style="display: inline; margin-right: 5px">Danh sách đã bị xóa </h3>
+                        <small>(Tải lại sau khi xóa mềm)</small>
+                    </div>
+
+                    <table id="example1" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-center">STT</th>
+                                <th class="text-center">Tên</th>
+                                <th class="text-center">Mã môn</th>
+                                <th class="text-center">Người tạo</th>
+                                <th class="text-center">Trạng thái</th>
+                                <th class="text-center">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($subjectsWithTrashed as $key => $subject)
+                            <tr class="item-{{ $subject->id }}">
+                                <td class="text-center">{{ $key + 1}}</td>
+                                <td class="text-center">{{ $subject->name }}</td>
+                                <td class="text-center">{{ $subject->code }}</td>
+                                <td class="text-center">{{ (asset($subject->userCreate->name)) ? $subject->userCreate->name : 'Trống' }}</td>
+                                <td class="text-center">
+                                    <span class="label label-{{ ($subject->is_active == 1) ? 'success' : 'danger' }}">{{ ($subject->is_active == 1) ? 'Hiển thị' : 'Ẩn' }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <a href="javascript:void(0)" onclick="restore('subject/restore', '{{ $subject->id }}' )" class="btn btn-primary" title="Khôi phục">
+                                        <i class="fas fa-trash-restore"></i>
+                                    </a>
+
+                                    <a href="javascript:void(0)" onclick = "forceDelete('subject/forceDelete', '{{ $subject->id }}' )" class="btn btn-danger" title="Xóa">
+                                        <i class="fas fa-ban"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+
+                        </tfoot>
+                    </table>
+                    @endcan
                 </div>
                 <!-- /.box-body -->
             </div>

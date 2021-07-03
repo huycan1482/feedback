@@ -41,7 +41,11 @@ Route::group(['prefix' => 'admin' , 'as' => 'admin.', 'middleware' => 'checkAdmi
     Route::resource('answer', 'AnswerController');
     Route::resource('question', 'QuestionController');
     Route::get('listAnswers/{id}', 'QuestionController@getListAnswers')->name('question.getListAnswer');
+
     Route::resource('subject', 'SubjectController');
+    Route::get('subject/forceDelete/{id}', 'SubjectController@forceDelete')->name('subject.forceDelete');
+    Route::get('subject/restore/{id}', 'SubjectController@restore')->name('subject.restore');
+
     Route::resource('course', 'CourseController');
 
     Route::resource('feedback', 'FeedbackController');

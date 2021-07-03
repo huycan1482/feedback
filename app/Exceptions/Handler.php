@@ -51,7 +51,8 @@ class Handler extends ExceptionHandler
             if ($request->is('admin*')) {
                 return redirect()->route('admin.errors.404');
             }
-            // return view ('admin.errors.404');
+            return redirect()->route('errors.404');
+
         } 
         return parent::render($request, $exception);
     }

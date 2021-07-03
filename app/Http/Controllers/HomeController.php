@@ -336,7 +336,6 @@ class HomeController extends Controller
             }
         }
 
-        dd($classes);
 
         foreach ($classes as $item) {
             if (!empty($item->feedback->first())) {

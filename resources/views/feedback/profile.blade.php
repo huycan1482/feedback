@@ -60,7 +60,8 @@
                                 <select class="form-select" name="" id="gender" >
                                     <option value="">-- Chọn --</option>
                                     <option value="1" {{ ($user->gender == 1) ? ' selected="selected"' : '' }}>Nam</option>
-                                    <option value="0" {{ ($user->gender == 0) ? ' selected="selected"' : '' }}>Nữ</option>
+                                    <option value="2" {{ ($user->gender == 2) ? ' selected="selected"' : '' }}>Nữ</option>
+                                    <option value="3" {{ ($user->gender == 3) ? ' selected="selected"' : '' }}>Khác</option>
                                 </select>
                             </div>
                             <div class="col-lg-6 form-group">

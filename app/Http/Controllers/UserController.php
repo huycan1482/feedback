@@ -43,6 +43,8 @@ class UserController extends Controller
                 'users' => $users,
                 'usersWithTrashed' => $usersWithTrashed,
             ]);
+        } else {
+            return redirect()->route('admin.errors.403');
         }
         
     }
@@ -62,7 +64,9 @@ class UserController extends Controller
             return view ('admin.user.create', [
                 'roles' => $roles
             ]); 
-        }  
+        } else {
+            return redirect()->route('admin.errors.403');
+        }
     }
 
     /**
@@ -137,7 +141,7 @@ class UserController extends Controller
                 }
             }
         } else {
-
+            return response()->json(['mess' => 'Thêm bản ghi lỗi'], 403);
         }
         
     }
@@ -164,6 +168,8 @@ class UserController extends Controller
             } else {
                 return response()->json(['user' => $user], 200);
             }
+        } else {
+            return response()->json(['mess' => 'Thêm bản ghi lỗi'], 403);
         }
     }
 
@@ -185,6 +191,8 @@ class UserController extends Controller
                 'user' => $user,
                 'roles' => $roles,
             ]);
+        } else {
+            return redirect()->route('admin.errors.403');
         }
        
     }
@@ -273,6 +281,8 @@ class UserController extends Controller
                     
                 }
             }
+        } else {
+            return response()->json(['mess' => 'Sửa bản ghi lỗi'], 403);
         }
         
         
@@ -300,6 +310,8 @@ class UserController extends Controller
             } else {
                 return response()->json(['mess' => 'Xóa bản không thành công'], 400);
             }
+        } else {
+            return response()->json(['mess' => 'Xóa bản ghi lỗi'], 403);
         }
         
     }
@@ -320,6 +332,8 @@ class UserController extends Controller
             } else {
                 return response()->json(['mess' => 'Xóa bản không thành công'], 400);
             }
+        } else {
+            return response()->json(['mess' => 'Thêm bản ghi lỗi'], 403);
         }
     }
 
@@ -339,8 +353,8 @@ class UserController extends Controller
             } else {
                 return response()->json(['mess' => 'Khôi bản không thành công'], 400);
             }
+        } else {
+            return response()->json(['mess' => 'Thêm bản ghi lỗi'], 403);
         }
     }
-
-    
 }

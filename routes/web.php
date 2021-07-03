@@ -27,8 +27,16 @@ Route::post('postRegister', 'Auth\RegisterController@postRegister')->name('admin
 Route::group(['prefix' => 'admin' , 'as' => 'admin.', 'middleware' => 'checkAdminLogin'], function () {
 
     Route::get('/404', function () {
-        return view ('admin.errors.404');
+        return view ('admin.errors.404', [
+            'status' => 404
+        ]);
     })->name('errors.404');
+
+    Route::get('/403', function () {
+        return view ('admin.errors.404', [
+            'status' => 403
+        ]);
+    })->name('errors.403');
     
     Route::get('/', 'AdminController@index')->name('dashboard');
     Route::resource('answer', 'AnswerController');

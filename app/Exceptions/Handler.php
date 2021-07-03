@@ -49,7 +49,7 @@ class Handler extends ExceptionHandler
     {
         if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
             if ($request->is('admin*')) {
-                return redirect()->route('admin.errors.404');
+                return redirect()->route('admin.errors.4xx');
             }
             // return view ('admin.errors.404');
         } 

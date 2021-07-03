@@ -174,7 +174,10 @@
                     </table>
 
                     @can('forceDelete', App\User::class)
-                    <h3>Danh sách đã bị xóa</h3>
+                    <div>
+                        <h3 style="display: inline; margin-right: 5px">Danh sách đã bị xóa </h3>
+                        <small>(Tải lại sau khi xóa mềm)</small>
+                    </div>
 
                     <table id="example1" class="table table-bordered table-striped">
                         <thead>

@@ -49,10 +49,17 @@ Route::group(['prefix' => 'admin' , 'as' => 'admin.', 'middleware' => 'checkAdmi
     Route::get('listQuestions/{id}', 'FeedBackController@getListQuestions')->name('question.getListQuestions');
 
     Route::resource('teacher', 'TeacherController');
+    Route::get('teacher/forceDelete/{id}', 'TeacherController@forceDelete')->name('teacher.forceDelete');
+    Route::get('teacher/restore/{id}', 'TeacherController@restore')->name('teacher.restore');
+
     Route::resource('user', 'UserController');
     Route::get('user/forceDelete/{id}', 'UserController@forceDelete')->name('user.forceDelete');
     Route::get('user/restore/{id}', 'UserController@restore')->name('user.restore');
+
     Route::resource('student', 'StudentController');
+    Route::get('user/forceDelete/{id}', 'StudentController@forceDelete')->name('student.forceDelete');
+    Route::get('user/restore/{id}', 'StudentController@restore')->name('student.restore');
+
     Route::resource('userClass', 'UserClassController');
 
     Route::resource('lesson', 'LessonController');

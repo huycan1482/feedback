@@ -136,7 +136,7 @@
                                 <th class="text-center">Tên</th>
                                 <th class="text-center">SĐT</th>
                                 <th class="text-center">Email</th>
-                                {{-- <th class="text-center">Trạng thái</th> --}}
+                                <th class="text-center">Trạng thái</th>
                                 <th class="text-center">Hành động</th>
                             </tr>
                         </thead>
@@ -147,9 +147,9 @@
                                 <td class="text-center">{{ $teacher->name }}</td>
                                 <td class="text-center">{{ $teacher->phone }}</td>
                                 <td class="text-center">{{ $teacher->email }}</td>
-                                {{-- <td class="text-center">
-                                    <span class="label label-{{ ($user->is_active == 1) ? 'success' : 'danger' }}">{{ ($user->is_active == 1) ? 'Hiển thị' : 'Ẩn' }}</span>
-                                </td> --}}
+                                <td class="text-center">
+                                    <span class="label label-{{ ($teacher->is_active == 1) ? 'success' : 'danger' }}">{{ ($teacher->is_active == 1) ? 'Hiển thị' : 'Ẩn' }}</span>
+                                </td>
                                 <td class="text-center">
 
                                     <button type="button" class="btn btn-warning btn-detail" data-toggle="modal" data-target="#modal-default" title="Chi tiết" data-id="{{$teacher->id}}">
@@ -172,6 +172,53 @@
 
                         </tfoot>
                     </table>
+
+                    @can('forceDelete', App\User::class)
+                    <div>
+                        <h3 style="display: inline; margin-right: 5px">Danh sách đã bị xóa </h3>
+                        <small>(Tải lại sau khi xóa mềm)</small>
+                    </div>
+
+                    <table id="example1" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-center">STT</th>
+                                <th class="text-center">Tên</th>
+                                <th class="text-center">SĐT</th>
+                                <th class="text-center">Email</th>
+                                <th class="text-center">Trạng thái</th>
+                                <th class="text-center">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($teachersWithTrashed as $key => $teacher)
+                            <tr class="item-{{ $teacher->id }}">
+                                <td class="text-center">{{ $key + 1}}</td>
+                                <td class="text-center">{{ $teacher->name }}</td>
+                                <td class="text-center">{{ $teacher->phone }}</td>
+                                <td class="text-center">{{ $teacher->email }}</td>
+                                <td class="text-center">
+                                    <span class="label label-{{ ($teacher->is_active == 1) ? 'success' : 'danger' }}">{{ ($teacher->is_active == 1) ? 'Hiển thị' : 'Ẩn' }}</span>
+                                </td>
+                                <td class="text-center">
+
+                                    <a href="javascript:void(0)" onclick="restore('teacher/restore', '{{ $teacher->id }}' )" class="btn btn-primary" title="Khôi phục">
+                                        <i class="fas fa-trash-restore"></i>
+                                    </a>
+
+                                    <a href="javascript:void(0)" onclick = "forceDelete('teacher/forceDelete', '{{ $teacher->id }}' )" class="btn btn-danger" title="Xóa">
+                                        <i class="fas fa-ban"></i>
+                                    </a>
+
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+
+                        </tfoot>
+                    </table>
+                    @endcan
                 </div>
                 <!-- /.box-body -->
             </div>

@@ -23,7 +23,7 @@ class UserController extends Controller
         // $user = User::withTrashed()->find(4);
         // $user->restore();
         // User::withTrashed()->find(4)->restore();
-
+        // dd(Auth::check());
         $currentUser = User::findOrFail(Auth()->user()->id);
 
         if ( $currentUser->can('checkAdmin', User::class) ) {

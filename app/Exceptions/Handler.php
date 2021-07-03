@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Auth;
 
 class Handler extends ExceptionHandler
 {
@@ -46,9 +47,12 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        // if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
-        //     return redirect('/');
-        // } 
+        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+            if ($request->is('admin*')) {
+                return redirect()->route('admin.errors.404');
+            }
+            // return view ('admin.errors.404');
+        } 
         return parent::render($request, $exception);
     }
 }

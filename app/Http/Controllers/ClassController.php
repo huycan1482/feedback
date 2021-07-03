@@ -25,10 +25,19 @@ class ClassController extends Controller
      */
     public function index()
     {
+        $currentUser = User::findOrFail(Auth()->user()->id);
+
+        $classesWithTrashed = '';
+
+        if ( $currentUser->can('forceDelete', ClassRoom::class) ) {
+            $classesWithTrashed = ClassRoom::onlyTrashed()->latest()->get();
+        }
+
         $classRooms = ClassRoom::latest()->get();
 
         return view ('admin.class.index', [
             'classRooms' => $classRooms,
+            'classesWithTrashed' => $classesWithTrashed,
         ]);
     }
 
@@ -345,6 +354,48 @@ class ClassController extends Controller
             return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
         } else {
             return response()->json(['mess' => 'Xóa bản không thành công'], 400);
+        }
+    }
+
+    public function forceDelete ($id)
+    {
+        $currentUser = User::findOrFail(Auth()->user()->id);
+
+        $class = ClassRoom::withTrashed()->find($id);
+
+        if ( $currentUser->can('forceDelete', ClassRoom::class) ) {
+            if ( empty($class) ) {
+                return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
+            }
+        
+            if( $class->forceDelete() ) {
+                return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
+            } else {
+                return response()->json(['mess' => 'Xóa bản không thành công'], 400);
+            }
+        } else {
+            return response()->json(['mess' => 'Xóa bản ghi lỗi'], 403);
+        }
+    }
+
+    public function restore ($id)
+    {
+        $currentUser = User::findOrFail(Auth()->user()->id);
+
+        $class = ClassRoom::withTrashed()->find($id);
+
+        if ( $currentUser->can('restore', ClassRoom::class) ) {
+            if ( empty($class) ) {
+                return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
+            }
+        
+            if( $class->restore() ) {
+                return response()->json(['mess' => 'Khôi bản ghi thành công'], 200);
+            } else {
+                return response()->json(['mess' => 'Khôi bản không thành công'], 400);
+            }
+        } else {
+            return response()->json(['mess' => 'Khôi phục bản ghi lỗi'], 403);
         }
     }
 }

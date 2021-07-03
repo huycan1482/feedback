@@ -69,7 +69,10 @@ Route::group(['prefix' => 'admin' , 'as' => 'admin.', 'middleware' => 'checkAdmi
     Route::resource('userClass', 'UserClassController');
 
     Route::resource('lesson', 'LessonController');
+
     Route::resource('class', 'ClassController');
+    Route::get('class/forceDelete/{id}', 'ClassController@forceDelete')->name('class.forceDelete');
+    Route::get('class/restore/{id}', 'ClassController@restore')->name('class.restore');
 });
 
 

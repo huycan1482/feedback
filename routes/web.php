@@ -96,12 +96,9 @@ Route::group(['middleware' => 'checkUserLogin'], function () {
         ]);
     })->name('errors.404');
 
-    Route::get('/error', function () {
-        return view ('feedback.errors.4xx', [
-            'status' => '404!',
-            'msg' => 'Trang bạn tìm kiếm không tồn tại'
-        ]);
-    })->name('errors.error');
+    Route::get('/generalError', function () {
+        return view ('feedback.errors.general');
+    })->name('errors.general');
 
     Route::get('/', 'HomeController@index')->name('feedback.index');
     Route::get('/checkIn', 'HomeController@getCheckIn')->name('feedback.getCheckIn');

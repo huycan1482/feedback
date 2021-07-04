@@ -322,6 +322,10 @@ class HomeController extends Controller
             ->get();
             // dd($classes[0]);
 
+        if (empty($classes->first())) {
+            return redirect()->route('errors.general')->withMessage('Bạn chưa đăng kí lớp học nào');
+        } 
+
         foreach ( $classes as $key => $item ) {
             $checkFeedback = ClassRoom::selectRaw('count(check_in.id) * 100 / count(lessons.id) as percent')
             ->join('user_class', 'user_class.class_id', '=', 'classes.id')
@@ -331,10 +335,13 @@ class HomeController extends Controller
             ->get();
 
             if ($checkFeedback->first()->percent < 80) {
-                $classes->forget($key);
-                
+                $classes->forget($key);   
             }
         }
+
+        if (empty($classes->first())) {
+            return redirect()->route('errors.general')->withMessage('Bạn không có bài khảo sát nào');
+        } 
 
 
         foreach ($classes as $item) {

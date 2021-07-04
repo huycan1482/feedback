@@ -2,7 +2,7 @@
     height: 100vh;
 }
 
-.error-div {
+.error-div, .error-general {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -14,4 +14,8 @@
 
 .error-div h1 {
     text-align: center;
+}
+
+.error-general {
+    font-size: 20px;
 }

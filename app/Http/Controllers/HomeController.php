@@ -51,14 +51,14 @@ class HomeController extends Controller
             }
 
             $class = DB::table('classes')
-            ->selectRaw('classes.id, classes.name, classes.code, courses.name as course, courses.code as course_code, subjects.name as subject, subjects.code as subject_code, 
+            ->selectRaw("classes.id, classes.name, classes.code, courses.name as course, courses.code as course_code, subjects.name as subject, subjects.code as subject_code, 
             count(lessons.id) as total_number,
             (select count(lessons.id) from lessons
-            where lessons.class_id = 5 and date(now()) < lessons.start_at) as number,
+            where lessons.class_id = ". $classes->first()->id ." and date(now()) < lessons.start_at) as number,
             (select lessons.start_at from lessons
-            where lessons.class_id = 5 order by lessons.start_at asc limit 1 ) as start_at,
+            where lessons.class_id = ". $classes->first()->id ." order by lessons.start_at asc limit 1 ) as start_at,
             (select lessons.start_at from lessons
-            where lessons.class_id = 5 order by lessons.start_at desc limit 1 ) as end_at')
+            where lessons.class_id = ". $classes->first()->id ." order by lessons.start_at desc limit 1 ) as end_at")
             ->join('lessons', 'lessons.class_id', '=', 'classes.id')
             ->join('courses', 'courses.id', '=', 'classes.course_id')
             ->join('subjects', 'subjects.id', '=', 'courses.subject_id')
@@ -109,7 +109,7 @@ class HomeController extends Controller
                 $events .= "{title : '$note->note', start : '$note->updated_at'},";
             }
 
-            // dd($event);
+            // dd($class);
             return view ('feedback.checkIn', [
                 'classes' => $classes,
                 'class' => $class, 
@@ -140,14 +140,14 @@ class HomeController extends Controller
             $classes = ClassRoom::where('teacher_id', '=', Auth()->user()->id)->orderBy('id', 'asc')->get();
 
             $class = DB::table('classes')
-            ->selectRaw('classes.id, classes.name, classes.code, courses.name as course, courses.code as course_code, subjects.name as subject, subjects.code as subject_code, 
+            ->selectRaw("classes.id, classes.name, classes.code, courses.name as course, courses.code as course_code, subjects.name as subject, subjects.code as subject_code, 
             count(lessons.id) as total_number,
             (select count(lessons.id) from lessons
-            where lessons.class_id = 5 and date(now()) < lessons.start_at) as number,
+            where lessons.class_id = ". $id ." and date(now()) < lessons.start_at) as number,
             (select lessons.start_at from lessons
-            where lessons.class_id = 5 order by lessons.start_at asc limit 1 ) as start_at,
+            where lessons.class_id = ". $id ." order by lessons.start_at asc limit 1 ) as start_at,
             (select lessons.start_at from lessons
-            where lessons.class_id = 5 order by lessons.start_at desc limit 1 ) as end_at')
+            where lessons.class_id = ". $id ." order by lessons.start_at desc limit 1 ) as end_at")
             ->join('lessons', 'lessons.class_id', '=', 'classes.id')
             ->join('courses', 'courses.id', '=', 'classes.course_id')
             ->join('subjects', 'subjects.id', '=', 'courses.subject_id')
@@ -162,10 +162,17 @@ class HomeController extends Controller
             ->where('classes.id', $id)
             ->get();
 
+            // $lessons = DB::table('classes')
+            // ->select('classes.code', 'lessons.id', 'lessons.start_at')
+            // ->join('lessons', 'lessons.class_id', '=', 'classes.id')
+            // ->whereRaw("classes.id = ".$id." and date(now()) > lessons.start_at")
+            // ->orderBy('lessons.start_at', 'asc')
+            // ->get();
+
             $lessons = DB::table('classes')
             ->select('classes.code', 'lessons.id', 'lessons.start_at')
             ->join('lessons', 'lessons.class_id', '=', 'classes.id')
-            ->whereRaw("classes.id = ".$id." and date(now()) > lessons.start_at")
+            ->whereRaw("classes.id = ".$id." ")
             ->orderBy('lessons.start_at', 'asc')
             ->get();
 
@@ -173,12 +180,20 @@ class HomeController extends Controller
             $user_checkIn = [];
 
             foreach ($students as $key => $student) {
+                // $checkIn [$student->id] = DB::select("select classes.code, lessons.id, lessons.start_at, test.is_check, test.id from classes
+                //     join lessons on lessons.class_id = classes.id
+                //     left join (select check_in.id, check_in.is_check, check_in.lesson_id from check_in
+                //     join users on users.id = check_in.user_id
+                //     where users.id = $student->id) as test on test.lesson_id = lessons.id
+                //     where classes.id =". $id ." and date(now()) > lessons.start_at
+                //     order by lessons.start_at asc");
+
                 $checkIn [$student->id] = DB::select("select classes.code, lessons.id, lessons.start_at, test.is_check, test.id from classes
                     join lessons on lessons.class_id = classes.id
                     left join (select check_in.id, check_in.is_check, check_in.lesson_id from check_in
                     join users on users.id = check_in.user_id
                     where users.id = $student->id) as test on test.lesson_id = lessons.id
-                    where classes.id =". $id ." and date(now()) > lessons.start_at
+                    where classes.id =". $id ." 
                     order by lessons.start_at asc");
 
                 $user_checkIn [$student->id] = DB::select("select
@@ -188,7 +203,7 @@ class HomeController extends Controller
                     ");
             }
 
-            // dd($checkIn);
+            // dd($user_checkIn, $checkIn);
 
             $notes = Lesson::whereRaw("lessons.class_id =". $id ." and lessons.note is not null")->get();
 
@@ -198,7 +213,7 @@ class HomeController extends Controller
                 $events .= "{title : '$note->note', start : '$note->updated_at'},";
             }
 
-            // dd($event);
+            // dd($checkIn);
             return view ('feedback.checkIn', [
                 'classes' => $classes,
                 'class' => $class, 
@@ -311,7 +326,6 @@ class HomeController extends Controller
 
     public function getFeedback ()
     {
-        // dd(FeedBack::find(1)->pivot);
 
         $classes = ClassRoom::select('classes.*')
             ->join('user_class', 'user_class.class_id', '=', 'classes.id')
@@ -320,7 +334,6 @@ class HomeController extends Controller
             ->groupBy('classes.id')
             ->orderBy('user_class.created_at', 'asc')
             ->get();
-            // dd($classes[0]);
 
         if (empty($classes->first())) {
             return redirect()->route('errors.general')->withMessage('Bạn chưa đăng kí lớp học nào');
@@ -343,7 +356,6 @@ class HomeController extends Controller
             return redirect()->route('errors.general')->withMessage('Bạn không có bài khảo sát nào');
         } 
 
-
         foreach ($classes as $item) {
             if (!empty($item->feedback->first())) {
                 $first_feedback = $item->feedback->first()->id;
@@ -352,17 +364,17 @@ class HomeController extends Controller
             }
         }
 
-        // dd($first_feedback);
-
+        // DB::enableQueryLog();
         $classRoom = DB::table('classes')
-            ->selectRaw('classes.id, classes.name, classes.code, courses.name as course, courses.code as course_code, subjects.name as subject, subjects.code as subject_code, 
+            ->selectRaw("classes.id, classes.name, classes.code, courses.name as course, courses.code as course_code, subjects.name as subject, subjects.code as subject_code, users.name as 'teacher', 
             count(lessons.id) as total_number,
             (select count(lessons.id) from lessons
-            where lessons.class_id = 5 and date(now()) < lessons.start_at) as number,
+            where lessons.class_id = ". $first_class ." and date(now()) < lessons.start_at) as number,
             (select lessons.start_at from lessons
-            where lessons.class_id = 5 order by lessons.start_at asc limit 1 ) as start_at,
+            where lessons.class_id = ". $first_class ." order by lessons.start_at asc limit 1 ) as start_at,
             (select lessons.start_at from lessons
-            where lessons.class_id = 5 order by lessons.start_at desc limit 1 ) as end_at')
+            where lessons.class_id = ". $first_class ." order by lessons.start_at desc limit 1 ) as end_at")
+            ->leftJoin('users', 'users.id', '=', 'classes.teacher_id')
             ->join('lessons', 'lessons.class_id', '=', 'classes.id')
             ->join('courses', 'courses.id', '=', 'classes.course_id')
             ->join('subjects', 'subjects.id', '=', 'courses.subject_id')
@@ -370,6 +382,9 @@ class HomeController extends Controller
             ->groupBy('classes.id', 'classes.code', 'classes.name', 'courses.name', 'subjects.name', 'course_code', 'subject_code')
             ->get()->first(); 
 
+        // dd(DB::getQueryLog());
+
+        // dd($classRoom);
     
         $feedBack = FeedBack::findOrFail($first_feedback);
 
@@ -421,10 +436,33 @@ class HomeController extends Controller
             ->orderBy('user_class.created_at', 'asc')
             ->get();
 
+        if (empty($classes->first())) {
+            return redirect()->route('errors.general')->withMessage('Bạn chưa đăng kí lớp học nào');
+        } 
+
         ClassRoom::findOrFail($class_id);
 
+        foreach ( $classes as $key => $item ) {
+            $checkFeedback = ClassRoom::selectRaw('count(check_in.id) * 100 / count(lessons.id) as percent')
+            ->join('user_class', 'user_class.class_id', '=', 'classes.id')
+            ->join('lessons', 'classes.id', '=', 'lessons.class_id')
+            ->leftJoin('check_in', 'lessons.id', '=', 'check_in.lesson_id')
+            ->where([['user_class.user_id', '=', Auth::user()->id], ['classes.id', '=', $item->id]])
+            ->get();
+
+            // dd($checkFeedback);
+            if ($checkFeedback->first()->percent < 80) {
+                $classes->forget($key);   
+
+                if ($item->id == $class_id) {
+                    return redirect()->route('errors.general')->withMessage('Bạn không có bài khảo sát nào');
+                }
+            }
+            
+        }
+
         $classRoom = DB::table('classes')
-            ->selectRaw('classes.id, classes.name, classes.code, courses.name as course, courses.code as course_code, subjects.name as subject, subjects.code as subject_code, 
+            ->selectRaw('classes.id, classes.name, classes.code, courses.name as course, courses.code as course_code, subjects.name as subject, subjects.code as subject_code, users.name as teacher,
             count(lessons.id) as total_number,
             (select count(lessons.id) from lessons
             where lessons.class_id = 5 and date(now()) < lessons.start_at) as number,
@@ -432,6 +470,7 @@ class HomeController extends Controller
             where lessons.class_id = 5 order by lessons.start_at asc limit 1 ) as start_at,
             (select lessons.start_at from lessons
             where lessons.class_id = 5 order by lessons.start_at desc limit 1 ) as end_at')
+            ->leftJoin('users', 'users.id', '=', 'classes.teacher_id')
             ->join('lessons', 'lessons.class_id', '=', 'classes.id')
             ->join('courses', 'courses.id', '=', 'classes.course_id')
             ->join('subjects', 'subjects.id', '=', 'courses.subject_id')

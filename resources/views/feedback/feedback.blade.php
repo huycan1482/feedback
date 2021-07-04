@@ -78,7 +78,7 @@
                             <div class="box-info">
                                 <i class="fas fa-user-tie"></i>
                                 <span>Giảng viên: </span>
-                                <span>Giảng viên</span>
+                                <span>{{ $classRoom->teacher }}</span>
                             </div>
                         </div>
                         <div class="col-lg-6">
@@ -90,12 +90,12 @@
                             <div class="box-info">
                                 <i class="fas fa-hourglass-start"></i>
                                 <span>Ngày bắt đầu: </span>
-                                <span>00/00/0000</span>
+                                <span>{{ date_format(date_create($classRoom->start_at), 'd-m-Y') }}</span>
                             </div>
                             <div class="box-info">
                                 <i class="fas fa-hourglass-end"></i>
                                 <span>Ngày kết thúc: </span>
-                                <span>00/00/0000</span>
+                                <span>{{ date_format(date_create($classRoom->end_at), 'd-m-Y') }}</span>
                             </div>
                         </div>
                     </div>

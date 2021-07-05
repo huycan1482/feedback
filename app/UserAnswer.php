@@ -13,4 +13,21 @@ class UserAnswer extends Model
 
     protected $dates = ['deleted_at'];
 
+    protected static function boot() {
+        parent::boot();
+    
+        static::deleting(function($userAnswer) {
+            $userAnswer->userAnswer_details()->delete();
+        });
+
+        static::restoring(function($userAnswer) {
+            $userAnswer->userAnswer_details()->withTrashed()->restore();
+        });
+    }
+
+    public function userAnswer_details ()
+    {
+        return $this->hasMany('App\UserAnswer', 'userAnswer_id', 'id');
+    }
+
 }

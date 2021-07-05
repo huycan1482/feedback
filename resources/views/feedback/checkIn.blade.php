@@ -71,10 +71,15 @@
                                 <span>{{ $class->total_number }}</span>
                             </div>
                             <div class="box-info">
+                                <i class="fas fa-hourglass-end"></i>
+                                <span>Số buổi còn lại: </span>
+                                <span>{{ $class->number }}</span>
+                            </div>
+                            {{-- <div class="box-info">
                                 <i class="fas fa-users"></i>
                                 <span>Tổng số học viên: </span>
                                 <span>??</span>
-                            </div>
+                            </div> --}}
                         </div>
                         <div class="col-lg-4">
                             <div class="box-info">
@@ -87,11 +92,7 @@
                                 <span>Ngày kết thúc: </span>
                                 <span>{{ date_format(date_create($class->end_at), 'd-m-Y') }}</span>
                             </div>
-                            <div class="box-info">
-                                <i class="fas fa-hourglass-end"></i>
-                                <span>Số buổi còn lại: </span>
-                                <span>{{ $class->number }}</span>
-                            </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -166,27 +167,30 @@
                                 <table>
                                     <tr>
                                         <td>Điểm danh:</td>
+                                        @if ($present->total == 0)
                                         <td><span class="label label-danger">Chưa hoàn thành</span></td>
+                                        @else
+                                        <td><span class="label label-success">Đã hoàn thành</span></td>
+                                        @endif
                                     </tr>
                                     <tr>
                                         <td>Có mặt:</td>
-                                        <td><span class="label label-success">0/00</span></td>
+                                        <td><span class="label label-success">{{ $present->total }}/{{ $total_student->total }}</span></td>
                                     </tr>
                                     <tr>
                                         <td>Muộn:</td>
-                                        <td><span class="label label-warning">0/00</span></td>
+                                        <td><span class="label label-warning">{{ $late->total }}/{{ $total_student->total }}</span></td>
                                     </tr>
                                     <tr>
                                         <td>Vắng mặt:</td>
-                                        <td><span class="label label-danger">0/00</span></td>
+                                        <td><span class="label label-danger">{{ $not_present->total }}/{{ $total_student->total }}</span></td>
                                     </tr>
                                 </table>
                             </div>
                             <form action="" class="col-lg-8">
                                 <div class=" form-group">
                                     <label for="phone" class="form-label">Ghi chú hôm nay</label>
-                                    <textarea name="" id="note" cols="30" rows="10"
-                                        class="form-control"></textarea>
+                                    <textarea name="" id="note" cols="30" rows="10" class="form-control"></textarea>
                                 </div>
                             </form>
 

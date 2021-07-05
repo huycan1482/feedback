@@ -76,8 +76,8 @@ class HomeController extends Controller
             $lessons = DB::table('classes')
             ->select('classes.code', 'lessons.id', 'lessons.start_at')
             ->join('lessons', 'lessons.class_id', '=', 'classes.id')
-            ->whereRaw("classes.id = ".$classes->first()->id." and date(now()) > lessons.start_at")
-            ->orderBy('lessons.start_at', 'asc')
+            ->whereRaw("classes.id = ".$classes->first()->id." and date(now()) >= lessons.start_at")
+            ->orderBy('lessons.start_at', 'desc')
             ->get();
  
             $checkIn = [];
@@ -89,8 +89,8 @@ class HomeController extends Controller
                     left join (select check_in.id, check_in.is_check, check_in.lesson_id from check_in
                     join users on users.id = check_in.user_id
                     where users.id = $student->id) as test on test.lesson_id = lessons.id
-                    where classes.id =". $classes->first()->id ." and date(now()) > lessons.start_at
-                    order by lessons.start_at asc");
+                    where classes.id =". $classes->first()->id ." and date(now()) >= lessons.start_at
+                    order by lessons.start_at desc");
 
                 $user_checkIn [$student->id] = DB::select("select
                     (select count(check_in.id) from check_in join lessons on check_in.lesson_id = lessons.id where check_in.is_check = 1 and check_in.user_id = $student->id and lessons.class_id = ".$classes->first()->id.") as di_hoc,
@@ -109,7 +109,32 @@ class HomeController extends Controller
                 $events .= "{title : '$note->note', start : '$note->updated_at'},";
             }
 
-            // dd($class);
+
+            $total_student = Lesson::selectRaw('count(check_in.user_id) as total')
+                ->join('check_in', 'check_in.lesson_id', '=', 'lessons.id')
+                ->rightJoin('users', 'users.id', '=', 'check_in.user_id')
+                ->whereRaw("lessons.class_id = ". $classes->first()->id ." and date(check_in.created_at) = date(current_date())")
+                ->get()->first();
+            
+            $present = Lesson::selectRaw('count(check_in.user_id) as total')
+                ->join('check_in', 'check_in.lesson_id', '=', 'lessons.id')
+                ->rightJoin('users', 'users.id', '=', 'check_in.user_id')
+                ->whereRaw("lessons.class_id = ". $classes->first()->id ." and date(check_in.created_at) = date(current_date()) and check_in.is_check = 1")
+                ->get()->first();
+
+            $late = Lesson::selectRaw('count(check_in.user_id) as total')
+                ->join('check_in', 'check_in.lesson_id', '=', 'lessons.id')
+                ->rightJoin('users', 'users.id', '=', 'check_in.user_id')
+                ->whereRaw("lessons.class_id = ". $classes->first()->id ." and date(check_in.created_at) = date(current_date()) and check_in.is_check = 2")
+                ->get()->first();
+
+            $not_present = Lesson::selectRaw('count(check_in.user_id) as total')
+                ->join('check_in', 'check_in.lesson_id', '=', 'lessons.id')
+                ->rightJoin('users', 'users.id', '=', 'check_in.user_id')
+                ->whereRaw("lessons.class_id = ". $classes->first()->id ." and date(check_in.created_at) = date(current_date()) and check_in.is_check = 3")
+                ->get()->first();
+                
+
             return view ('feedback.checkIn', [
                 'classes' => $classes,
                 'class' => $class, 
@@ -118,6 +143,10 @@ class HomeController extends Controller
                 'checkIn' => $checkIn,
                 'user_checkIn' => $user_checkIn,
                 'events' => $events,
+                'total_student' => $total_student,
+                'present' => $present,
+                'late' => $late,
+                'not_present' => $not_present,
             ]);
         } else {
             dd('forbidden');
@@ -162,39 +191,39 @@ class HomeController extends Controller
             ->where('classes.id', $id)
             ->get();
 
-            // $lessons = DB::table('classes')
-            // ->select('classes.code', 'lessons.id', 'lessons.start_at')
-            // ->join('lessons', 'lessons.class_id', '=', 'classes.id')
-            // ->whereRaw("classes.id = ".$id." and date(now()) > lessons.start_at")
-            // ->orderBy('lessons.start_at', 'asc')
-            // ->get();
-
             $lessons = DB::table('classes')
             ->select('classes.code', 'lessons.id', 'lessons.start_at')
             ->join('lessons', 'lessons.class_id', '=', 'classes.id')
-            ->whereRaw("classes.id = ".$id." ")
-            ->orderBy('lessons.start_at', 'asc')
+            ->whereRaw("classes.id = ".$id." and date(now()) > lessons.start_at")
+            ->orderBy('lessons.start_at', 'desc')
             ->get();
+
+            // $lessons = DB::table('classes')
+            // ->select('classes.code', 'lessons.id', 'lessons.start_at')
+            // ->join('lessons', 'lessons.class_id', '=', 'classes.id')
+            // ->whereRaw("classes.id = ".$id." ")
+            // ->orderBy('lessons.start_at', 'desc')
+            // ->get();
 
             $checkIn = [];
             $user_checkIn = [];
 
             foreach ($students as $key => $student) {
-                // $checkIn [$student->id] = DB::select("select classes.code, lessons.id, lessons.start_at, test.is_check, test.id from classes
-                //     join lessons on lessons.class_id = classes.id
-                //     left join (select check_in.id, check_in.is_check, check_in.lesson_id from check_in
-                //     join users on users.id = check_in.user_id
-                //     where users.id = $student->id) as test on test.lesson_id = lessons.id
-                //     where classes.id =". $id ." and date(now()) > lessons.start_at
-                //     order by lessons.start_at asc");
-
                 $checkIn [$student->id] = DB::select("select classes.code, lessons.id, lessons.start_at, test.is_check, test.id from classes
                     join lessons on lessons.class_id = classes.id
                     left join (select check_in.id, check_in.is_check, check_in.lesson_id from check_in
                     join users on users.id = check_in.user_id
                     where users.id = $student->id) as test on test.lesson_id = lessons.id
-                    where classes.id =". $id ." 
-                    order by lessons.start_at asc");
+                    where classes.id =". $id ." and date(now()) >= lessons.start_at
+                    order by lessons.start_at desc");
+
+                // $checkIn [$student->id] = DB::select("select classes.code, lessons.id, lessons.start_at, test.is_check, test.id from classes
+                //     join lessons on lessons.class_id = classes.id
+                //     left join (select check_in.id, check_in.is_check, check_in.lesson_id from check_in
+                //     join users on users.id = check_in.user_id
+                //     where users.id = $student->id) as test on test.lesson_id = lessons.id
+                //     where classes.id =". $id ." 
+                //     order by lessons.start_at desc");
 
                 $user_checkIn [$student->id] = DB::select("select
                     (select count(check_in.id) from check_in join lessons on check_in.lesson_id = lessons.id where check_in.is_check = 1 and check_in.user_id = $student->id and lessons.class_id = ".$id.") as di_hoc,
@@ -213,7 +242,30 @@ class HomeController extends Controller
                 $events .= "{title : '$note->note', start : '$note->updated_at'},";
             }
 
-            // dd($checkIn);
+            $total_student = Lesson::selectRaw('count(check_in.user_id) as total')
+                ->join('check_in', 'check_in.lesson_id', '=', 'lessons.id')
+                ->rightJoin('users', 'users.id', '=', 'check_in.user_id')
+                ->whereRaw("lessons.class_id = ". $id ." and date(check_in.created_at) = date(current_date())")
+                ->get()->first();
+            
+            $present = Lesson::selectRaw('count(check_in.user_id) as total')
+                ->join('check_in', 'check_in.lesson_id', '=', 'lessons.id')
+                ->rightJoin('users', 'users.id', '=', 'check_in.user_id')
+                ->whereRaw("lessons.class_id = ". $id ." and date(check_in.created_at) = date(current_date()) and check_in.is_check = 1")
+                ->get()->first();
+
+            $late = Lesson::selectRaw('count(check_in.user_id) as total')
+                ->join('check_in', 'check_in.lesson_id', '=', 'lessons.id')
+                ->rightJoin('users', 'users.id', '=', 'check_in.user_id')
+                ->whereRaw("lessons.class_id = ". $id ." and date(check_in.created_at) = date(current_date()) and check_in.is_check = 2")
+                ->get()->first();
+
+            $not_present = Lesson::selectRaw('count(check_in.user_id) as total')
+                ->join('check_in', 'check_in.lesson_id', '=', 'lessons.id')
+                ->rightJoin('users', 'users.id', '=', 'check_in.user_id')
+                ->whereRaw("lessons.class_id = ". $id ." and date(check_in.created_at) = date(current_date()) and check_in.is_check = 3")
+                ->get()->first();
+
             return view ('feedback.checkIn', [
                 'classes' => $classes,
                 'class' => $class, 
@@ -222,6 +274,10 @@ class HomeController extends Controller
                 'checkIn' => $checkIn,
                 'user_checkIn' => $user_checkIn,
                 'events' => $events,
+                'total_student' => $total_student,
+                'present' => $present,
+                'late' => $late,
+                'not_present' => $not_present
             ]);
         } else {
             dd('forbidden');
@@ -233,7 +289,6 @@ class HomeController extends Controller
     public function postCheckIn (Request $request)
     {
         // return response()->json(['mess' => 'Thêm bản ghi thành công', 200]);
-
 
         $validator = Validator::make($request->all(), [
             'id' => 'required|exists:lessons,id',

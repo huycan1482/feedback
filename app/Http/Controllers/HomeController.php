@@ -8,6 +8,7 @@ use App\FeedBack;
 use App\Lesson;
 use App\User;
 use App\UserAnswer;
+use App\UserAnswerDetail;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -471,6 +472,8 @@ class HomeController extends Controller
                 break;
             }
         }
+        // dd($feedback_detail);
+        $checkUserAnswer = UserAnswer::where(['user_id' => Auth::user()->id], ['feedBackDetail_id' => $feedback_detail])->get();
 
         return view ('feedback.feedback', [
             'classes' => $classes,
@@ -478,6 +481,7 @@ class HomeController extends Controller
             'classRoom' => $classRoom,
             'feedback_detail' => $feedback_detail,
             'feedback_id' => $feedBack,
+            'checkUserAnswer' => $checkUserAnswer,
         ]);
     }
 
@@ -564,12 +568,15 @@ class HomeController extends Controller
             }
         }
 
+        $checkUserAnswer = UserAnswer::where(['user_id' => Auth::user()->id], ['feedBackDetail_id' => $feedback_detail])->get();
+
         return view ('feedback.feedback', [
             'classes' => $classes,
             'data' => $data,
             'classRoom' => $classRoom,
             'feedback_detail' => $feedback_detail,
             'feedback_id' => $feedBack,
+            'checkUserAnswer' => $checkUserAnswer,
         ]);
     }
 
@@ -577,10 +584,17 @@ class HomeController extends Controller
     {
         // dd(count($request->input('feedback')));
 
+        $checkUserAnswer = UserAnswer::where(['user_id' => Auth::user()->id], ['feedBackDetail_id' => $request->input('feedback_detail')])->get();
+        // dd(empty($checkUserAnswer->first()));
+        if($checkUserAnswer->first()) {
+            return response()->json(['mess' => 'Gửi bản ghi lỗi, bạn đã hoàn thành trước đó'], 400);
+        }
+
         $validator = Validator::make($request->all(), [
             'feedback_id' => 'required|exists:feedbacks,id',
             'feedback' => 'required|array',
-            'feedback_detail' => 'required|exists:feedback_details,id'
+            'feedback_detail' => 'required|exists:feedback_details,id',
+            'note' => 'nullable|string'
         ], [
             'feedback_id.required' => 'Yêu cầu không để trống',
             'feedback_id.exists' => 'User không tồn tại',
@@ -589,6 +603,8 @@ class HomeController extends Controller
 
             'feedback_detail.required' => 'Yêu cầu không để trống',
             'feedback_detail.exists' => 'Dữ liệu không tồn tại',
+
+            'note.string' => 'Sai kiểu dữ liệu',
         ]);
 
         $errs = $validator->errors();
@@ -601,21 +617,38 @@ class HomeController extends Controller
             return response()->json(['mess' => 'Gửi bản ghi lỗi, bạn chưa hoàn thành bài làm'], 400);
         } else {
             // dd($feedback,  count($request->input('feedback')));
-            foreach ($request->input('feedback') as $item) {
-                // dd($item['question_id']);
-                $user_answer = new UserAnswer;
-                $user_answer->user_id = Auth::user()->id;
-                $user_answer->feedBackDetail_id = $request->input('feedback_detail');
-                $user_answer->question_id = $item['question_id'];
-                $user_answer->answer_id = $item['answer_id'];
 
-                // $user_answer->save();
+            $user_answer = new UserAnswer;
+            $user_answer->user_id = Auth::user()->id;
+            $user_answer->feedBackDetail_id = $request->input('feedback_detail');
+            $user_answer->opinion = $request->input('note') ? $request->input('note') : '';
+            $user_answer->status = 1;
+
+            DB::beginTransaction();
+
+            try {
+                $user_answer->save();
+
+                $latestUserAnswer = UserAnswer::where([ 'user_id' => Auth::user()->id ], ['feedBackDetail_id' => $request->input('feedback_detail')])->latest();
+
+                foreach ($request->input('feedback') as $item) {
+                    // dd($item['question_id']);
+                    $userAnswer_detail = new UserAnswerDetail;
+                    $userAnswer_detail->userAnswer_id = $latestUserAnswer->first()->id;
+                    $userAnswer_detail->answer_id = $item['answer_id'];
+                    $userAnswer_detail->save();
+                }
+
+                DB::commit();
+
+            } catch (Exception $e) {
+                DB::rollBack();
+                return response()->json(['mess' => 'Thêm bản ghi lỗi'], 502);
             }
+
+            return response()->json(['mess' => 'Gửi bài làm thành công', 200]);
+
         }
-
-
-       
-
     }
 
     public function getProfile ()

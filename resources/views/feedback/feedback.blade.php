@@ -101,6 +101,13 @@
                     </div>
                     <div class="box-hr"></div>
                 </div>
+                @if ( !empty($checkUserAnswer->first()) )
+                <div class="box-body">
+                    <div>
+                        <h2 style="text-align: center">Bạn đã hoàn thành bài đánh giá trước đó</h2>
+                    </div>
+                </div>
+                @else
                 <div class="box-body">
                     <div>
                         @foreach ($data as $key => $item)
@@ -126,6 +133,11 @@
                             </div>
                         </div>
                         @endforeach
+
+                        <div class=" form-group" style="padding: 20px">
+                            <label for="phone" class="form-label">Góp ý:</label>
+                            <textarea name="" id="note" cols="30" rows="10" class="form-control"></textarea>
+                        </div>
                     </div>
                 </div>
                 <div class="box-footer">
@@ -133,6 +145,7 @@
                         <div class="btn btn-primary btn-save" feedback-id="{{ $feedback_id->id }}" feedbackDetail="{{ $feedback_detail }}">Hoàn thành</div>
                     </div>
                 </div>
+                @endif
             </div>
         </div>
     </div>
@@ -150,6 +163,7 @@
         $(document).on('click', '.btn-save', function (e) {
             var feedback_id = $(this).attr('feedback-id');   
             var feedback_detail = $(this).attr('feedbackDetail');
+            var note = $('#note').val();
             // console.log($('div[id*=feedback]').length);
 
             var feedback = [];
@@ -171,6 +185,7 @@
                 feedback_id: feedback_id,
                 feedback_detail : feedback_detail,
                 feedback: feedback,
+                note: note,
             }
 
             $.ajax({
@@ -180,7 +195,6 @@
                 dataType : 'json',
 
                 success: function (response) {
-                    console.log(response);
                     successResponse(response);
                 },
                 error: function (e) {

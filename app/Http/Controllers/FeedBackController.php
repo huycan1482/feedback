@@ -202,12 +202,19 @@ class FeedBackController extends Controller
 
         $questions = Question::where('is_active', '=', 1)->whereNotIn('id', $question_ids)->latest()->get(); 
 
+        // DB::enableQueryLog();
+
         $data = Question::selectRaw('questions.*, feedback_question.position as position, feedback_question.id as feedbackQuestionId')
-        ->rightJoin('feedback_question', 'questions.id', '=', 'feedback_question.question_id')
+        ->join('feedback_question', 'questions.id', '=', 'feedback_question.question_id')
+        ->where('feedback_question.feedback_id', $id)
         ->whereIn('questions.id', $question_ids)
         ->orderBy('position', 'desc')
         ->orderBy('feedback_question.id', 'asc')
         ->get(); 
+
+        // dd(DB::getQueryLog());
+
+        // dd($data);
 
         return view ('admin.feedback.edit', [
             'feedback' => $feedback,

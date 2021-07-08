@@ -41,4 +41,10 @@ class FeedbackDetail extends Model
         return $this->belongsTo('App\User', 'user_update', 'id');
     }
 
+
+    public function feedback ()
+    {
+        return $this->belongsTo('App\FeedBack', 'feedback_id', 'id');
+    }
+
 }

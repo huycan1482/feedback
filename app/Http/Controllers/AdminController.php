@@ -84,7 +84,7 @@ class AdminController extends Controller
         ->get()->first();
 
         if (empty($checkTeacher)) {
-            return redirect()->route('errors.404');
+            return redirect()->route('admin.errors.404');
         }
 
         $classes = ClassRoom::select('classes.*')
@@ -126,12 +126,45 @@ class AdminController extends Controller
 
     public function getClassFeedbacks($id) 
     {
+        $checkClass = ClassRoom::select('classes.*')
+        ->join('feedback_details', 'feedback_details.class_id', '=', 'classes.id')
+        ->join('user_answers', 'user_answers.feedBackDetail_id', '=', 'feedback_details.id')
+        ->where('classes.id', $id)
+        ->get()->first();
 
+        if (empty($checkClass)) {
+            return redirect()->route('admin.errors.404');
+        }
+
+        // dd($checkClass);
+
+        $feedbackDetails = FeedbackDetail::select('feedback_details.*')
+        ->join('user_answers', 'user_answers.feedBackDetail_id', '=', 'feedback_details.id')
+        ->where('feedback_details.class_id', $id)
+        ->get();
+
+        // dd($feedbackDetails);
+
+        foreach ($feedbackDetails as $item) {
+            $results [$item->id] = FeedbackDetail::selectRaw('round(sum(answers.point)/(count(answers.id) * 3.00)*100, 2) as result')
+                ->join('user_answers', 'user_answers.feedBackDetail_id', '=', 'feedback_details.id')
+                ->join('useranswer_details', 'user_answers.id', '=', 'useranswer_details.userAnswer_id')
+                ->join('answers', 'useranswer_details.answer_id', '=', 'answers.id')
+                ->where('feedback_details.id', $item->id)
+                ->groupBy('feedback_details.id')->get()->first()->result;
+        }
+
+        return view ('admin.dashboard.classesFeedbacks', [
+            'results' => $results,
+            'checkClass' => $checkClass,
+            'feedbackDetails' => $feedbackDetails,
+
+        ]);
     }
 
     public function getFeedbackResult($id)
     {
-
+        
     }
 
 }

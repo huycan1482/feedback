@@ -18,7 +18,7 @@
                 </div>
                 <div class="box-body">
                     @foreach($classes as $class)
-                    {{-- {{dd($class->pivot)}} --}}
+                    {{-- {{ dd($class) }} --}}
                         @foreach ($class->feedback as $item)
                         @if ($item->pivot->is_active == 1)
                         <a class="class-item" href="{{ route('feedback.getFeedbackId', ['class_id' => $class->id, 'feedback_id' => $item->id]) }}">
@@ -142,7 +142,7 @@
                 </div>
                 <div class="box-footer">
                     <div style="margin: 20px; display: flex; justify-content: flex-end">
-                        <div class="btn btn-primary btn-save" feedback-id="{{ $feedback_id->id }}" feedbackDetail="{{ $feedback_detail }}">Hoàn thành</div>
+                        <div class="btn btn-primary btn-save" feedback-id="{{ $feedback_id->id }}" feedbackDetail="{{ $feedback_detail }}" class-id="{{ $classRoom->id }}">Hoàn thành</div>
                     </div>
                 </div>
                 @endif
@@ -164,6 +164,7 @@
             var feedback_id = $(this).attr('feedback-id');   
             var feedback_detail = $(this).attr('feedbackDetail');
             var note = $('#note').val();
+            var class_id = $(this).attr('class-id');
             // console.log($('div[id*=feedback]').length);
 
             var feedback = [];
@@ -186,6 +187,7 @@
                 feedback_detail : feedback_detail,
                 feedback: feedback,
                 note: note,
+                class_id : class_id,
             }
 
             $.ajax({

@@ -105,7 +105,7 @@ class LoginController extends Controller
         }
 
         if (Auth::attempt(['email' =>  $request->input('email'), 'password' => $request->input('password'), 'is_active' => 1, 'role_id' => $roles], $remember)) {
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('admin.index');
         }
 
         return redirect()->back()->with('msg', 'Email hoặc Password không chính xác');

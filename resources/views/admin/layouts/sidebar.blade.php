@@ -26,9 +26,16 @@
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu" data-widget="tree">
             <li class="">
-                <a href="{{ route('admin.dashboard') }}">
+                <a href="{{ route('admin.index') }}">
                   <i class="fa fa-chart-pie"></i>
                     <span> Thống kê</span>
+                </a>
+            </li>
+
+            <li class="">
+                <a href="{{ route('admin.getDashboard') }}">
+                  <i class="fa fa-chart-pie"></i>
+                    <span> Kết quả đánh giá </span>
                 </a>
             </li>
 

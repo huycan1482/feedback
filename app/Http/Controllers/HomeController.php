@@ -403,9 +403,9 @@ class HomeController extends Controller
             ->where([['user_class.user_id', '=', Auth::user()->id], ['classes.id', '=', $item->id]])
             ->get();
 
-            if ($checkFeedback->first()->percent < 80) {
-                $classes->forget($key);   
-            }
+            // if ($checkFeedback->first()->percent < 80) {
+            //     $classes->forget($key);   
+            // }
         }
 
         if (empty($classes->first())) {
@@ -443,8 +443,9 @@ class HomeController extends Controller
         // dd($classRoom);
     
         $feedBack = FeedBack::findOrFail($first_feedback);
-
+        // $data = [];
         foreach ($feedBack->question as $key => $item) {
+            // dd($feedBack->question);
             $arr = [];
 
             foreach($item->answers as $item2) {
@@ -464,6 +465,8 @@ class HomeController extends Controller
             ];
         }
 
+        // dd($data);
+
         shuffle($data);
 
         foreach ($feedBack->classRoom as $item) {
@@ -473,7 +476,10 @@ class HomeController extends Controller
             }
         }
         // dd($feedback_detail);
-        $checkUserAnswer = UserAnswer::where(['user_id' => Auth::user()->id], ['feedBackDetail_id' => $feedback_detail])->get();
+        $checkUserAnswer = UserAnswer::join('feedback_details', 'user_answers.feedBackDetail_id', '=', 'feedback_details.id')
+        ->where([['user_answers.user_id', '=', Auth::user()->id], 
+        ['feedback_details.feedback_id', '=', $first_feedback], 
+        ['feedback_details.class_id', '=', $classRoom->id]])->get();
 
         return view ('feedback.feedback', [
             'classes' => $classes,
@@ -510,13 +516,13 @@ class HomeController extends Controller
             ->get();
 
             // dd($checkFeedback);
-            if ($checkFeedback->first()->percent < 80) {
-                $classes->forget($key);   
+            // if ($checkFeedback->first()->percent < 80) {
+            //     $classes->forget($key);   
 
-                if ($item->id == $class_id) {
-                    return redirect()->route('errors.general')->withMessage('Bạn không có bài khảo sát nào');
-                }
-            }
+            //     if ($item->id == $class_id) {
+            //         return redirect()->route('errors.general')->withMessage('Bạn không có bài khảo sát nào');
+            //     }
+            // }
             
         }
 
@@ -538,6 +544,8 @@ class HomeController extends Controller
             ->get()->first(); 
     
         $feedBack = FeedBack::findOrFail($feedback_id);
+
+        // dd($feedBack->question);
 
         foreach ($feedBack->question as $key => $item) {
             $arr = [];
@@ -568,8 +576,16 @@ class HomeController extends Controller
             }
         }
 
-        $checkUserAnswer = UserAnswer::where(['user_id' => Auth::user()->id], ['feedBackDetail_id' => $feedback_detail])->get();
+        DB::enableQueryLog(); 
 
+        $checkUserAnswer = UserAnswer::join('feedback_details', 'user_answers.feedBackDetail_id', '=', 'feedback_details.id')
+        ->where([['user_answers.user_id', '=', Auth::user()->id], 
+        ['feedback_details.feedback_id', '=', $feedback_id], 
+        ['feedback_details.class_id', '=', $class_id]])->get();
+
+        // dd(DB::getQueryLog()); 
+
+        // dd($checkUserAnswer);
         return view ('feedback.feedback', [
             'classes' => $classes,
             'data' => $data,
@@ -584,7 +600,11 @@ class HomeController extends Controller
     {
         // dd(count($request->input('feedback')));
 
-        $checkUserAnswer = UserAnswer::where(['user_id' => Auth::user()->id], ['feedBackDetail_id' => $request->input('feedback_detail')])->get();
+        $checkUserAnswer = UserAnswer::join('feedback_details', 'user_answers.feedBackDetail_id', '=', 'feedback_details.id')
+        ->where([['user_answers.user_id', '=', Auth::user()->id], 
+        ['feedback_details.feedback_id', '=', $request->input('feedback_id')], 
+        ['feedback_details.class_id', '=', $request->input('class_id')]])->get();
+
         // dd(empty($checkUserAnswer->first()));
         if($checkUserAnswer->first()) {
             return response()->json(['mess' => 'Gửi bản ghi lỗi, bạn đã hoàn thành trước đó'], 400);

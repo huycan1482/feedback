@@ -37,7 +37,12 @@ Route::group(['prefix' => 'admin' , 'as' => 'admin.', 'middleware' => 'checkAdmi
         ]);
     })->name('errors.403');
     
-    Route::get('/', 'AdminController@index')->name('dashboard');
+    Route::get('/', 'AdminController@index')->name('index');
+
+    Route::get('/teacherClasses/class_{id}', 'AdminController@getTeacherClasses')->name('getTeacherClasses');
+    Route::get('/classFeedbacks/feedback_{id}', 'AdminController@getClassFeedbacks')->name('getClassFeedbacks');
+    Route::get('/feedbackResult/feedback_{id}', 'AdminController@getFeedbackResult')->name('getFeedbackResult');
+
     Route::resource('answer', 'AnswerController');
 
     Route::resource('question', 'QuestionController');
@@ -79,6 +84,8 @@ Route::group(['prefix' => 'admin' , 'as' => 'admin.', 'middleware' => 'checkAdmi
     Route::resource('class', 'ClassController');
     Route::get('class/forceDelete/{id}', 'ClassController@forceDelete')->name('class.forceDelete');
     Route::get('class/restore/{id}', 'ClassController@restore')->name('class.restore');
+
+    Route::get('/dashboard', 'AdminController@getDashboard')->name('getDashboard');
 });
 
 

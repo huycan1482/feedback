@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\ClassRoom;
 use App\FeedbackDetail;
 use App\User;
+use App\UserAnswer;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -164,7 +165,35 @@ class AdminController extends Controller
 
     public function getFeedbackResult($id)
     {
-        
+        $checkFeedback = FeedbackDetail::select('feedback_details.*')
+        ->join('user_answers', 'user_answers.feedBackDetail_id', '=', 'feedback_details.id')
+        ->where('feedback_details.id', $id)
+        ->get()->first();
+
+        if (empty($checkFeedback)) {
+            return redirect()->route('admin.errors.404');
+        }
+
+        $feedbackDetails = UserAnswer::select('user_answers.*')
+        ->where('user_answers.feedbackDetail_id', $id)
+        ->get();
+
+
+        foreach($feedbackDetails as $item) {
+            $results [$item->id] = FeedbackDetail::selectRaw('round(sum(answers.point)/(count(answers.id) * 3.00)*100, 2) as result')
+                ->join('user_answers', 'user_answers.feedBackDetail_id', '=', 'feedback_details.id')
+                ->join('useranswer_details', 'user_answers.id', '=', 'useranswer_details.userAnswer_id')
+                ->join('answers', 'useranswer_details.answer_id', '=', 'answers.id')
+                ->where('user_answers.id', $item->id)
+                ->groupBy('feedback_details.id')->get()->first()->result;
+        }
+
+        return view ('admin.dashboard.feedbackResult', [
+            'checkFeedback' => $checkFeedback,
+            'feedbackDetails' => $feedbackDetails,
+            'results' => $results,
+
+        ]);
     }
 
 }

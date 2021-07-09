@@ -30,4 +30,9 @@ class UserAnswer extends Model
         return $this->hasMany('App\UserAnswer', 'userAnswer_id', 'id');
     }
 
+    public function student ()
+    {
+        return $this->belongsTo('App\User', 'user_id', 'id');
+    }
+
 }

@@ -9,7 +9,7 @@
 <section class="content-header">
     <h1>
         Thông tin lớp học Giảng viên {{$checkTeacher->name}}
-        {{-- <small><a href="{{ route('admin.teacher.create') }}">Thêm mới</a></small> --}}
+        <small><a class="btn-return" style="cursor: pointer">Quay lại</a></small>
     </h1>
 </section>
 
@@ -76,6 +76,10 @@
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
+        });
+
+        $('.btn-return').click(function (e) {
+            history.back();
         });
 
     })

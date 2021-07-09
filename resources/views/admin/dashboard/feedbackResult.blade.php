@@ -8,7 +8,7 @@
 @section('content')
 <section class="content-header">
     <h1>
-        Thông tin bài đánh giá của Lớp {{$checkClass->name}}
+        Thông tin chi tiết bài đánh giá {{$checkFeedback->feedback->name}}
         <small><a class="btn-return" style="cursor: pointer">Quay lại</a></small>
     </h1>
 </section>
@@ -26,8 +26,8 @@
                         <thead>
                             <tr>
                                 <th class="text-center">STT</th>
-                                <th class="text-center">Tên</th>
-                                <th class="text-center">Số học sinh đánh giá</th>
+                                <th class="text-center">Tên học sinh</th>
+                                <th class="text-center">Góp ý</th>
                                 <th class="text-center">Độ tín nhiệm</th>
                                 <th class="text-center">Xem chi tiết</th>
                             </tr>
@@ -36,11 +36,11 @@
                             @foreach($feedbackDetails as $key => $item)
                             <tr class="item-{{ $item->id }}">
                                 <td class="text-center">{{ $key + 1}}</td>
-                                <td class="text-center">{{ $item->feedback->name }}</td>
-                                <td class="text-center">{{ $item->user_answers->count() }}</td>
+                                <td class="text-center">{{ $item->student->name }}</td>
+                                <td class="text-center">{{ str_limit($item->opinion, 20) }}</td>
                                 <td class="text-center">{{ $results[$item->id] }}%</td>
                                 <td class="text-center">
-                                    <a href="{{ route('admin.getFeedbackResult', [ 'id' => $item->id ]) }}" class="btn btn-warning btn-detail" title="Chi tiết">
+                                    <a href="" class="btn btn-warning btn-detail" title="Chi tiết">
                                         <i class="fas fa-cog"></i>
                                     </a>
                                 </td>
@@ -79,7 +79,6 @@
         $('.btn-return').click(function (e) {
             history.back();
         });
-
     })
 </script>
 @endsection

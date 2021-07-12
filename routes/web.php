@@ -42,6 +42,9 @@ Route::group(['prefix' => 'admin' , 'as' => 'admin.', 'middleware' => 'checkAdmi
     Route::get('/teacherClasses/class_{id}', 'AdminController@getTeacherClasses')->name('getTeacherClasses');
     Route::get('/classFeedbacks/feedback_{id}', 'AdminController@getClassFeedbacks')->name('getClassFeedbacks');
     Route::get('/feedbackResult/feedback_{id}', 'AdminController@getFeedbackResult')->name('getFeedbackResult');
+    Route::get('/getFeedback', 'AdminController@getFeedback')->name('getFeedback');
+    Route::get('/getActiveFeedback/{id}', 'AdminController@getActiveFeedback')->name('getActiveFeedback');
+    Route::get('/activeFeedback/{id}', 'AdminController@activeFeedback')->name('activeFeedback');
 
     Route::resource('answer', 'AnswerController');
 

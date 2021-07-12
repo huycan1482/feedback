@@ -47,4 +47,9 @@ class FeedbackDetail extends Model
         return $this->belongsTo('App\FeedBack', 'feedback_id', 'id');
     }
 
+    public function class ()
+    {
+        return $this->belongsTo('App\ClassRoom', 'class_id', 'id');
+    }
+
 }

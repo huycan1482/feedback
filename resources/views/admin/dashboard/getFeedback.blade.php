@@ -8,8 +8,8 @@
 @section('content')
 <section class="content-header">
     <h1>
-        Thông tin lớp học Giảng viên {{$checkTeacher->name}}
-        <small><a class="btn-return" style="cursor: pointer">Quay lại</a></small>
+        Kích hoạt bài đánh giá 
+        {{-- <small><a class="btn-return" style="cursor: pointer">Quay lại</a></small> --}}
     </h1>
 </section>
 
@@ -26,10 +26,8 @@
                         <thead>
                             <tr>
                                 <th class="text-center">STT</th>
-                                <th class="text-center">Tên</th>
-                                <th class="text-center">Số học sinh</th>
-                                <th class="text-center">Số bài đánh giá</th>
-                                <th class="text-center">Độ tín nhiệm</th>
+                                <th class="text-center">Tên Lớp</th>
+                                <th class="text-center">Số lượng bài đánh giá</th>
                                 <th class="text-center">Xem chi tiết</th>
                             </tr>
                         </thead>
@@ -38,11 +36,9 @@
                             <tr class="item-{{ $class->id }}">
                                 <td class="text-center">{{ $key + 1}}</td>
                                 <td class="text-center">{{ $class->name }}</td>
-                                <td class="text-center">{{ $class->user_class->count() }}</td>
-                                <td class="text-center">{{ $class->feedback->count() }}</td>
-                                <td class="text-center">{{ $results[$class->id] }}%</td>
+                                <td class="text-center">{{ ($class->count) }}</td>
                                 <td class="text-center">
-                                    <a href="{{ route('admin.getClassFeedbacks', [ 'id' => $class->id ]) }}" class="btn btn-primary btn-detail" title="Chi tiết">
+                                    <a href="{{ route('admin.getActiveFeedback', ['id' => $class->id]) }}" class="btn btn-primary btn-detail" title="Chi tiết">
                                         <i class="fas fa-long-arrow-alt-right"></i>
                                     </a>
                                 </td>
@@ -78,10 +74,9 @@
             }
         });
 
-        $('.btn-return').click(function (e) {
-            history.back();
-        });
-
+        // $('.btn-return').click(function (e) {
+        //     history.back();
+        // });
     })
 </script>
 @endsection

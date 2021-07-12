@@ -147,8 +147,8 @@
                                 <td class="text-center">{{ $teacher->classes->count() }}</td>
                                 <td class="text-center">{{ empty($results) ? '' : $results[$teacher->id] }}%</td>
                                 <td class="text-center">
-                                    <a href="{{ route('admin.getTeacherClasses', [ 'id' => $teacher->id ]) }}" class="btn btn-warning btn-detail" title="Chi tiết">
-                                        <i class="fas fa-cog"></i>
+                                    <a href="{{ route('admin.getTeacherClasses', [ 'id' => $teacher->id ]) }}" class="btn btn-primary btn-detail" title="Chi tiết">
+                                        <i class="fas fa-long-arrow-alt-right"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -158,8 +158,6 @@
 
                         </tfoot>
                     </table>
-
-                    
                 </div>
                 <!-- /.box-body -->
             </div>
@@ -174,7 +172,7 @@
 <script src="backend/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="backend/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 <script>
-    $(function() {
+    $( function () {
         $('#example1').DataTable();
 
         $.ajaxSetup({

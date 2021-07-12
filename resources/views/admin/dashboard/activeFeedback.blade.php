@@ -8,7 +8,7 @@
 @section('content')
 <section class="content-header">
     <h1>
-        Thông tin lớp học Giảng viên {{$checkTeacher->name}}
+        Kích hoạt bài đánh giá lớp {{ $feedbackDetails->first()->class->name }}
         <small><a class="btn-return" style="cursor: pointer">Quay lại</a></small>
     </h1>
 </section>
@@ -26,24 +26,20 @@
                         <thead>
                             <tr>
                                 <th class="text-center">STT</th>
-                                <th class="text-center">Tên</th>
-                                <th class="text-center">Số học sinh</th>
-                                <th class="text-center">Số bài đánh giá</th>
-                                <th class="text-center">Độ tín nhiệm</th>
-                                <th class="text-center">Xem chi tiết</th>
+                                <th class="text-center">Tên bài đánh giá</th>
+                                <th class="text-center">Trạng thái</th>
+                                <th class="text-center">Thay đổi trạng thái</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($classes as $key => $class)
-                            <tr class="item-{{ $class->id }}">
+                            @foreach($feedbackDetails as $key => $feedbackDetail)
+                            <tr class="item-{{ $feedbackDetail->id }}">
                                 <td class="text-center">{{ $key + 1}}</td>
-                                <td class="text-center">{{ $class->name }}</td>
-                                <td class="text-center">{{ $class->user_class->count() }}</td>
-                                <td class="text-center">{{ $class->feedback->count() }}</td>
-                                <td class="text-center">{{ $results[$class->id] }}%</td>
+                                <td class="text-center">{{ $feedbackDetail->feedback->name }}</td>
+                                <td class="text-center"><span class="label label-{{ ($feedbackDetail->is_active == 1) ? 'success' : 'danger' }}">{{ ($feedbackDetail->is_active == 1) ? 'Hiển thị' : 'Ẩn' }}</span></td>
                                 <td class="text-center">
-                                    <a href="{{ route('admin.getClassFeedbacks', [ 'id' => $class->id ]) }}" class="btn btn-primary btn-detail" title="Chi tiết">
-                                        <i class="fas fa-long-arrow-alt-right"></i>
+                                    <a class="btn btn-success btn-edit" title="Thay đổi trạng thái" data-id="{{ $feedbackDetail->id }}">
+                                        <i class="fas fa-edit"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -82,6 +78,28 @@
             history.back();
         });
 
+        $(document).on('click', '.btn-edit', function (e) {
+            // var result = confirm("Bạn có chắc chắn muốn khôi phục bản ghi ?");
+            // if (result) { 
+                var id = $(this).attr('data-id');
+                $.ajax({
+                    url: base_url + '/admin/activeFeedback/'+id,
+                    type: 'GET',
+                    data: {}, 
+                    dataType: "json", 
+                    success: function (response) { 
+                        // $('.item-'+id).closest('label').html('');
+                        messageFade('success', response.mess, 'Tải lại sau 1,5s');
+                        setTimeout(function (){
+                            location.reload()
+                        }, 1500);
+                    },
+                    error: function (e) { 
+                        messageFade('danger', e.responseJSON.mess, 'Tải lại sau 1,5s');
+                    }
+                });
+            // }
+        });
     })
 </script>
 @endsection

@@ -192,8 +192,50 @@ class AdminController extends Controller
             'checkFeedback' => $checkFeedback,
             'feedbackDetails' => $feedbackDetails,
             'results' => $results,
-
         ]);
+    }
+
+    public function getFeedback () 
+    {
+        $classes = ClassRoom::selectRaw('classes.*, count(feedback_details.id) as count')
+        ->join('feedback_details', 'classes.id', '=', 'feedback_details.class_id')
+        ->groupBy('classes.id')
+        ->get();
+
+        return view ('admin.dashboard.getFeedback', [
+            'classes' => $classes,
+        ]);
+    }
+
+    public function getActiveFeedback ($id) 
+    {
+        $feedbackDetails = FeedbackDetail::where('class_id', $id)
+        ->get();
+
+        return view ('admin.dashboard.activeFeedback', [
+            'feedbackDetails' => $feedbackDetails
+        ]);
+
+    }
+
+    public function activeFeedback ($id)
+    {
+        $feedbackDetail = FeedbackDetail::find($id);
+
+        if (empty($feedbackDetail)) {
+            return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
+        }
+
+        if ($feedbackDetail->is_active == 1) {
+            $feedbackDetail->is_active = 0;
+        } else {
+            $feedbackDetail->is_active = 1;
+        }
+
+        $feedbackDetail->save();
+
+        return response()->json(['mess' => 'Thay đổi trạng thái thành công'], 200);
+
     }
 
 }

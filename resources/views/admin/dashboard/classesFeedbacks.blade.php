@@ -40,8 +40,8 @@
                                 <td class="text-center">{{ $item->user_answers->count() }}</td>
                                 <td class="text-center">{{ $results[$item->id] }}%</td>
                                 <td class="text-center">
-                                    <a href="{{ route('admin.getFeedbackResult', [ 'id' => $item->id ]) }}" class="btn btn-warning btn-detail" title="Chi tiết">
-                                        <i class="fas fa-cog"></i>
+                                    <a href="{{ route('admin.getFeedbackResult', [ 'id' => $item->id ]) }}" class="btn btn-primary btn-detail" title="Chi tiết">
+                                        <i class="fas fa-long-arrow-alt-right"></i>
                                     </a>
                                 </td>
                             </tr>

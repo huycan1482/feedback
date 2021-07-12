@@ -32,16 +32,63 @@
                 </a>
             </li>
 
-            <li class="">
-                <a href="{{ route('admin.getDashboard') }}">
-                  <i class="fa fa-chart-pie"></i>
-                    <span> Kết quả đánh giá </span>
+            <li class="treeview">
+                <a href="#">
+                    <i class="fas fa-graduation-cap"></i> <span> Đánh giá </span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
                 </a>
+                <ul class="treeview-menu">
+                    <li class="">
+                        <a href="{{ route('admin.getDashboard') }}">
+                          <i class="fa fa-chart-pie"></i>
+                            <span>Kết quả đánh giá </span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{{ route('admin.getFeedback') }}">
+                          <i class="fa fa-chart-pie"></i>
+                            <span>Kích hoạt đánh giá</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
 
             <li class="treeview">
                 <a href="#">
-                    <i class="fas fa-users"></i> <span>Người dùng</span>
+                    <i class="fas fa-scroll"></i> <span>Tạo bài Đánh giá</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="{{ route('admin.feedback.index') }}"><i class="fas fa-book"></i>Đánh giá</a></li>
+                    <li><a href="{{ route('admin.question.index') }}"><i class="fas fa-question-circle"></i>Câu hỏi</a></li>
+                    <li><a href="{{ route('admin.answer.index') }}"><i class="fas fa-stream"></i>Câu trả lời</a></li>
+                    {{-- <li><a href=""><i class="fas fa-user-tie"></i> Quản lí giảng viên</a></li> --}}
+                </ul>
+            </li>
+
+            <li class="treeview">
+                <a href="#">
+                    <i class="fas fa-graduation-cap"></i> <span>Quản lý Đào tạo</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="{{ route('admin.subject.index') }}"><i class="fas fa-book"></i>Môn học</a></li>
+                    <li><a href="{{ route('admin.course.index') }}"><i class="fas fa-bookmark"></i>Khóa học</a></li>
+                    <li><a href="{{ route('admin.class.index') }}"><i class="fas fa-book-open"></i>Lớp học</a></li>
+                    <li><a href=""><i class="fas fa-concierge-bell"></i>Ca học</a></li>
+                    <li><a href=""><i class="fas fa-user-check"></i></i>Điểm danh</a></li>
+                </ul>
+            </li>
+
+            <li class="treeview">
+                <a href="#">
+                    <i class="fas fa-users"></i> <span>Quản lý Người dùng</span>
                     <span class="pull-right-container">
                         <i class="fa fa-angle-left pull-right"></i>
                     </span>
@@ -57,35 +104,7 @@
                 </ul>
             </li>
     
-            <li class="treeview">
-                <a href="#">
-                    <i class="fas fa-graduation-cap"></i> <span> Đào tạo</span>
-                    <span class="pull-right-container">
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-                <ul class="treeview-menu">
-                    <li><a href="{{ route('admin.subject.index') }}"><i class="fas fa-book"></i>Môn học</a></li>
-                    <li><a href="{{ route('admin.course.index') }}"><i class="fas fa-bookmark"></i>Khóa học</a></li>
-                    <li><a href="{{ route('admin.class.index') }}"><i class="fas fa-book-open"></i>Lớp học</a></li>
-                    <li><a href=""><i class="fas fa-concierge-bell"></i>Ca học</a></li>
-                    <li><a href=""><i class="fas fa-user-check"></i></i>Điểm danh</a></li>
-                </ul>
-            </li>
-            <li class="treeview">
-                <a href="#">
-                    <i class="fas fa-scroll"></i> <span> Đánh giá GV</span>
-                    <span class="pull-right-container">
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-                <ul class="treeview-menu">
-                    <li><a href="{{ route('admin.feedback.index') }}"><i class="fas fa-book"></i>Đánh giá</a></li>
-                    <li><a href="{{ route('admin.question.index') }}"><i class="fas fa-question-circle"></i>Câu hỏi</a></li>
-                    <li><a href="{{ route('admin.answer.index') }}"><i class="fas fa-stream"></i>Câu trả lời</a></li>
-                    {{-- <li><a href=""><i class="fas fa-user-tie"></i> Quản lí giảng viên</a></li> --}}
-                </ul>
-            </li>
+            
             <li class="">
                 <a href="">
                     <i class="fa fa-cog"></i>

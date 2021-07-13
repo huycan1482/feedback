@@ -34,7 +34,7 @@
 
             <li class="treeview">
                 <a href="#">
-                    <i class="fas fa-graduation-cap"></i> <span> Đánh giá </span>
+                    <i class="fas fa-list"></i> <span> Đánh giá </span>
                     <span class="pull-right-container">
                         <i class="fa fa-angle-left pull-right"></i>
                     </span>
@@ -42,13 +42,13 @@
                 <ul class="treeview-menu">
                     <li class="">
                         <a href="{{ route('admin.getDashboard') }}">
-                          <i class="fa fa-chart-pie"></i>
+                            <i class="fas fa-clipboard-list"></i>
                             <span>Kết quả đánh giá </span>
                         </a>
                     </li>
                     <li class="">
                         <a href="{{ route('admin.getFeedback') }}">
-                          <i class="fa fa-chart-pie"></i>
+                            <i class="fas fa-tasks"></i>
                             <span>Kích hoạt đánh giá</span>
                         </a>
                     </li>

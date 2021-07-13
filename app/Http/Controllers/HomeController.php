@@ -192,39 +192,39 @@ class HomeController extends Controller
             ->where('classes.id', $id)
             ->get();
 
-            $lessons = DB::table('classes')
-            ->select('classes.code', 'lessons.id', 'lessons.start_at')
-            ->join('lessons', 'lessons.class_id', '=', 'classes.id')
-            ->whereRaw("classes.id = ".$id." and date(now()) > lessons.start_at")
-            ->orderBy('lessons.start_at', 'desc')
-            ->get();
-
             // $lessons = DB::table('classes')
             // ->select('classes.code', 'lessons.id', 'lessons.start_at')
             // ->join('lessons', 'lessons.class_id', '=', 'classes.id')
-            // ->whereRaw("classes.id = ".$id." ")
+            // ->whereRaw("classes.id = ".$id." and date(now()) > lessons.start_at")
             // ->orderBy('lessons.start_at', 'desc')
             // ->get();
+
+            $lessons = DB::table('classes')
+            ->select('classes.code', 'lessons.id', 'lessons.start_at')
+            ->join('lessons', 'lessons.class_id', '=', 'classes.id')
+            ->whereRaw("classes.id = ".$id." ")
+            ->orderBy('lessons.start_at', 'desc')
+            ->get();
 
             $checkIn = [];
             $user_checkIn = [];
 
             foreach ($students as $key => $student) {
-                $checkIn [$student->id] = DB::select("select classes.code, lessons.id, lessons.start_at, test.is_check, test.id from classes
-                    join lessons on lessons.class_id = classes.id
-                    left join (select check_in.id, check_in.is_check, check_in.lesson_id from check_in
-                    join users on users.id = check_in.user_id
-                    where users.id = $student->id) as test on test.lesson_id = lessons.id
-                    where classes.id =". $id ." and date(now()) >= lessons.start_at
-                    order by lessons.start_at desc");
-
                 // $checkIn [$student->id] = DB::select("select classes.code, lessons.id, lessons.start_at, test.is_check, test.id from classes
                 //     join lessons on lessons.class_id = classes.id
                 //     left join (select check_in.id, check_in.is_check, check_in.lesson_id from check_in
                 //     join users on users.id = check_in.user_id
                 //     where users.id = $student->id) as test on test.lesson_id = lessons.id
-                //     where classes.id =". $id ." 
+                //     where classes.id =". $id ." and date(now()) >= lessons.start_at
                 //     order by lessons.start_at desc");
+
+                $checkIn [$student->id] = DB::select("select classes.code, lessons.id, lessons.start_at, test.is_check, test.id from classes
+                    join lessons on lessons.class_id = classes.id
+                    left join (select check_in.id, check_in.is_check, check_in.lesson_id from check_in
+                    join users on users.id = check_in.user_id
+                    where users.id = $student->id) as test on test.lesson_id = lessons.id
+                    where classes.id =". $id ." 
+                    order by lessons.start_at desc");
 
                 $user_checkIn [$student->id] = DB::select("select
                     (select count(check_in.id) from check_in join lessons on check_in.lesson_id = lessons.id where check_in.is_check = 1 and check_in.user_id = $student->id and lessons.class_id = ".$id.") as di_hoc,

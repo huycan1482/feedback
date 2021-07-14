@@ -11,10 +11,20 @@
 }
 
 .form-check {
-    padding-left: 0;
+    padding-left: 0px;
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+}
+
+.form-check-note {
+    justify-content: flex-start;
+    padding: 10px 20px;
+}
+
+.form-check-note div {
+    margin-left: 10px;
 }
 
 .form-check .form-check-input {
@@ -124,19 +134,24 @@ table td {
 }
 
 .input-info {
+    background-color: #12CBC4 !important;
     border-color: #12CBC4 !important;
 }
 
 .input-success {
     border-color: #009432 !important;
+    background-color: #009432 !important;
+
 }
 
 .input-danger {
     border-color: #EA2027 !important;
+    background-color: #EA2027 !important;
 }
 
 .input-warning {
     border-color: #FFC312 !important;
+    background-color: #FFC312 !important;
 }
 
 .form-notice {

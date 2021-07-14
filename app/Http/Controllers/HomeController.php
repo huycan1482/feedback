@@ -9,6 +9,7 @@ use App\Lesson;
 use App\User;
 use App\UserAnswer;
 use App\UserAnswerDetail;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -192,39 +193,39 @@ class HomeController extends Controller
             ->where('classes.id', $id)
             ->get();
 
-            // $lessons = DB::table('classes')
-            // ->select('classes.code', 'lessons.id', 'lessons.start_at')
-            // ->join('lessons', 'lessons.class_id', '=', 'classes.id')
-            // ->whereRaw("classes.id = ".$id." and date(now()) > lessons.start_at")
-            // ->orderBy('lessons.start_at', 'desc')
-            // ->get();
-
             $lessons = DB::table('classes')
             ->select('classes.code', 'lessons.id', 'lessons.start_at')
             ->join('lessons', 'lessons.class_id', '=', 'classes.id')
-            ->whereRaw("classes.id = ".$id." ")
+            ->whereRaw("classes.id = ".$id." and date(now()) >= date(lessons.start_at)")
             ->orderBy('lessons.start_at', 'desc')
             ->get();
+
+            // $lessons = DB::table('classes')
+            // ->select('classes.code', 'lessons.id', 'lessons.start_at')
+            // ->join('lessons', 'lessons.class_id', '=', 'classes.id')
+            // ->whereRaw("classes.id = ".$id." ")
+            // ->orderBy('lessons.start_at', 'desc')
+            // ->get();
 
             $checkIn = [];
             $user_checkIn = [];
 
             foreach ($students as $key => $student) {
-                // $checkIn [$student->id] = DB::select("select classes.code, lessons.id, lessons.start_at, test.is_check, test.id from classes
-                //     join lessons on lessons.class_id = classes.id
-                //     left join (select check_in.id, check_in.is_check, check_in.lesson_id from check_in
-                //     join users on users.id = check_in.user_id
-                //     where users.id = $student->id) as test on test.lesson_id = lessons.id
-                //     where classes.id =". $id ." and date(now()) >= lessons.start_at
-                //     order by lessons.start_at desc");
-
                 $checkIn [$student->id] = DB::select("select classes.code, lessons.id, lessons.start_at, test.is_check, test.id from classes
                     join lessons on lessons.class_id = classes.id
                     left join (select check_in.id, check_in.is_check, check_in.lesson_id from check_in
                     join users on users.id = check_in.user_id
                     where users.id = $student->id) as test on test.lesson_id = lessons.id
-                    where classes.id =". $id ." 
+                    where classes.id =". $id ." and date(now()) >= date(lessons.start_at)
                     order by lessons.start_at desc");
+
+                // $checkIn [$student->id] = DB::select("select classes.code, lessons.id, lessons.start_at, test.is_check, test.id from classes
+                //     join lessons on lessons.class_id = classes.id
+                //     left join (select check_in.id, check_in.is_check, check_in.lesson_id from check_in
+                //     join users on users.id = check_in.user_id
+                //     where users.id = $student->id) as test on test.lesson_id = lessons.id
+                //     where classes.id =". $id ." 
+                //     order by lessons.start_at desc");
 
                 $user_checkIn [$student->id] = DB::select("select
                     (select count(check_in.id) from check_in join lessons on check_in.lesson_id = lessons.id where check_in.is_check = 1 and check_in.user_id = $student->id and lessons.class_id = ".$id.") as di_hoc,
@@ -289,7 +290,14 @@ class HomeController extends Controller
 
     public function postCheckIn (Request $request)
     {
-        // return response()->json(['mess' => 'Thêm bản ghi thành công', 200]);
+
+        $today = Carbon::now('Asia/Ho_Chi_Minh');
+        
+        $checkCheckIn = CheckIn::whereRaw("date(created_at) = '". $today->toDateString() ."' and lesson_id = ".$request->input('id') )->get();
+
+        if(!empty($checkCheckIn->first())) {
+            return response()->json(['mess' => 'Thêm bản ghi lỗi, bạn đã điểm danh trước đó'], 400);
+        }
 
         $validator = Validator::make($request->all(), [
             'id' => 'required|exists:lessons,id',
@@ -306,12 +314,13 @@ class HomeController extends Controller
         if ( $validator->fails() ) {
             return response()->json(['errors' => $errs, 'mess' => 'Thêm bản ghi lỗi'], 400);
         } else {
+
             $today = date("Y-m-d");
 
             $lesson = Lesson::find($request->input('id'));
 
-            // if (date_format(date_create($lesson->start_at), 'Y-m-d') != $today) {
-            if(false) {
+            if (date_format(date_create($lesson->start_at), 'Y-m-d') != $today) {
+            // if(false) {
                 return response()->json(['mess' => 'Thêm bản ghi lỗi'], 400);
             } else {
                 $lesson = Lesson::find($request->input('id'));

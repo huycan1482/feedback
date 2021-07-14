@@ -92,7 +92,23 @@
                                 <span>Ngày kết thúc: </span>
                                 <span>{{ date_format(date_create($class->end_at), 'd-m-Y') }}</span>
                             </div>
-                            
+                            <div>
+                                <div class="form-check form-check-note">
+                                    <p>Chú thích: </p>
+                                    <div>
+                                        <input type="radio" class="form-check-input input-info" id="" name=""
+                                            value="" checked> Có mặt
+                                    </div>
+                                    <div>
+                                        <input type="radio" class="form-check-input input-warning" id="" name=""
+                                            value="" checked> Muộn
+                                    </div>
+                                    <div>
+                                        <input type="radio" class="form-check-input input-danger" id="" name=""
+                                            value="" checked> Vắng mặt
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -144,11 +160,11 @@
                                                 <input type="radio" class="form-check-input input-danger" name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}"
                                                     id="{{$student->id}}_3" value="3" data-id="{{ $student->id }}">
                                             @elseif($item->is_check == 1)
-                                                <input type="radio" class="form-check-input input-info hidden_checkIn" name="" checked >
+                                                <input type="radio" class="form-check-input input-info hidden_checkIn" name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}" checked >
                                             @elseif($item->is_check == 2)
-                                                <input type="radio" class="form-check-input input-warning hidden_checkIn" name="" checked >
+                                                <input type="radio" class="form-check-input input-warning hidden_checkIn" name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}" checked >
                                             @else
-                                                <input type="radio" class="form-check-input input-danger hidden_checkIn" name="" checked >
+                                                <input type="radio" class="form-check-input input-danger hidden_checkIn" name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}" checked >
                                             @endif
                                             </div>
                                         </td>
@@ -200,25 +216,11 @@
 
                     <div class="form-footer">
                         <div class="">
-                            <div class="form-check">
-                                <p>Chú thích: </p>
-                                <div>
-                                    <input type="radio" class="form-check-input input-info" id="" name=""
-                                        value="" checked> Có mặt
-                                </div>
-                                <div>
-                                    <input type="radio" class="form-check-input input-warning" id="" name=""
-                                        value="" checked> Muộn
-                                </div>
-                                <div>
-                                    <input type="radio" class="form-check-input input-danger" id="" name=""
-                                        value="" checked> Vắng mặt
-                                </div>
-                            </div>
+                            
                         </div>
                         <div>
                             <div class="btn btn-danger btn-reset">Tải lại</div>
-                            <div class="btn btn-primary btn-save" data-id="{{ (empty($lessons->first())) ? '' : $lessons->first()->id}}">Lưu</div>
+                            <div class="btn btn-primary btn-save" data-id="{{ (empty($lessons->first())) ? 0 : $lessons->first()->id}}">Lưu</div>
                         </div>
                     </div>
 
@@ -272,17 +274,24 @@
         $(document).on('click', '.btn-save', function () {  
             var date = new Date();
 
-            var today = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+            if (date.getMonth() < 9) {
+                var getMonth = '0' + (date.getMonth() + 1);
+            } else {
+                var getMonth = (date.getMonth() + 1);
+            }
+
+            var today = date.getDate()+'-'+ getMonth +'-'+date.getFullYear();            
 
             var id = $(this).attr('data-id');
 
-            var inputs_checkIn = $('[name*="05-06-2021"]:checked')  ;
+            var inputs_checkIn = $("[name*='"+ today +"']:checked");
 
             var note = $('#note').val();
 
             var checkIn = [];
 
             inputs_checkIn.each( function (index, value) {
+                console.log($(this).attr('data-id'), value.value);
                 checkIn[index] = { 'id': $(this).attr('data-id'), 'val': value.value };
             });
 

@@ -165,7 +165,6 @@
             var feedback_detail = $(this).attr('feedbackDetail');
             var note = $('#note').val();
             var class_id = $(this).attr('class-id');
-            // console.log($('div[id*=feedback]').length);
 
             var feedback = [];
 

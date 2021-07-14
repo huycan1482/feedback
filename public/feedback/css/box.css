@@ -17,7 +17,7 @@
     border-radius: 5px; */
     transition: all .5s ease-in-out;
     border-radius: .55rem !important;
-
+    overflow: hidden;
 }
 
 .box:hover {

@@ -89,6 +89,11 @@ Route::group(['prefix' => 'admin' , 'as' => 'admin.', 'middleware' => 'checkAdmi
     Route::get('class/restore/{id}', 'ClassController@restore')->name('class.restore');
 
     Route::get('/dashboard', 'AdminController@getDashboard')->name('getDashboard');
+
+    Route::resource('checkIn', 'CheckInController');
+    Route::get('checkIn/getCourses/{id}', 'CheckInController@getCourses')->name('checkIn.getCourses');
+    Route::get('checkIn/getClasses/{id}', 'CheckInController@getClasses')->name('checkIn.getClasses');
+    Route::get('checkIn/getLessons/{id}', 'CheckInController@getLessons')->name('checkIn.getLessons');
 });
 
 

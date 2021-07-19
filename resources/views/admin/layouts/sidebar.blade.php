@@ -81,8 +81,8 @@
                     <li><a href="{{ route('admin.subject.index') }}"><i class="fas fa-book"></i>Môn học</a></li>
                     <li><a href="{{ route('admin.course.index') }}"><i class="fas fa-bookmark"></i>Khóa học</a></li>
                     <li><a href="{{ route('admin.class.index') }}"><i class="fas fa-book-open"></i>Lớp học</a></li>
-                    <li><a href=""><i class="fas fa-concierge-bell"></i>Ca học</a></li>
-                    <li><a href=""><i class="fas fa-user-check"></i></i>Điểm danh</a></li>
+                    {{-- <li><a href=""><i class="fas fa-concierge-bell"></i>Ca học</a></li> --}}
+                    <li><a href="{{ route('admin.checkIn.index') }}"><i class="fas fa-user-check"></i></i>Điểm danh</a></li>
                 </ul>
             </li>
 

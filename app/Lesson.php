@@ -28,4 +28,5 @@ class Lesson extends Model
     {
         return $this->hasMany('App\CheckIn','lesson_id', 'id');
     }
+
 }

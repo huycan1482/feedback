@@ -284,7 +284,10 @@
 
             var id = $(this).attr('data-id');
 
-            var inputs_checkIn = $("[name*='"+ today +"']:checked");
+            // var inputs_checkIn = $("[name*='"+ today +"']:checked");
+
+            var inputs_checkIn = $("[name*='17-08-2021']:checked");
+
 
             var note = $('#note').val();
 

@@ -89,13 +89,13 @@
                     dataType: "json", 
                     success: function (response) { 
                         // $('.item-'+id).closest('label').html('');
-                        messageFade('success', response.mess, 'Tải lại sau 1,5s');
+                        messageReload('success', response.mess, 'Tải lại sau 1,5s');
                         setTimeout(function (){
                             location.reload()
                         }, 1500);
                     },
                     error: function (e) { 
-                        messageFade('danger', e.responseJSON.mess, 'Tải lại sau 1,5s');
+                        messageReload('danger', e.responseJSON.mess, 'Tải lại sau 1,5s');
                     }
                 });
             // }

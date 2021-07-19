@@ -112,7 +112,10 @@ class CheckInController extends Controller
                 $checkIn_check [$student->id] = $checkLesson->is_check;
                 $checkIn_id [$student->id] = $checkLesson->id;
             }
+
         }
+
+
 
         return view ('admin.checkIn.edit', [
             'lesson' => $lesson,
@@ -159,11 +162,15 @@ class CheckInController extends Controller
         if ( $validator->fails() ) {
             return response()->json(['errors' => $errs, 'mess' => 'Thêm bản ghi lỗi'], 400);
         }
-        $checkLesson = Lesson::find(1000);
+
+        $checkLesson = Lesson::find($id);
 
         if (empty($checkLesson)) {
             return response()->json(['mess' => 'Thêm bản ghi lỗi'], 400);
         }
+
+        $checkLesson->note = $request->input('note');
+        $checkLesson->save();
 
         foreach ($request->input('checkIn') as $item) {
             if ($item['lesson_id'] == 0) {

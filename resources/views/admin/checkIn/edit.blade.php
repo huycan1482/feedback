@@ -25,9 +25,13 @@
                 <div class="box-body">
                     <div style="display: flex; justify-content: space-between">
                         <h3 class="box-title" style="margin-top: 10px">Danh sách học viên</h3>
-                        <div style="">
+                        <div style="display: flex; align-items: flex-end">
                             <div class="btn btn-info btn-save" title="" data-id="{{ $lesson->id }}">Thay đổi</div>
                         </div>
+                    </div>
+                    <div class="">
+                        <label for="phone" class="form-label">Ghi chú hôm nay</label>
+                        <textarea name="" id="note" cols="" rows="5" class="form-control">{{ $lesson->note }}</textarea>
                     </div>
                     <table class="table-hover table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
                         <thead>
@@ -48,21 +52,9 @@
                                 {{-- <td class="text-center"></td> --}}
                                 <td class="text-center">
                                     <div class="form-check">
-                                        {{-- @foreach ($student->checkIns as $item)
-                                            @if ($item->lesson_id == $lesson->id) --}}
-                                                <input type="radio" class="form-check-input input-info" name="{{$student->id}}" data-id="{{$checkIn_id[$student->id]}}" value="1" {{ ($checkIn_check[$student->id] == 1) ? 'checked' : '' }}>
-                                                <input type="radio" class="form-check-input input-danger" name="{{$student->id}}" data-id="{{$checkIn_id[$student->id]}}" value="2" {{ ($checkIn_check[$student->id] == 2) ? 'checked' : '' }}>
-                                                <input type="radio" class="form-check-input input-warning" name="{{$student->id}}" data-id="{{$checkIn_id[$student->id]}}" value="3" {{ ($checkIn_check[$student->id] == 3) ? 'checked' : '' }}>    
-                                                {{-- @break
-                                            @else
-                                                <input type="radio" class="form-check-input input-info" name="{{$student->id}}" id="" value="1">
-                                                <input type="radio" class="form-check-input input-danger" name="{{$student->id}}" id="" value="2">
-                                                <input type="radio" class="form-check-input input-warning" name="{{$student->id}}" id="" value="3">
-                                                @break --}}
-
-                                            {{-- @endif
-                                        @endforeach --}}
-                                        
+                                        <input type="radio" class="form-check-input input-info" name="{{$student->id}}" data-id="{{$checkIn_id[$student->id]}}" value="1" {{ ($checkIn_check[$student->id] == 1) ? 'checked' : '' }}>
+                                        <input type="radio" class="form-check-input input-danger" name="{{$student->id}}" data-id="{{$checkIn_id[$student->id]}}" value="2" {{ ($checkIn_check[$student->id] == 2) ? 'checked' : '' }}>
+                                        <input type="radio" class="form-check-input input-warning" name="{{$student->id}}" data-id="{{$checkIn_id[$student->id]}}" value="3" {{ ($checkIn_check[$student->id] == 3) ? 'checked' : '' }}>    
                                     </div>
                                 </td>
                             </tr>
@@ -94,6 +86,8 @@
 
             var inputs_checkIn = $("input:checked");
 
+            var note = $('#note').val();
+
             // console.log(inputs_checkIn);
 
             var checkIn = {};
@@ -109,6 +103,7 @@
 
             var data = {
                 checkIn : checkIn,
+                note : note
             };
 
             $.ajax({
@@ -118,7 +113,7 @@
                 dataType : 'json',
 
                 success: function (response) {
-                    console.log(response);
+                    // console.log(response);
                     successResponse(response);
                 },
                 error: function (e) {

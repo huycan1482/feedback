@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\CheckIn;
 use App\ClassRoom;
 use App\FeedBack;
+use App\Http\Requests\postCheckInRequest;
 use App\Lesson;
 use App\User;
 use App\UserAnswer;
@@ -108,9 +109,8 @@ class HomeController extends Controller
             $events = '';
 
             foreach ($notes as $note) {
-                $events .= "{title : '$note->note', start : '$note->updated_at'},";
+                $events .= "{title : '$note->note', start : '$note->start_at'},";
             }
-
 
             $total_student = Lesson::selectRaw('count(check_in.user_id) as total')
                 ->join('check_in', 'check_in.lesson_id', '=', 'lessons.id')
@@ -135,7 +135,6 @@ class HomeController extends Controller
                 ->rightJoin('users', 'users.id', '=', 'check_in.user_id')
                 ->whereRaw("lessons.class_id = ". $classes->first()->id ." and date(check_in.created_at) = date(current_date()) and check_in.is_check = 3")
                 ->get()->first();
-                
 
             return view ('feedback.checkIn', [
                 'classes' => $classes,
@@ -241,7 +240,7 @@ class HomeController extends Controller
             $events = '';
 
             foreach ($notes as $note) {
-                $events .= "{title : '$note->note', start : '$note->updated_at'},";
+                $events .= "{title : '$note->note', start : '$note->start_at'},";
             }
 
             $total_student = Lesson::selectRaw('count(check_in.user_id) as total')
@@ -288,9 +287,9 @@ class HomeController extends Controller
         
     }
 
-    public function postCheckIn (Request $request)
+    public function postCheckIn (postCheckInRequest $request)
     {
-        dd($request->all());
+        // dd($request->all());
 
         $today = Carbon::now('Asia/Ho_Chi_Minh');
         
@@ -299,22 +298,6 @@ class HomeController extends Controller
         if(!empty($checkCheckIn->first())) {
             return response()->json(['mess' => 'Thêm bản ghi lỗi, bạn đã điểm danh trước đó'], 400);
         }
-
-        $validator = Validator::make($request->all(), [
-            'id' => 'required|exists:lessons,id',
-            'checkIn' => 'required|array',
-        ], [
-            'id.required' => 'Yêu cầu không để trống',
-            'id.exists' => 'Dữ liệu không tồn tại',
-            'checkIn.array' => 'Sai kiểu dữ liệu',
-            'checkIn.required' => 'Yêu cầu không để trống',
-        ]);
-
-        $errs = $validator->errors();
-
-        if ( $validator->fails() ) {
-            return response()->json(['errors' => $errs, 'mess' => 'Thêm bản ghi lỗi'], 400);
-        } else {
 
             $today = date("Y-m-d");
 
@@ -327,12 +310,6 @@ class HomeController extends Controller
                 $lesson = Lesson::find($request->input('id'));
 
                 $lesson->note = $request->input('note');
-
-                $checkUser = DB::table('users')->select('users.id')
-                    ->join('user_class', 'user_class.user_id', '=', 'users.id')
-                    ->join('classes', 'classes.id', '=', 'user_class.class_id')
-                    ->where([['users.id', 140], ['classes.id', $lesson->class_id]])
-                    ->get()->first(); 
 
                 DB::beginTransaction();
 
@@ -387,7 +364,7 @@ class HomeController extends Controller
                 return response()->json(['mess' => 'Thêm bản ghi thành công', 200]);
 
             }
-        }
+        // }
     }
 
     public function getFeedback ()

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
 use App\Role;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -46,17 +47,8 @@ class LoginController extends Controller
         return view ('auth.userLogin');
     }
 
-    public function postUserLogin (Request $request)
+    public function postUserLogin (LoginRequest $request)
     {
-        $request->validate([
-            'email' => 'required|string|email|max:255',
-            'password' => 'required|string|min:8'
-        ], [
-            'email.required' => 'Yêu cầu không để trống',
-            'email.email' => 'Yêu cầu email',
-            'password.required' => 'Yêu cầu không để trống',
-            'password.min' => 'Độ dài phải lớn hơn 8 kí tự',
-        ]);
 
         $remember = $request->input('remember');
 
@@ -84,17 +76,8 @@ class LoginController extends Controller
         return view ('auth.adminLogin');
     }
 
-    public function postLogin (Request $request)
+    public function postLogin (LoginRequest $request)
     {
-        $request->validate([
-            'email' => 'required|string|email|max:255',
-            'password' => 'required|string|min:8'
-        ], [
-            'email.required' => 'Yêu cầu không để trống',
-            'email.email' => 'Yêu cầu email',
-            'password.required' => 'Yêu cầu không để trống',
-            'password.min' => 'Độ dài phải lớn hơn 8 kí tự',
-        ]);
 
         $remember = $request->input('remember');
 

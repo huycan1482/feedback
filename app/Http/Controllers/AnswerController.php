@@ -3,14 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Answer;
+use App\Http\Requests\AnswerRequest;
 use App\Question;
+use App\Repositories\AnswerRepository;
+use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class AnswerController extends Controller
+
+class AnswerController extends AnswerRepository
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -18,7 +23,7 @@ class AnswerController extends Controller
      */
     public function index()
     {
-        $answers = Answer::latest()->get();
+        $answers = $this->getAll();
         return view ('admin.answer.index', [
             'answers' => $answers,
         ]);
@@ -31,7 +36,7 @@ class AnswerController extends Controller
      */
     public function create()
     {
-        $questions = Question::latest()->get();
+        $questions = $this->getQuestions();
         return view ('admin.answer.create', [
             'questions' => $questions,
         ]);
@@ -43,44 +48,41 @@ class AnswerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(AnswerRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'question_id' => 'required|exists:questions,id',
-            'add_answer_content' => 'required',
-            'add_answer_active' => 'integer|boolean',
-        ], [
-            'question_id.required' => 'Yêu cầu không để trống',
-            'question_id.exists' => 'Câu hỏi không tồn tại',
-            'add_answer_content.required' => 'Yêu cầu không để trống',
-            // 'add_answer_content.unique' => 'Câu trả lời bị trùng',
-            'add_answer_active.integer' => 'Sai kiểu dữ liệu',
-            'add_answer_active.boolean' => 'Sai kiểu dữ liệu',
-        ]);
+        
 
-        $errs = $validator->errors();
+        // $check_question_id = Answer::where('question_id', $request->input('question_id'))->count();
 
-        $check_question_id = Answer::where('question_id', $request->input('question_id'))->count();
+        // if ($check_question_id >= 4) {
+        //     return response()->json(['mess' => 'Thêm bản ghi lỗi, quá số lượng đáp án'], 422);
+        // } else {
 
-        if ( $validator->fails() ) {
-            return response()->json(['errors' => $errs, 'mess' => 'Thêm bản ghi lỗi'], 400);
-        } else if ($check_question_id >= 4) {
-            return response()->json(['errors' => $errs, 'mess' => 'Thêm bản ghi lỗi, quá số lượng đáp án'], 400);
-        } else {
+        //     $answer = new Answer;
 
-            $answer = new Answer;
-            $answer->question_id = $request->input('question_id');
-            $answer->content = $request->input('add_answer_content');
-            $answer->type = 1;
-            $answer->is_true = (int)$request->input('add_answer_active');
-            $answer->user_create = Auth::user()->id;
+        //     $answer->question_id = $request->input('question_id');
+        //     $answer->content = $request->input('add_answer_content');
+        //     $answer->type = 1;
+        //     $answer->is_true = (int)$request->input('add_answer_active');
+        //     $answer->user_create = Auth::user()->id;
 
-            if ($answer->save()) {
-                return response()->json(['mess' => 'Thêm bản ghi thành công', 200]);
-            } else {
-                return response()->json(['errors' => $errs, 'mess' => 'Thêm bản ghi lỗi'], 400);
-            }
-        }
+        //     $data = [
+        //         'question_id' => $request->input('question_id'),
+        //         'content' => $request->input('add_answer_content'),
+        //         'type' => 1,
+        //         'is_true' => 
+        //     ];
+
+        
+        //     if ( $answer->save() ) {  
+        //         return response()->json(['mess' => 'Thêm bản ghi thành công', 200]);
+        //     } else {
+        //         return response()->json(['mess' => 'Thêm bản ghi lỗi'], 502);
+        //     }
+  
+           
+
+        // }
         
     }
 
@@ -92,9 +94,13 @@ class AnswerController extends Controller
      */
     public function show($id)
     {   
-        $answer = Answer::find($id);
+        $answer = $this->find($id);
 
-        $question = Question::find($answer->question_id);
+        if (empty($answer)) {
+            return redirect()->route('admin.errors.404');
+        }
+
+        $question = $this->findQuestion($answer->question_id);
 
         return response()->json(['answer' => $answer, 'question' => $question], 200);
     }
@@ -117,41 +123,18 @@ class AnswerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(AnswerRequest $request, $id)
     {
-        $answer = Answer::find($id);
+        $data = [
+            'content' => $request->input('content'),
+            'user_update' => Auth::user()->id,
+        ];
 
-        if (empty($answer)) {
-            return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
+        if ($this->updateModel($id, $data)) {
+            return response()->json(['mess' => 'Sửa bản ghi thành công', 200]);
         } else {
-            $validator = Validator::make($request->all(), [
-                'answer_content' => 'required|unique:answers,content',
-                'answer_is_active' => 'integer|boolean',
-            ], [
-                'answer_content.required' => 'Yêu cầu không để trống',
-                'answer_content.unique' => 'Câu trả lời bị trùng',
-                'answer_is_active.integer' => 'Sai kiểu dữ liệu',
-                'answer_is_active.boolean' => 'Sai kiểu dữ liệu',
-            ]);
-    
-            $errs = $validator->errors();
-    
-            if ( $validator->fails() ) {
-                return response()->json(['errors' => $errs, 'mess' => 'Sửa bản ghi lỗi'], 400);
-            } else {
-                $answer->content = $request->input('answer_content');
-                // $answer->type = 1;
-                // $answer->is_true = (int)$request->input('answer_is_active');
-                // $answer->is_true = 1;
-                $answer->user_update = Auth::user()->id;
-                if ($answer->save()) {
-                    return response()->json(['mess' => 'Sửa bản ghi thành công', 200]);
-                } else {
-                    return response()->json(['errors' => $errs, 'mess' => 'Sửa bản ghi lỗi'], 400);
-                }
-            }
-        }
-        
+            return response()->json(['mess' => 'Sửa bản ghi lỗi'], 520);
+        }    
     }
 
     /**
@@ -162,12 +145,12 @@ class AnswerController extends Controller
      */
     public function destroy($id)
     {
-        $answer = Answer::withTrashed()->find($id);
-        if ( empty($answer) ) {
-            return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
-        }
+        // $answer = Answer::withTrashed()->find($id);
+        // if ( empty($answer) ) {
+        //     return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
+        // }
     
-        if( $answer->forceDelete() ) {
+        if( $this->forceDeleteModel($id) ) {
             return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
         } else {
             return response()->json(['mess' => 'Xóa bản không thành công'], 400);

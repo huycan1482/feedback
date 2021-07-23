@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\ClassRoom;
 use App\Course;
+use App\Http\Requests\UserClassRequest;
+use App\Repositories\UserClassRepository;
 use App\User;
 use App\UserClass;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class UserClassController extends Controller
+class UserClassController extends UserClassRepository
 {
     /**
      * Display a listing of the resource.
@@ -37,38 +40,24 @@ class UserClassController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserClassRequest $request)
     {
-        // dd($request->all());
-        $validator = Validator::make($request->all(), [
-            'classRoom_id' => 'required|exists:classes,id',
-            'course_id' => 'required|exists:courses,id',
-            'user_code' => 'required|exists:users,code',
-        ], [
-            'classRoom_id.required' => 'Yêu cầu không để trống',
-            'classRoom_id.exists' => 'Dữ liệu không tồn tại',
-            'course_id.required' => 'Yêu cầu không để trống',
-            'course_id.exists' => 'Dữ liệu không tồn tại',
-            'user_code.required' => 'Yêu cầu không để trống',
-            'user_code.exists' => 'Dữ liệu không tồn tại',
-        ]);
+        $user_id = $this->findUserById($request->input('user_id'));
 
-        $errs = $validator->errors();
+        $check = $this->checkUserClass($request->input('classRoom_id'), $user_id->id);
 
-        $user_id = User::where('code', '=', $request->input('user_code'))->first()->id;
-
-        $check = UserClass::where([['class_id', '=', $request->input('classRoom_id')], ['user_id', '=', $user_id]])->get()->first();
-        // dd(UserClass::where([['class_id', '=', $request->input('classRoom_id')], ['user_id', '=', $user_id]])->get());
-        if ( $validator->fails() ) {
-            return response()->json(['errors' => $errs, 'mess' => 'Thêm bản ghi lỗi'], 400);
-        } else if (!empty($check)) {
+        if (!empty($check)) {
             return response()->json(['mess' => 'Thêm bản ghi lỗi, học viên đã đăng kí lớp học'], 400);
         } else {
-            $user_class = new UserClass;
-            $user_class->class_id = $request->input('classRoom_id');
-            $user_class->user_id = $user_id;
-            $user_class->is_active = 1;
-            if ( $user_class->save() ) {
+
+            $data = [
+                'class_id' => $request->input('classRoom_id'),
+                'user_id' => $user_id->id,
+                'is_active' => 1,
+                'user_create' => Auth::user()->id,
+            ];
+
+            if ($this->createModel($data)) {
                 return response()->json(['mess' => 'Thêm bản ghi thành công, chạy lại sau 1,5s', 200]);
             } else {
                 return response()->json(['mess' => 'Thêm bản ghi lỗi'], 502);
@@ -95,13 +84,17 @@ class UserClassController extends Controller
      */
     public function edit($id)
     {
-        $userClass = UserClass::findOrFail($id);
+        $userClass = $this->find($id);
 
-        $courses = Course::where('is_active', '=', 1)->latest()->get();
+        if (empty($userClass)) {
+            return redirect()->route('admin.errors.404');
+        }
 
-        $classRooms = ClassRoom::where('is_active', '=', 1)->latest()->get();
+        $courses = $this->getCourses();
 
-        return view ('admin.userClass.edit', [
+        $classRooms = $this->getClasses();
+
+        return view('admin.userClass.edit', [
             'userClass' => $userClass,
             'courses' => $courses,
             'classRooms' => $classRooms
@@ -115,40 +108,24 @@ class UserClassController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UserClassRequest $request, $id)
     {
-        $userClass = UserClass::find($id);
+        $check = $this->checkUserClass($request->input('classRoom_id'), $id);
 
-        if (empty($userClass)) {
-            return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
+        if (!empty($check)) {
+            return response()->json(['mess' => 'Thêm bản ghi lỗi, học viên đã đăng kí lớp học'], 400);
         } else {
-            $validator = Validator::make($request->all(), [
-                'classRoom_id' => 'required|exists:classes,id',
-                'is_active' => 'integer|boolean',
-            ], [
-                'classRoom_id.required' => 'Yêu cầu không để trống',
-                'classRoom_id.exists' => 'Dữ liệu không tồn tại',
-                'is_active.integer' => 'Sai kiểu dữ liệu',
-                'is_active.boolean' => 'Sai kiểu dữ liệu',
-            ]);
-    
-            $errs = $validator->errors();
 
-            $check = UserClass::where([['class_id', '=', $request->input('classRoom_id')], ['user_id', '=', $userClass->user_id]])->get()->first();
-    
-            if ( $validator->fails() ) {
-                return response()->json(['errors' => $errs, 'mess' => 'Thêm bản ghi lỗi'], 400);
-            } else if (!empty($check)) {
-                return response()->json(['mess' => 'Thêm bản ghi lỗi, học viên đã đăng kí lớp học'], 400);
+            $data = [
+                'class_id' => $request->input('classRoom_id'),
+                'is_active' => $request->input('is_active'),
+                'user_update' => Auth::user()->id,
+            ];
+
+            if ($this->updateModel($id, $data)) {
+                return response()->json(['mess' => 'Sửa bản ghi thành công, quay về trang cũ trong 1.5s', 200]);
             } else {
-                $userClass->class_id = $request->input('classRoom_id');
-                $userClass->is_active = $request->input('is_active');
-
-                if ($userClass->save()) {
-                    return response()->json(['mess' => 'Sửa bản ghi thành công, quay về trang cũ trong 1.5s', 200]);
-                } else {
-                    return response()->json(['mess' => 'Sửa bản ghi lỗi'], 502);
-                }
+                return response()->json(['mess' => 'Sửa bản ghi lỗi'], 502);
             }
         }
     }

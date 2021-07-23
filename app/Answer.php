@@ -9,6 +9,22 @@ class Answer extends Model
 {
     use SoftDeletes;
 
+    /**
+      * The attributes that are mass assignable.
+      *
+      * @var array
+      */
+    protected $fillable = [
+        'code', 'content', 'point'
+    ];
+
+     /**
+      * The attributes that aren't mass assignable.
+      *
+      * @var array
+      */
+    // protected $guarded = ['price'];
+
     protected $dates = ['deleted_at'];
 
     protected static function boot() {

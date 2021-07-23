@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Answer;
+use App\Http\Requests\QuestionRequest;
 use App\Question;
+use App\Repositories\QuestionRepository;
 use App\User;
 use DateTime;
 use Exception;
@@ -13,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class QuestionController extends Controller
+class QuestionController extends QuestionRepository
 {
     /**
      * Display a listing of the resource.
@@ -24,14 +26,15 @@ class QuestionController extends Controller
     {
         $currentUser = User::findOrFail(Auth()->user()->id);
 
-        $questionsWithTrashed = '';
+        $questionsWithTrashed = [];
 
-        if ( $currentUser->can('forceDelete', Question::class) ) {
-            $questionsWithTrashed = Question::onlyTrashed()->latest()->get();
+        if ($currentUser->can('forceDelete', Question::class)) {
+            $questionsWithTrashed = $this->getAllWithTrashed();
         }
 
-        $questions = Question::latest()->get();
-        return view ('admin.question.index', [
+        $questions = $this->getAll();
+
+        return view('admin.question.index', [
             'questions' => $questions,
             'questionsWithTrashed' => $questionsWithTrashed,
         ]);
@@ -44,7 +47,7 @@ class QuestionController extends Controller
      */
     public function create()
     {
-        return view ('admin.question.create');
+        return view('admin.question.create');
     }
 
     /**
@@ -53,80 +56,34 @@ class QuestionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(QuestionRequest $request)
     {
-        // dd($request->all(), $request['answers']);
-        $request['trueContent'] = $request->input('content');
-        $request['content'] = Str::slug($request->input('content'));
+        $current_date = new DateTime();
+        $created_time = date('Y-m-d H:i:s', $current_date->getTimestamp());
 
-        $validator = Validator::make($request->all(), [
-            'code' => 'required|unique:questions,code',
-            'content' => 'required|unique:questions,slug',
-            'is_active' => 'integer|boolean',
-            'answers' => 'required|array|min:1|max:4',
-        ], [
-            'content.required' => 'Yêu cầu không để trống',
-            'code.required' => 'Yêu cầu không để trống',
-            'code.unique' => 'Dữ liệu bị trùng',
-            'content.unique' => 'Dữ liệu bị trùng',
-            'is_active.integer' => 'Sai kiểu dữ liệu',
-            'is_active.boolean' => 'Sai kiểu dữ liệu',
-            'answers.required' => 'Yêu cầu không để trống',
-            'answers.min' => 'Yêu cầu phải có từ 1 câu trả lời trở lên',
-            'answers.max' => 'Tối đa 4 câu trả lời',
-            'answers.array' => 'Sai kiểu dữ liệu',
+        $request->merge([
+            'user_create' => Auth::user()->id,
+            'created_at' =>  $created_time,
         ]);
 
-        // dd($validator->errors());
+        DB::beginTransaction();
 
-        $errs = $validator->errors();
+        try {
+            if (!$this->create($request->all()))
+                throw new Exception();
 
-        if ( $validator->fails() ) {
-            return response()->json(['errors' => $errs, 'mess' => 'Thêm bản ghi lỗi'], 400);
-        } else {
-            $question = new Question;
+            $latestQuestion = $this->getLatestQuestion($created_time);
 
-            $question->content = $request->input('trueContent');
-            $question->slug = $request->input('content');
-            $question->code = $request->input('code');
-            $question->is_active = (int)$request->input('is_active'); 
-            $question->user_create = Auth::user()->id;
-            $current_date = new DateTime();
-            $created_time = date('Y-m-d H:i:s', $current_date->getTimestamp());
-            $question->created_at = $created_time;
+            if (!$this->createAnswers($request->input('answers'), $request->input('code'), $latestQuestion))
+                throw new Exception();
 
-            // dd($request['answers'] );
-
-            DB::beginTransaction();
-
-            try {
-                $question->save();
-
-                $latestQuestion = Question::where([ 'created_at' => $created_time ]);
-
-                foreach ($request['answers'] as $key => $item) {    
-                    $answer = new Answer;
-                    $answer->code = $request->input('code').'-'.$key.'-'.time();
-                    $answer->question_id = $latestQuestion->first()->id;
-                    $answer->content = $item['value'];
-                    // $answer->type = 1;
-                    // $answer->is_true = (int)$item['1'];
-                    $answer->point = $item['point'];
-                    $answer->user_create = Auth::user()->id;
-                    $answer->save();
-                }
-
-                DB::commit();
-
-            } catch (Exception $e) {
-                DB::rollBack();
-                return response()->json(['mess' => 'Thêm bản ghi lỗi'], 502);
-            }
-            
-
-            return response()->json(['mess' => 'Thêm bản ghi thành công', 200]);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['mess' => 'Thêm bản ghi lỗi'], 502);
         }
-        
+
+        return response()->json(['mess' => 'Thêm bản ghi thành công', 200]);
     }
 
     /**
@@ -137,12 +94,15 @@ class QuestionController extends Controller
      */
     public function show($id)
     {
-        $question = Question::find($id);
-        
-        $answers = Answer::where('question_id', '=', $id)->get();
+        $question = $this->find($id);
+
+        if (empty($question)) {
+            return response()->json(['mess' => 'Bản ghi không tồn tại', 404]);
+        }
+
+        $answers = $this->getAnswersBelongsTo($id);
 
         return response()->json(['question' => $question, 'answers' => $answers], 200);
-
     }
 
     /**
@@ -153,9 +113,13 @@ class QuestionController extends Controller
      */
     public function edit($id)
     {
-        $question = Question::find($id);
-        
-        $answers = Answer::where('question_id', '=', $id)->get();
+        $question = $this->find($id);
+
+        if (empty($question)) {
+            return response()->json(['mess' => 'Bản ghi không tồn tại', 404]);
+        }
+
+        $answers = $this->getAnswersBelongsTo($id);
 
         return view('admin.question.edit', [
             'question' => $question,
@@ -172,47 +136,15 @@ class QuestionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $question = Question::find($id);
-        
-        if (empty($question)) {
-            return response()->json(['mess' => 'Bản ghi không tồn tại'], 404);
+        $request->merge([
+            'user_update' => Auth::user()->id,
+        ]);
+
+        if ($this->updateModel($id, $request->all())) {
+            return response()->json(['mess' => 'Sửa bản ghi thành công', 200]);
         } else {
-            $request['trueContent'] = $request->input('content');
-            $request['content'] = Str::slug($request->input('content'));
-
-            $validator = Validator::make($request->all(), [
-                'content' => 'required|unique:questions,slug,'.$id,
-                'code' => 'required|unique:questions,code,'.$id,
-                // 'is_active' => 'integer|boolean',
-            ], [
-                'content.required' => 'Yêu cầu không để trống',
-                'content.unique' => 'Dữ liệu bị trùng',
-                'code.required' => 'Yêu cầu không để trống',
-                'code.unique' => 'Dữ liệu bị trùng',
-                // 'is_active.integer' => 'Sai kiểu dữ liệu',
-                // 'is_active.boolean' => 'Sai kiểu dữ liệu',
-            ]);
-
-            $errs = $validator->errors();
-
-            if ( $validator->fails() ) {
-                return response()->json(['errors' => $errs, 'mess' => 'Sửa bản ghi lỗi'], 400);
-            } else {
-                $question->content = $request->input('trueContent');
-                $question->slug = $request->input('content');
-                $question->code = $request->input('code');
-                $question->is_active = (int)$request->input('is_active'); 
-                $question->user_update = Auth::user()->id;
-
-                if ($question->save()) {
-                    return response()->json(['mess' => 'Sửa bản ghi thành công', 200]);
-                } else {
-                    return response()->json(['mess' => 'Sửa bản ghi lỗi'], 502);
-                }
-
-            }
+            return response()->json(['mess' => 'Sửa bản ghi lỗi'], 502);
         }
-        
     }
 
     /**
@@ -223,70 +155,56 @@ class QuestionController extends Controller
      */
     public function destroy($id)
     {
-        $question = Question::find($id);
-
-        if ( empty($question) ) {
-            return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
-        }
-    
-        if( $question->delete() ) {
+        if ($this->deleteModel($id)) {
             return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
         } else {
             return response()->json(['mess' => 'Xóa bản không thành công'], 400);
         }
     }
 
-    public function getListAnswers ($id)
+    public function getListAnswers($id)
     {
-        $question = Question::findOrFail($id);
+        $question = $this->find($id);
 
-        $answers = Answer::where(['question_id' => $id])->get();
+        if (empty($question)) {
+            return redirect()->route('admin.errors.404');
+        }
 
-        return view ('admin.question.listAnswers', [
+        $answers = $this->getAnswersBelongsTo($id);
+
+        return view('admin.question.listAnswers', [
             'answers' => $answers,
             'question' => $question->first(),
         ]);
     }
 
-    public function forceDelete ($id)
+    public function forceDelete($id)
     {
         $currentUser = User::findOrFail(Auth()->user()->id);
 
-        $question = Question::withTrashed()->find($id);
-
-        if ( $currentUser->can('forceDelete', Question::class) ) {
-            if ( empty($question) ) {
-                return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
-            }
-        
-            if( $question->forceDelete() ) {
+        if ($currentUser->can('forceDelete', Question::class)) {
+            if ($this->forceDeleteModel($id)) {
                 return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
             } else {
                 return response()->json(['mess' => 'Xóa bản không thành công'], 400);
             }
         } else {
-            return response()->json(['mess' => 'Xóa bản ghi lỗi'], 403);
+            return response()->json(['mess' => 'Xóa bản ghi lỗi, bạn không đủ thẩm quyền'], 403);
         }
     }
 
-    public function restore ($id)
+    public function restore($id)
     {
         $currentUser = User::findOrFail(Auth()->user()->id);
 
-        $question = Question::withTrashed()->find($id);
-
-        if ( $currentUser->can('restore', Question::class) ) {
-            if ( empty($question) ) {
-                return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
-            }
-        
-            if( $question->restore() ) {
+        if ($currentUser->can('restore', Question::class)) {
+            if ($this->restoreModel($id)) {
                 return response()->json(['mess' => 'Khôi bản ghi thành công'], 200);
             } else {
                 return response()->json(['mess' => 'Khôi bản không thành công'], 400);
             }
         } else {
-            return response()->json(['mess' => 'Khôi phục bản ghi lỗi'], 403);
+            return response()->json(['mess' => 'Khôi phục bản ghi lỗi, bạn không đủ thẩm quyền'], 403);
         }
     }
 }

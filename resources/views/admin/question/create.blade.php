@@ -75,26 +75,26 @@
                     <h3 class="box-title">Thông tin câu trả lời</h3>
                 </div>
                 <div class="box-body">
-                    <div class="answer">
-                        <div class="form-group" id="form-password">
+                    <div class="answer" id="form-answers">
+                        <div class="form-group" id="form-answers.0.value">
                             <label for="answer_100"> Câu trả lời 1 (100%) </label>
                             <div>
                                 <input id="answer_100" name="answer_100" type="text" class="form-control" placeholder="Câu trả lời 1">
                             </div>
                         </div>
-                        <div class="form-group" id="form-password">
+                        <div class="form-group" id="form-answers.1.value">
                             <label for="answer_66"> Câu trả lời 2 (66.66%) </label>
                             <div>
                                 <input id="answer_66" name="answer_66" type="text" class="form-control" placeholder="Câu trả lời 2">
                             </div>
                         </div>
-                        <div class="form-group" id="form-password">
+                        <div class="form-group" id="form-answers.2.value">
                             <label for="answer_33"> Câu trả lời 3 (33.33%) </label>
                             <div>
                                 <input id="answer_33" name="answer_33" type="text" class="form-control" placeholder="Câu trả lời 3">
                             </div>
                         </div>
-                        <div class="form-group" id="form-password">
+                        <div class="form-group" id="form-answers.3.value">
                             <label for="answer_0"> Câu trả lời 4 (0%) </label>
                             <div>
                                 <input id="answer_0" name="answer_0" type="text" class="form-control" placeholder="Câu trả lời 4">

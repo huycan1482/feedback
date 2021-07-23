@@ -13,6 +13,10 @@ class UserClass extends Model
     
     protected $table = 'user_class';
 
+    protected $fillable = [
+        'user_id', 'class_id', 'is_active', 'user_create', 'user_update'
+    ];
+
     public function user ()
     {
         return $this->belongsTo('App\User', 'user_id', 'id');

@@ -169,7 +169,7 @@
                     </div>
 
                     <div class="box-footer">
-                        <div class="btn btn-info add-class" style="display: none" data-id="{{ $student->code }}">Add</div>
+                        <div class="btn btn-info add-class" style="display: none" data-id="{{ $student->id }}">Add</div>
                     </div>
                 </form>
             </div>
@@ -275,12 +275,12 @@
         $('.add-class').click(function (e) {
             var classRoom_id = $('#classRoom_id').val();
             var course_id = $('#course_id').val();
-            var user_code = $(this).attr('data-id');
+            var user_id = $(this).attr('data-id');
 
             var data = { 
                 classRoom_id : classRoom_id,
                 course_id : course_id,
-                user_code: user_code,
+                user_id: user_id,
             };
 
             $.ajax({

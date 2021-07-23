@@ -9,6 +9,12 @@ class Question extends Model
 {
     use SoftDeletes;
 
+    protected $dates = ['deleted_at'];
+
+    protected $fillable = [
+        'code', 'content', 'slug', 'is_active', 'user_create', 'user_update'
+    ];
+
     protected static function boot() {
         parent::boot();
     

@@ -13,6 +13,10 @@ class ClassRoom extends Model
     
     protected $table = 'classes';
 
+    protected $fillable = [
+        'name', 'code', 'slug', 'course_id', 'teacher_id', 'total_number', 'is_active', 'user_create', 'user_update', 'created_at', 'updated_at'
+    ];
+
     protected static function boot() {
         parent::boot();
     

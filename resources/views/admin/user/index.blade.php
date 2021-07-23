@@ -158,7 +158,7 @@
                                 <td class="text-center">{{ $user->email }}</td>
                                 <td class="text-center">{{ $user->role->name }}</td>
                                 <td class="text-center">
-                                    <span class="label label-{{ ($user->is_active == 1) ? 'success' : 'danger' }}">{{ ($student->is_active == 1) ? 'Hiển thị' : 'Ẩn' }}</span>
+                                    <span class="label label-{{ ($user->is_active == 1) ? 'success' : 'danger' }}">{{ ($user->is_active == 1) ? 'Hiển thị' : 'Ẩn' }}</span>
                                 </td>
                                 <td class="text-center">
                                     <a href="javascript:void(0)" onclick="restore('user/restore', '{{ $user->id }}' )" class="btn btn-primary" title="Khôi phục">

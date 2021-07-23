@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\FeedbackQuestion;
+use App\Http\Requests\FeedbackQuestionRequest;
+use App\Repositories\FeedbackQuestionRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class FeedbackQuestionController extends Controller
+class FeedbackQuestionController extends FeedbackQuestionRepository
 {
     /**
      * Display a listing of the resource.
@@ -35,34 +37,18 @@ class FeedbackQuestionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(FeedbackQuestionRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'question_id' => 'required|exists:questions,id',
-            'feedback_id' => 'required|exists:feedbacks,id',
-        ], [
-            'question_id.required' => 'Yêu cầu không để trống',
-            'question_id.exists' => 'Bản ghi không tồn tại',
-            'feedback_id.required' => 'Yêu cầu không để trống',
-            'feedback_id.exists' => 'Bản ghi không tồn tại',
-        ]);
 
-        $errs = $validator->errors();
-
-        $checkQuestion = FeedbackQuestion::where([['feedback_id', '=', $request->input('feedback_id')], ['question_id', '=', $request->input('question_id')]])->get()->first();
-
-        if (!empty($checkQuestion)) {
+        if ( !$this->checkFeedbackQuestionExists($request->input('feedback_id'), $request->input('question_id')) ) {
             return response()->json([ 'mess' => 'Thêm bản ghi lỗi, câu hỏi đã tồn tại'], 400);
-        } else if ( $validator->fails() ) {
-            return response()->json(['errors' => $errs, 'mess' => 'Thêm bản ghi lỗi'], 400);
         } else {
-            $feedbackQuestion = new FeedbackQuestion;
-            $feedbackQuestion->question_id = $request->input('question_id');
-            $feedbackQuestion->feedback_id = $request->input('feedback_id');
-            $feedbackQuestion->position = 0;
-            $feedbackQuestion->user_create = Auth::user()->id;
+            $request->merge([
+                'position' => 0,
+                'user_create' => Auth::user()->id,
+            ]);
 
-            if ($feedbackQuestion->save()) {
+            if ($this->createModel($request->all())) {
                 return response()->json(['mess' => 'Thêm bản ghi thành công, tải lại sau 1.5s', 200]);
             } else {
                 return response()->json(['mess' => 'Thêm bản ghi lỗi'], 502);
@@ -102,33 +88,33 @@ class FeedbackQuestionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $feedbackQuestion = FeedbackQuestion::find($id);
+        // $feedbackQuestion = FeedbackQuestion::find($id);
 
-        if (empty($feedbackQuestion)) {
-            return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
-        } else {
-            $validator = Validator::make($request->all(), [
-                'position' => 'required|integer',
-            ], [
-                'position.required' => 'Yêu cầu không để trống',
-                'position.integer' => 'Sai kiểu dữ liệu',
-            ]);
+        // if (empty($feedbackQuestion)) {
+        //     return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
+        // } else {
+        //     $validator = Validator::make($request->all(), [
+        //         'position' => 'required|integer',
+        //     ], [
+        //         'position.required' => 'Yêu cầu không để trống',
+        //         'position.integer' => 'Sai kiểu dữ liệu',
+        //     ]);
     
-            $errs = $validator->errors();
+        //     $errs = $validator->errors();
     
-            if ( $validator->fails() ) {
-                return response()->json(['errors' => $errs, 'mess' => 'Sửa bản ghi lỗi'], 400);
-            } else {
-                $feedbackQuestion->position = $request->input('position');
+        //     if ( $validator->fails() ) {
+        //         return response()->json(['errors' => $errs, 'mess' => 'Sửa bản ghi lỗi'], 400);
+        //     } else {
+        //         $feedbackQuestion->position = $request->input('position');
 
-                if ($feedbackQuestion->save()) {
-                    return response()->json(['mess' => 'Sửa bản ghi thành công, tải lại sau 1.5s', 200]);
-                } else {
-                    return response()->json(['mess' => 'Sửa bản ghi lỗi'], 502);
-                }
+        //         if ($feedbackQuestion->save()) {
+        //             return response()->json(['mess' => 'Sửa bản ghi thành công, tải lại sau 1.5s', 200]);
+        //         } else {
+        //             return response()->json(['mess' => 'Sửa bản ghi lỗi'], 502);
+        //         }
     
-            }
-        }
+        //     }
+        // }
     }
 
     /**
@@ -139,12 +125,7 @@ class FeedbackQuestionController extends Controller
      */
     public function destroy($id)
     {
-        $feedbackQuestion = FeedbackQuestion::withTrashed()->find($id);
-        if ( empty($feedbackQuestion) ) {
-            return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
-        }
-
-        if( $feedbackQuestion->forceDelete() ) {
+        if( $this->forceDeleteModel($id) ) {
             return response()->json(['mess' => 'Xóa bản ghi thành công, tải lại trong 1.5s'], 200);
         } else {
             return response()->json(['mess' => 'Xóa bản không thành công'], 400);

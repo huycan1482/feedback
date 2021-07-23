@@ -18,10 +18,13 @@ function destroyModel(model, id) {
             dataType: "json", // kiểu dữ liệu trả về
             success: function (response) { // success : kết quả trả về sau khi gửi request ajax
                 $('.item-'+id).closest('tr').remove();// class .item- ở trong class của thẻ td đã khai báo trong file index
-                messageResponse('success', response.mess);
+                messageFade('success', response.mess, 'Tải lại sau 1,5s');
+                setTimeout(function (){
+                    location.reload()
+                }, 2500);
             },
             error: function (e) { // lỗi nếu có
-                messageResponse('danger', e.responseJSON.mess);
+                messageFade('danger', e.responseJSON.mess, 'Tải lại sau 1,5s');
             }
         });
     }
@@ -189,7 +192,7 @@ function forceDelete (model, id)
     }
 }
 
-function messageFade (status, mess)
+function messageFade (status, mess, reload)
 {
     $("html, body").animate({
         scrollTop: 0

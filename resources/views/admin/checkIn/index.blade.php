@@ -180,7 +180,7 @@
                     var html = '';
 
                     lessons.forEach(function (value, index) {
-                        html += ' <tr class="item-"><td class="text-center">'+ (index * 1 + 1) +'</td>'
+                        html += '<tr class="item-"><td class="text-center">'+ (index * 1 + 1) +'</td>'
                             +'<td class="text-center">'+ value.start_at +'</td>'
                             +'<td class="text-center">'+ value.time_limit +'</td>'
                             +'<td class="text-center">'+ value.is_active +'</td>'

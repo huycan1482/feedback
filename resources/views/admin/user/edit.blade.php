@@ -191,7 +191,7 @@
                 phone : phone,
                 code : code,
                 date_of_birth : date_of_birth,
-                role : role,
+                role_id : role,
                 is_active : is_active,
             };
 

@@ -88,18 +88,18 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group" id="form-startDate">
+                            <div class="form-group" id="form-start_at">
                                 <label for="">Thời gian</label>
                                 <div class="bootstrap-timepicker" style="padding-right: 0;">
                                     <div class="input-group" style="width: 100%">
-                                        <input type="text" class="form-control timepicker" name="addTime">
+                                        <input type="text" class="form-control timepicker" name="start_at">
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group" id="form-addTimeLimit">
+                            <div class="form-group" id="form-time_limit">
                                 <label for="">Thời lượng (phút)</label>
                                 <div>
-                                    <input name="addTimeLimit" type="number" class="form-control" placeholder="Thời lượng">
+                                    <input name="time_limit" type="number" class="form-control" placeholder="Thời lượng">
                                 </div>
                             </div>
                         </div>
@@ -366,7 +366,7 @@
             var startDate = d.getFullYear() + '-' + dMonth + '-' + dDay + ' ' + timeStartAt;
 
             data = {
-                startDate: startDate,
+                start_at: startDate,
             }
 
             var model = '/admin/lesson/' + $(this).attr('data-id');
@@ -402,9 +402,9 @@
 
         $(document).on('click', '.btn-add-lesson', function (e) {
             var class_id = $(this).attr('data-id');
-            var  addTimeLimit= $("input[name='addTimeLimit']").val();
+            var  time_limit= $("input[name='time_limit']").val();
 
-            var test = $("input[name='addTime']").val();
+            var test = $("input[name='start_at']").val();
 
             var time = test.split(' ')[0];
             var dayOrNight = test.split(' ')[1];
@@ -441,8 +441,8 @@
 
             data = {
                 class_id: class_id,
-                addStartDate: addStartDate,
-                addTimeLimit: addTimeLimit
+                start_at: addStartDate,
+                time_limit: time_limit
             }
 
             var model = '/admin/lesson';

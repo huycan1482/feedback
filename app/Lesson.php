@@ -11,6 +11,10 @@ class Lesson extends Model
 
     protected $dates = ['deleted_at'];
 
+    protected $fillable = [
+        'name', 'slug', 'note', 'start_at', 'time_limit', 'class_id', 'is_active'
+    ];
+
     protected static function boot() {
         parent::boot();
     

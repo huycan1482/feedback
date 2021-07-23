@@ -183,7 +183,7 @@
         })
 
         $(document).on('click', '.btn-update-answer', function (e) {
-            var question_id = $('.btACn-update-question').attr('data-id');
+            var question_id = $('.btn-update-question').attr('data-id');
             var answer_id = $(this).attr('data-id');
             var answer_content = $("input[name*='modal-answer-content']").val();
             // var answer_active = ( $("input[name*='modal-answer-active']").is(':checked') ) ? 1 : 0;
@@ -192,8 +192,8 @@
                 type: 'PUT',
                 url: base_url + '/admin/answer/' + answer_id,
                 data: {
-                    'question_id' : question_id,
-                    'answer_content' : answer_content,
+                    'id' : question_id,
+                    'content' : answer_content,
                     // 'answer_is_active' : answer_active,
                 },
                 dataType: "json",

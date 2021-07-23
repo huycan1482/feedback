@@ -9,6 +9,12 @@ class Subject extends Model
 {
     use SoftDeletes;
 
+    protected $dates = ['deleted_at'];
+
+    protected $fillable = [
+        'name', 'slug', 'code', 'is_active', 'user_create', 'user_update'
+    ];
+
     protected static function boot() {
         parent::boot();
     

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\ClassRoom;
 use App\Course;
 use App\FeedBack;
+use App\Http\Requests\ClassRequest;
 use App\Lesson;
+use App\Repositories\ClassRepository;
 use App\User;
 use Carbon\Carbon;
 use DateTime;
@@ -16,8 +18,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class ClassController extends Controller
+
+class ClassController extends ClassRepository
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -27,15 +31,15 @@ class ClassController extends Controller
     {
         $currentUser = User::findOrFail(Auth()->user()->id);
 
-        $classesWithTrashed = '';
+        $classesWithTrashed = [];
 
-        if ( $currentUser->can('forceDelete', ClassRoom::class) ) {
-            $classesWithTrashed = ClassRoom::onlyTrashed()->latest()->get();
+        if ($currentUser->can('forceDelete', ClassRoom::class)) {
+            $classesWithTrashed = $this->getAllWithTrashed();
         }
 
-        $classRooms = ClassRoom::latest()->get();
+        $classRooms = $this->getAll();
 
-        return view ('admin.class.index', [
+        return view('admin.class.index', [
             'classRooms' => $classRooms,
             'classesWithTrashed' => $classesWithTrashed,
         ]);
@@ -48,14 +52,11 @@ class ClassController extends Controller
      */
     public function create()
     {
-        $teachers = DB::table('users')
-            ->select('users.*')
-            ->leftJoin('roles', 'roles.id', '=', 'users.role_id')
-            ->where('roles.name', '=', 'teacher')
-            ->latest()->get();
-        $feedbacks = FeedBack::where('is_active', '=', 1)->latest()->get();
-        $courses = Course::where('is_active', '=', 1)->latest()->get();
-        return view ('admin.class.create', [
+        $teachers = $this->getTeachers();
+        $feedbacks = $this->getFeedbacks();
+        $courses = $this->getCourses();
+        
+        return view('admin.class.create', [
             'teachers' => $teachers,
             'courses' => $courses,
             'feedbacks' => $feedbacks,
@@ -68,134 +69,51 @@ class ClassController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ClassRequest $request)
     {
+        $current_date = new DateTime();
+        $created_time = date('Y-m-d H:i:s', $current_date->getTimestamp());
 
-        // dd($request->all()); 
-        $request['trueName'] = $request->input('name');
-        $request['name'] = Str::slug($request->input('name'));
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|unique:classes,slug',
-            'code' => 'required|unique:classes,code',
-            'course_id' => 'required|exists:courses,id',
-            'teacher_id' => 'required|exists:users,id',
-            'total_number' => 'required|integer|min:1',
-            'feedback_id' => 'nullable|array',
-            'feedback_id.*' => 'exists:feedbacks,id',
-            'is_active' => 'integer|boolean',
-            'lessons' => 'required|array|min:1',
-            'time_limit' => 'required|integer|min:1',
-        ], [
-            'name.required' => 'Yêu cầu không để trống',
-            'name.unique' => 'Dữ liệu trùng',
-            'code.required' => 'Yêu cầu không để trống',
-            'code.unique' => 'Dữ liệu trùng',
-            'course_id.required' => 'Yêu cầu không để trống',
-            'course_id.exists' => 'Dữ liệu không tồn tại',
-            'feedback_id.array' => 'Dữ liệu không tồn tại',
-            'teacher_id.required' => 'Yêu cầu không để trống',
-            'teacher_id.unique' => 'Dữ liệu bị trùng',
-            'total_number.required' => 'Yêu cầu không để trống',
-            'total_number.integer' => 'Sai kiểu dữ liệu',
-            'total_number.min' => 'Dữ liệu phải lớn hơn 0',
-            'is_active.integer' => 'Sai kiểu dữ liệu',
-            'is_active.boolean' => 'Sai kiểu dữ liệu',
-            'lessons.required' => 'Yêu cầu không để trống',
-            'lessons.min' => 'Yêu cầu phải có từ 1 ngày học lời trở lên',
-            'lessons.array' => 'Sai kiểu dữ liệu',
-            'time_limit.required' => 'Yêu cầu không để trống',
-            'time_limit.integer' => 'Sai kiểu dữ liệu',
-            'time_limit.min' => 'Dữ liệu phải lớn hơn 0',
+        $request->merge([
+            'name' => $request->input('trueName'),
+            'created_at' => $created_time,
+            'user_create' => Auth::user()->id,
         ]);
 
-        // dd($request->all());
+        // bắt đầu Rollback
+        DB::beginTransaction();
 
-        $errs = $validator->errors();
+        try {
+            $this->createModel($request->all());
+            // Lưu thông tin lớp học
 
-        if ( $validator->fails() ) {
-            return response()->json(['errors' => $errs, 'mess' => 'Thêm bản ghi lỗi'], 400);
-        } else {
-            $classRoom = new ClassRoom;
-            $classRoom->name = $request->input('trueName');
-            $classRoom->code = $request->input('code');
-            $classRoom->slug = $request->input('name');
-            $classRoom->course_id = $request->input('course_id');
-            $classRoom->teacher_id = $request->input('teacher_id');
-            // $classRoom->feedback_id = $request->input('feedback_id');
-            $classRoom->total_number = $request->input('total_number');
-            $classRoom->is_active = (int)$request->input('is_active'); 
-            $classRoom->user_create = Auth::user()->id;
+            $courseTotalLessons = Course::where('id', '=', $request->input('course_id'))->first()->total_lesson;
+            // Lấy tổng số buổi học của khóa học
 
-            $current_date = new DateTime();
-            $created_time = date('Y-m-d H:i:s', $current_date->getTimestamp());
-            $classRoom->created_at = $created_time;
+            $latestClass = ClassRoom::where(['created_at' => $created_time])->first();
+            // Lấy lớp học vừa lưu
 
-            // dd($request->input('feedback_id'));
+            if (!empty($request->input('feedback_id'))) {
+                // Kiểm tra có feedback dc thêm hay k
 
-            DB::beginTransaction();
-
-            try {
-                $classRoom->save();
-                
-                $courseTotalLessons = Course::where('id', '=', $request->input('course_id'))->first()->total_lesson;
-                $latestClass = ClassRoom::where([ 'created_at' => $created_time ])->first()->id;
-                
-                $feedback_details = ClassRoom::find($latestClass);
-                $feedback_details->feedback()->attach($request->input('feedback_id'), [
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                ]);
-
-                $day = 0;
-                $i = 0;
-
-                while ($i < $courseTotalLessons) {
-                    foreach ($request->input(['lessons']) as $key => $item) {
-
-                        $validator2 = Validator::make($item[0], [
-                            'lessons' => 'required|date_format:"Y-m-d H:i:s"',
-                        ], [
-                            'lessons.required' => 'Yêu cầu không để trống',
-                            'lessons.date_format' => 'Sai kiểu dữ liệu'
-                        ]);
-
-                        $errs2 = $validator2->errors();
-
-                        if ( $validator2->fails() ) {
-                            return response()->json(['errors' => $errs2, 'mess' => 'Thêm bản ghi lỗi'], 400);
-                        } else {
-                            if ($i == $courseTotalLessons) {
-                                break;
-                            }
-                            
-                            $itemDay = date($item[0]["lessons"]);
-                            $newDate = strtotime ( "+". $day ." day" , strtotime( $itemDay ) ) ;
-                            
-                            $lesson = new Lesson;
-                            $lesson->start_at = date('Y-m-d H:i:s', $newDate);
-                            $lesson->time_limit = $request->input('time_limit');
-                            $lesson->class_id = $latestClass;
-                            $lesson->is_active = 1;
-                            
-                            $lesson->save();
-                   
-                            $i++; 
-                        }
-                        
-                    }
-                    
-                    $day += 7;
-                };
-                
-                DB::commit();
-
-            } catch (Exception $e) {
-                DB::rollBack();
-                return response()->json(['mess' => 'Thêm bản ghi lỗi'], 502);
+                if (!$this->createFeedbacks($request->input('feedback_id'), $latestClass->id)) {
+                    // Kiểm tra có thêm được vào bảng trung gian hay k
+                    throw new Exception();
+                }
             }
 
-            return response()->json(['mess' => 'Thêm bản ghi thành công', 200]);
+            if (!$this->createLessons($courseTotalLessons, $latestClass->id, $request->input('lessons'), $request->input('time_limit'))) {
+                // thêm dữ liệu cho buổi học
+                throw new Exception();
+            }
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['mess' => 'Thêm bản ghi lỗi'], 502);
         }
+
+        return response()->json(['mess' => 'Thêm bản ghi thành công', 200]);
     }
 
     /**
@@ -206,17 +124,13 @@ class ClassController extends Controller
      */
     public function show($id)
     {
-        $classRoom = ClassRoom::find($id);
+        $classRoom = $this->find($id);
         if (empty($classRoom)) {
             return response()->json(['mess' => 'Bản ghi không tồn tại'], 404);
         } else {
 
-            $data = DB::table('classes')
-            ->selectRaw('users.id as id, users.name as name')
-            ->leftJoin('user_class', 'classes.id', '=', 'user_class.class_id')
-            ->leftJoin('users', 'users.id', '=', 'user_class.user_id')
-            ->where('classes.id', $id)
-            ->get();
+            $data = $this->showModel($id);
+
             return response()->json(['classRoom' => $classRoom, 'data' => $data], 200);
         }
     }
@@ -229,16 +143,15 @@ class ClassController extends Controller
      */
     public function edit($id)
     {
-        $classRoom = ClassRoom::findOrFail($id);
+        $classRoom = $this->find($id);
 
-        $teachers = DB::table('users')
-            ->select('users.*')
-            ->leftJoin('roles', 'roles.id', '=', 'users.role_id')
-            ->where('roles.name', '=', 'teacher')
-            ->latest()->get();
-        $courses = Course::where('is_active', '=', 1)->latest()->get();
+        if (empty($classRoom)) {
+            return redirect()->route('admin.errors.404');
+        }
 
-        $feedbacks = FeedBack::where('is_active', '=', 1)->latest()->get();
+        $teachers = $this->getTeachers();
+        $courses = $this->getCourses();
+        $feedbacks = $this->getFeedbacks();
 
         // $lessons = Lesson::
         // selectRaw('WEEKDAY(lessons.start_at) as day, lessons.time_limit, (select lessons.start_at from lessons where WEEKDAY(lessons.start_at) = day order by lessons.start_at asc limit 1) as time')
@@ -248,8 +161,7 @@ class ClassController extends Controller
         // ->orderBy('day', 'asc')
         // ->get();
 
-
-        return view ('admin.class.edit', [
+        return view('admin.class.edit', [
             'classRoom' => $classRoom,
             'teachers' => $teachers,
             'courses' => $courses,
@@ -267,72 +179,21 @@ class ClassController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $classRoom = ClassRoom::find($id);
+        $request->merge([
+            'name' => $request->input('trueName'),
+            'user_update' => Auth::user()->id,
+        ]);
 
-        if (empty($classRoom)) {
-            return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
-        } else {
-            $request['trueName'] = $request->input('name');
-            $request['name'] = Str::slug($request->input('name'));
-            $validator = Validator::make($request->all(), [
-                'name' => 'required|unique:classes,slug,'.$id,
-                'code' => 'required|unique:classes,code,'.$id,
-                'course_id' => 'required|exists:courses,id',
-                'teacher_id' => 'required|exists:users,id',
-                'total_number' => 'required|integer|min:1',
-                'feedback_id' => 'nullable|array',
-                'feedback_id.*' => 'exists:feedbacks,id',
-                'is_active' => 'integer|boolean',
-                'time_limit' => 'nullable|integer|min:1',
-            ], [
-                'name.required' => 'Yêu cầu không để trống',
-                'name.unique' => 'Dữ liệu trùng',
-                'code.required' => 'Yêu cầu không để trống',
-                'code.unique' => 'Dữ liệu trùng',
-                'course_id.required' => 'Yêu cầu không để trống',
-                'course_id.exists' => 'Dữ liệu không tồn tại',
-                'feedback_id.array' => 'Dữ liệu không tồn tại',
-                'teacher_id.required' => 'Yêu cầu không để trống',
-                'teacher_id.exists' => 'Dữ liệu không tồn tại',
-                'total_number.required' => 'Yêu cầu không để trống',
-                'total_number.integer' => 'Sai kiểu dữ liệu',
-                'total_number.min' => 'Dữ liệu phải lớn hơn 0',
-                'is_active.integer' => 'Sai kiểu dữ liệu',
-                'is_active.boolean' => 'Sai kiểu dữ liệu',
-                'time_limit.integer' => 'Sai kiểu dữ liệu',
-                'time_limit.min' => 'Dữ liệu phải lớn hơn 0',
-            ]);
-
-            $errs = $validator->errors();
-
-            if ( $validator->fails() ) {
-                return response()->json(['errors' => $errs, 'mess' => 'Thêm bản ghi lỗi'], 400);
-            } else {
-                $classRoom->name = $request->input('trueName');
-                $classRoom->code = $request->input('code');
-                $classRoom->slug = $request->input('name');
-                $classRoom->course_id = $request->input('course_id');
-                $classRoom->teacher_id = $request->input('teacher_id');
-                // $classRoom->feedback_id = $request->input('feedback_id');
-
-                $classRoom->feedback()->syncWithoutDetaching($request->input('feedback_id'));
-                $classRoom->total_number = $request->input('total_number');
-                $classRoom->is_active = (int)$request->input('is_active'); 
-                $classRoom->user_update = Auth::user()->id;
-
-                if (!empty($request->input('time_limit'))) {
-                    $classRoom->lessons()->update([
-                        'time_limit' => $request->input('time_limit'),
-                    ]);
-                }
-
-                if ($classRoom->save()) {
-                    return response()->json(['mess' => 'Sửa bản ghi thành công', 200]);
-                } else {
-                    return response()->json(['mess' => 'Sửa bản ghi lỗi'], 502);
-                }
-
+        if (!empty($request->input('time_limit'))) {
+            if( !$this->updateLessons($id, $request->input('time_limit')) ) {
+                return response()->json(['mess' => 'Sửa bản ghi lỗi'], 502);
             }
+        }
+
+        if ($this->updateModel($id, $request->all())) {
+            return response()->json(['mess' => 'Sửa bản ghi thành công', 200]);
+        } else {
+            return response()->json(['mess' => 'Sửa bản ghi lỗi'], 502);
         }
     }
 
@@ -344,58 +205,42 @@ class ClassController extends Controller
      */
     public function destroy($id)
     {
-        $class = ClassRoom::find($id);
-
-        if ( empty($class) ) {
-            return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
-        }
-    
-        if( $class->delete() ) {
+        if ($this->deleteModel($id)) {
             return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
         } else {
             return response()->json(['mess' => 'Xóa bản không thành công'], 400);
         }
     }
 
-    public function forceDelete ($id)
+    public function forceDelete($id)
     {
         $currentUser = User::findOrFail(Auth()->user()->id);
 
-        $class = ClassRoom::withTrashed()->find($id);
+        if ($currentUser->can('forceDelete', ClassRoom::class)) {
 
-        if ( $currentUser->can('forceDelete', ClassRoom::class) ) {
-            if ( empty($class) ) {
-                return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
-            }
-        
-            if( $class->forceDelete() ) {
+            if ($this->forceDeleteModel($id)) {
                 return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
             } else {
                 return response()->json(['mess' => 'Xóa bản không thành công'], 400);
             }
         } else {
-            return response()->json(['mess' => 'Xóa bản ghi lỗi'], 403);
+            return response()->json(['mess' => 'Xóa bản ghi lỗi, bạn không đủ thẩm quyền'], 403);
         }
     }
 
-    public function restore ($id)
+    public function restore($id)
     {
         $currentUser = User::findOrFail(Auth()->user()->id);
 
-        $class = ClassRoom::withTrashed()->find($id);
+        if ($currentUser->can('restore', ClassRoom::class)) {
 
-        if ( $currentUser->can('restore', ClassRoom::class) ) {
-            if ( empty($class) ) {
-                return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
-            }
-        
-            if( $class->restore() ) {
+            if ($this->restoreModel($id)) {
                 return response()->json(['mess' => 'Khôi bản ghi thành công'], 200);
             } else {
                 return response()->json(['mess' => 'Khôi bản không thành công'], 400);
             }
         } else {
-            return response()->json(['mess' => 'Khôi phục bản ghi lỗi'], 403);
+            return response()->json(['mess' => 'Khôi phục bản ghi lỗi, bạn không đủ thẩm quyền'], 403);
         }
     }
 }

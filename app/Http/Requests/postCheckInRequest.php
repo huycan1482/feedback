@@ -17,7 +17,7 @@ class postCheckInRequest extends FormRequest
         $errors = (new ValidationException($validator))->errors();
         throw new HttpResponseException(response()->json(
             [
-                'error' => $errors,
+                'errors' => $errors,
                 'status_code' => 422,
                 'mess' => 'Thêm bản ghi lỗi'
             ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY));
@@ -39,6 +39,7 @@ class postCheckInRequest extends FormRequest
      */
     public function rules()
     {
+        // dd($this->category);
         return [
             'id' => 'required|exists:lessons,id',
             'checkIn' => 'required|array',

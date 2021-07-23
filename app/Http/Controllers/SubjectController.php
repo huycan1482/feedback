@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SubjectRequest;
+use App\Repositories\SubjectRepository;
 use App\Subject;
 use App\User;
 use Illuminate\Support\Str;
@@ -9,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class SubjectController extends Controller
+class SubjectController extends SubjectRepository
 {
     /**
      * Display a listing of the resource.
@@ -20,15 +22,15 @@ class SubjectController extends Controller
     {
         $currentUser = User::findOrFail(Auth()->user()->id);
 
-        $subjectsWithTrashed = '';
+        $subjectsWithTrashed = [];
 
-        if ( $currentUser->can('forceDelete', Subject::class) ) {
-            $subjectsWithTrashed = Subject::onlyTrashed()->latest()->get();
+        if ($currentUser->can('forceDelete', Subject::class)) {
+            $subjectsWithTrashed = $this->getAllWithTrashed();
         }
 
-        $subjects = Subject::latest()->get();
+        $subjects = $this->getAll();
 
-        return view ('admin.subject.index', [
+        return view('admin.subject.index', [
             'subjects' => $subjects,
             'subjectsWithTrashed' => $subjectsWithTrashed,
         ]);
@@ -41,7 +43,7 @@ class SubjectController extends Controller
      */
     public function create()
     {
-        return view ('admin.subject.create');
+        return view('admin.subject.create');
     }
 
     /**
@@ -50,38 +52,17 @@ class SubjectController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(SubjectRequest $request)
     {
-        
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|unique:subjects,name',
-            'code' => 'required',
-            'is_active' => 'integer|boolean',
-        ], [
-            'name.required' => 'Yêu cầu không để trống',
-            'name.unique' => 'Dữ liệu bị trùng',
-            'code.required' => 'Yêu cầu không để trống',
-            'is_active.integer' => 'Sai kiểu dữ liệu',
-            'is_active.boolean' => 'Sai kiểu dữ liệu',
+        $request->merge([
+            'name' => $request->input('trueName'),
+            'user_create' => Auth::user()->id,
         ]);
 
-        $errs = $validator->errors();
-
-        if ( $validator->fails() ) {
-            return response()->json(['errors' => $errs, 'mess' => 'Thêm bản ghi lỗi'], 400);
+        if ($this->createModel($request->all())) {
+            return response()->json(['mess' => 'Thêm bản ghi thành công', 200]);
         } else {
-            $subject = new Subject;
-            $subject->name = $request->input('name');
-            $subject->slug = Str::slug($request->input('name'));
-            $subject->code = $request->input('code');
-            $subject->is_active = (int)$request->input('is_active');
-            $subject->user_create = Auth::user()->id;
-
-            if ($subject->save()) {
-                return response()->json(['mess' => 'Thêm bản ghi thành công', 200]);
-            } else {
-                return response()->json(['mess' => 'Thêm bản ghi lỗi'], 502);
-            }
+            return response()->json(['mess' => 'Thêm bản ghi lỗi'], 502);
         }
     }
 
@@ -93,7 +74,7 @@ class SubjectController extends Controller
      */
     public function show($id)
     {
-        $subject = Subject::find($id);
+        $subject = $this->find($id);
         if (empty($subject)) {
             return response()->json(['mess' => 'Bản ghi không tồn tại'], 404);
         } else {
@@ -109,8 +90,13 @@ class SubjectController extends Controller
      */
     public function edit($id)
     {
-        $subject = Subject::findOrFail($id);
-        return view ('admin.subject.edit', [
+        $subject = $this->find($id);
+
+        if (empty($subject)) {
+            return redirect()->route('admin.errors.404');
+        }
+
+        return view('admin.subject.edit', [
             'subject' => $subject,
         ]);
     }
@@ -124,41 +110,16 @@ class SubjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $subject = Subject::find($id);
-        if (empty($subject)) {
-            return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
+        $request->merge([
+            'name' => $request->input('trueName'),
+            'user_update' => Auth::user()->id,
+        ]);
+
+        if ($this->createModel($request->all())) {
+            return response()->json(['mess' => 'Sửa bản ghi thành công', 200]);
         } else {
-            $validator = Validator::make($request->all(), [
-                'name' => 'required|unique:subjects,name,'.$id,
-                'code' => 'required',
-                'is_active' => 'integer|boolean',
-            ], [
-                'name.required' => 'Yêu cầu không để trống',
-                'name.unique' => 'Dữ liệu bị trùng',
-                'code.required' => 'Yêu cầu không để trống',
-                'is_active.integer' => 'Sai kiểu dữ liệu',
-                'is_active.boolean' => 'Sai kiểu dữ liệu',
-            ]);
-    
-            $errs = $validator->errors();
-    
-            if ( $validator->fails() ) {
-                return response()->json(['errors' => $errs, 'mess' => 'Sửa bản ghi lỗi'], 400);
-            } else {
-                $subject->name = $request->input('name');
-                $subject->slug = Str::slug($request->input('name'));
-                $subject->code = $request->input('code');
-                $subject->is_active = (int)$request->input('is_active');
-                $subject->user_update = Auth::user()->id;
-    
-                if ($subject->save()) {
-                    return response()->json(['mess' => 'Sửa bản ghi thành công', 200]);
-                } else {
-                    return response()->json(['mess' => 'Sửa bản ghi lỗi'], 502);
-                }
-            }
+            return response()->json(['mess' => 'Sửa bản ghi lỗi'], 502);
         }
-        
     }
 
     /**
@@ -169,31 +130,19 @@ class SubjectController extends Controller
      */
     public function destroy($id)
     {
-        $subject = Subject::find($id);
-
-        if ( empty($subject) ) {
-            return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
-        }
-    
-        if( $subject->delete() ) {
+        if ($this->deleteModel($id)) {
             return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
         } else {
             return response()->json(['mess' => 'Xóa bản không thành công'], 400);
         }
     }
 
-    public function forceDelete ($id)
+    public function forceDelete($id)
     {
         $currentUser = User::findOrFail(Auth()->user()->id);
 
-        $subject = Subject::withTrashed()->find($id);
-
-        if ( $currentUser->can('forceDelete', Subject::class) ) {
-            if ( empty($subject) ) {
-                return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
-            }
-        
-            if( $subject->forceDelete() ) {
+        if ($currentUser->can('forceDelete', Subject::class)) {
+            if ($this->forceDeleteModel($id)) {
                 return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
             } else {
                 return response()->json(['mess' => 'Xóa bản không thành công'], 400);
@@ -203,18 +152,12 @@ class SubjectController extends Controller
         }
     }
 
-    public function restore ($id)
+    public function restore($id)
     {
         $currentUser = User::findOrFail(Auth()->user()->id);
 
-        $subject = Subject::withTrashed()->find($id);
-
-        if ( $currentUser->can('restore', Subject::class) ) {
-            if ( empty($subject) ) {
-                return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
-            }
-        
-            if( $subject->restore() ) {
+        if ($currentUser->can('restore', Subject::class)) {
+            if ($this->restoreModel($id)) {
                 return response()->json(['mess' => 'Khôi bản ghi thành công'], 200);
             } else {
                 return response()->json(['mess' => 'Khôi bản không thành công'], 400);

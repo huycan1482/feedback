@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\ClassRoom;
 use App\Course;
+use App\Http\Requests\CourseRequest;
+use App\Repositories\CourseRepository;
 use App\Subject;
 use App\User;
 use Illuminate\Support\Str;
@@ -12,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class CourseController extends Controller
+class CourseController extends CourseRepository
 {
     /**
      * Display a listing of the resource.
@@ -23,17 +25,18 @@ class CourseController extends Controller
     {
         $currentUser = User::findOrFail(Auth()->user()->id);
 
-        $coursesWithTrashed = '';
+        $coursesWithTrashed = [];
 
-        if ( $currentUser->can('forceDelete', Course::class) ) {
-            $coursesWithTrashed = Course::onlyTrashed()->latest()->get();
+        if ($currentUser->can('forceDelete', Course::class)) {
+            $coursesWithTrashed = $this->getAllWithTrashed();
         }
-       
-        $courses = Course::latest()->get();
-        return view ('admin.course.index', [
+
+        $courses = $this->getAll();
+
+        return view('admin.course.index', [
             'courses' => $courses,
             'coursesWithTrashed' => $coursesWithTrashed,
-        ]); 
+        ]);
     }
 
     /**
@@ -43,16 +46,12 @@ class CourseController extends Controller
      */
     public function create()
     {
-        $subjects = Subject::where('is_active', '=', 1)->latest()->get();
-        $teachers = DB::table('users')
-            ->leftJoin('roles', 'roles.id', '=', 'users.role_id')
-            ->where('roles.name', '=', 'teacher')
-            // ->groupBy('users.id')
-            ->latest('users.created_at')->get();
+        $subjects = $this->getSubjects();
 
-        return view ('admin.course.create', [
+        // $teachers = $this->getTeachers();
+
+        return view('admin.course.create', [
             'subjects' => $subjects,
-            'teachers' => $teachers
         ]);
     }
 
@@ -62,51 +61,18 @@ class CourseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CourseRequest $request)
     {
-        $request['trueName'] = $request->input('name');
-        $request['name'] = Str::slug($request->input('name'));
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|unique:courses,slug',
-            'code' => 'required|unique:courses,code',
-            'subject' => 'required|exists:subjects,id',
-            'total_lesson' => 'required|integer|min:1"',
-            'is_active' => 'integer|boolean',
-        ], [
-            'name.required' => 'Yêu cầu không để trống',
-            'name.unique' => 'Dữ liệu trùng',
-            'code.required' => 'Yêu cầu không để trống',
-            'code.unique' => 'Dữ liệu bị trùng',
-            'subject.required' => 'Yêu cầu không để trống',
-            'subject.exists' => 'Dữ liệu không tồn tại',
-            'total_lesson.required' => 'Yêu cầu không để trống',
-            'total_lesson.integer' => 'Sai kiểu dữ liệu',
-            'total_lesson.min' => 'Dữ liệu phải lớn hơn 0',
-            'is_active.integer' => 'Sai kiểu dữ liệu',
-            'is_active.boolean' => 'Sai kiểu dữ liệu',
+        $request->merge([
+            'name' => $request->input('trueName'),
+            'user_create' => Auth::user()->id,
         ]);
 
-        $errs = $validator->errors();
-
-        if ( $validator->fails() ) {
-            return response()->json(['errors' => $errs, 'mess' => 'Thêm bản ghi lỗi'], 400);
+        if ($this->createModel($request->all())) {
+            return response()->json(['mess' => 'Thêm bản ghi thành công', 200]);
         } else {
-            $course = new Course;
-            $course->name = $request->input('trueName');
-            $course->code = $request->input('code');
-            $course->slug = $request->input('name');
-            $course->subject_id = $request->input('subject');
-            $course->total_lesson = $request->input('total_lesson');
-            $course->is_active = (int)$request->input('is_active');
-            $course->user_create = Auth::user()->id;
-
-            if ($course->save()) {
-                return response()->json(['mess' => 'Thêm bản ghi thành công', 200]);
-            } else {
-                return response()->json(['mess' => 'Thêm bản ghi lỗi'], 502);
-            } 
+            return response()->json(['mess' => 'Thêm bản ghi lỗi'], 502);
         }
-       
     }
 
     /**
@@ -117,22 +83,18 @@ class CourseController extends Controller
      */
     public function show($id)
     {
-        $course = Course::find($id);
-
-        if (empty($course)) {
+        if (!$this->check($id)) {
             return response()->json(['mess' => 'Bản ghi không tồn tại'], 404);
         } else {
+            
+            $data = $this->showModel($id);
 
-            $data = Course::selectRaw('classes.id as classId, subjects.code as subject, classes.name as class, users.name as teacher, classes.is_active as active')
-            ->leftJoin('subjects', 'subjects.id', '=', 'courses.subject_id')
-            ->leftJoin('classes', 'classes.course_id', '=', 'courses.id')
-            ->join('users', 'classes.teacher_id', '=', 'users.id')
-            ->where('course_id', '=', $id)
-            ->get();
+            if (!$data) {
+                return response()->json(['mess' => 'Lấy dữ liệu thất bại'], 404);
+            }
 
-            return response()->json(['course' => $course, 'data' => $data], 200);
+            return response()->json(['course' => $this->find($id), 'data' => $data], 200);
         }
-
     }
 
     /**
@@ -143,9 +105,15 @@ class CourseController extends Controller
      */
     public function edit($id)
     {
-        $course = Course::findOrFail($id);
-        $subjects = Subject::where('is_active', '=', 1)->get();
-        return view ('admin.course.edit', [
+        $course = $this->find($id);
+
+        if (empty($course)) {
+            return redirect()->route('admin.errors.404');
+        }
+
+        $subjects = $this->getSubjects();
+
+        return view('admin.course.edit', [
             'course' => $course,
             'subjects' => $subjects
         ]);
@@ -158,53 +126,17 @@ class CourseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CourseRequest $request, $id)
     {
-        $course = Course::find($id);
-        if (empty($course)) {
-            return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
-        } else {
-            $request['trueName'] = $request->input('name');
-            $request['name'] = Str::slug($request->input('name'));
-            $validator = Validator::make($request->all(), [
-                'name' => 'required|unique:courses,slug,'.$id,
-                'code' => 'required|unique:courses,code,'.$id,
-                'subject' => 'required|exists:subjects,id',
-                'total_lesson' => 'required|integer|min:1"',
-                'is_active' => 'integer|boolean',
-            ], [
-                'name.required' => 'Yêu cầu không để trống',
-                'name.unique' => 'Dữ liệu trùng',
-                'code.required' => 'Yêu cầu không để trống',
-                'code.unique' => 'Dữ liệu bị trùng',
-                'subject.required' => 'Yêu cầu không để trống',
-                'subject.unique' => 'Dữ liệu bị trùng',
-                'total_lesson.required' => 'Yêu cầu không để trống',
-                'total_lesson.integer' => 'Sai kiểu dữ liệu',
-                'total_lesson.min' => 'Dữ liệu phải lớn hơn 0',
-                'is_active.integer' => 'Sai kiểu dữ liệu',
-                'is_active.boolean' => 'Sai kiểu dữ liệu',
-            ]);
-    
-            $errs = $validator->errors();
-    
-            if ( $validator->fails() ) {
-                return response()->json(['errors' => $errs, 'mess' => 'Thêm bản ghi lỗi'], 400);
-            } else {
-                $course->name = $request->input('trueName');
-                $course->code = $request->input('code');
-                $course->slug = $request->input('name');
-                $course->subject_id = $request->input('subject');
-                $course->total_lesson = $request->input('total_lesson');
-                $course->is_active = (int)$request->input('is_active');
-                $course->user_update = Auth::user()->id;
+        $request->merge([
+            'name' => $request->input('trueName'),
+            'user_update' => Auth::user()->id,
+        ]);
 
-                if ($course->save()) {
-                    return response()->json(['mess' => 'Sửa bản ghi thành công', 200]);
-                } else {
-                    return response()->json(['mess' => 'Sửa bản ghi lỗi'], 502);
-                }
-            }
+        if ($this->updateModel($id, $request->all())) {
+            return response()->json(['mess' => 'Sửa bản ghi thành công', 200]);
+        } else {
+            return response()->json(['mess' => 'Sửa bản ghi lỗi'], 502);
         }
     }
 
@@ -216,58 +148,40 @@ class CourseController extends Controller
      */
     public function destroy($id)
     {
-        $course = Course::find($id);
-
-        if ( empty($course) ) {
-            return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
-        }
-    
-        if( $course->delete() ) {
+        if ($this->deleteModel($id)) {
             return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
         } else {
             return response()->json(['mess' => 'Xóa bản không thành công'], 400);
         }
     }
 
-    public function forceDelete ($id)
+    public function forceDelete($id)
     {
         $currentUser = User::findOrFail(Auth()->user()->id);
 
-        $course = Course::withTrashed()->find($id);
-
-        if ( $currentUser->can('forceDelete', Course::class) ) {
-            if ( empty($course) ) {
-                return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
-            }
-        
-            if( $course->forceDelete() ) {
+        if ($currentUser->can('forceDelete', Course::class)) {
+            if ($this->forceDeleteModel($id)) {
                 return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
             } else {
                 return response()->json(['mess' => 'Xóa bản không thành công'], 400);
             }
         } else {
-            return response()->json(['mess' => 'Xóa bản ghi lỗi'], 403);
+            return response()->json(['mess' => 'Xóa bản ghi lỗi, bạn không đủ thẩm quyền'], 403);
         }
     }
 
-    public function restore ($id)
+    public function restore($id)
     {
         $currentUser = User::findOrFail(Auth()->user()->id);
 
-        $course = Course::withTrashed()->find($id);
-
-        if ( $currentUser->can('restore', Course::class) ) {
-            if ( empty($course) ) {
-                return response()->json(['mess' => 'Bản ghi không tồn tại'], 400);
-            }
-        
-            if( $course->restore() ) {
+        if ($currentUser->can('restore', Course::class)) {
+            if ($this->restoreModel($id)) {
                 return response()->json(['mess' => 'Khôi bản ghi thành công'], 200);
             } else {
                 return response()->json(['mess' => 'Khôi bản không thành công'], 400);
             }
         } else {
-            return response()->json(['mess' => 'Khôi phục bản ghi lỗi'], 403);
+            return response()->json(['mess' => 'Khôi phục bản ghi lỗi, bạn không đủ thẩm quyền'], 403);
         }
     }
 }

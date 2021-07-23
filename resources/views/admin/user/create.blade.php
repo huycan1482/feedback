@@ -144,7 +144,7 @@
                         <div class="form-group" id="form-role">
                             <label>Chức năng</label>
                             <div>
-                                <select class=" select2 form-control" style="width: 100%;" name="role" id="role">
+                                <select class=" select2 form-control" style="width: 100%;" name="role_id" id="role_id">
                                     <option value="">-- Chọn --</option>
                                     @foreach ($roles as $role)
                                     <option value="{{ $role->id }}">{{ $role->name }}</option>
@@ -192,7 +192,7 @@
             var email = $("input[name='email']").val(); 
             var password = $("input[name='password']").val(); 
             var password_confirmation = $("input[name='password_confirmation']").val(); 
-            var role = $("#role").val();
+            var role_id = $("#role_id").val();
             var address = $("input[name='address']").val();
             var gender = $('#gender').val();
             var phone = $("input[name='phone']").val(); 
@@ -209,7 +209,7 @@
                 email : email,
                 password : password,
                 password_confirmation : password_confirmation,
-                role : role,
+                role_id : role_id,
                 address : address,
                 gender : gender,
                 phone : phone,

@@ -349,16 +349,9 @@
 
                     var startDate = d.getFullYear() + '-' + dMonth + '-' + dDay + ' ' + timeStartAt;
 
-                    // console.log( d.getDate() + '-' + dMonth + '-' + d.getFullYear());
-                    
-                    var lesson = {};
-                    
-                    lesson.lessons = startDate;
-    
-
-                    lessons.push([
-                        lesson
-                    ]);
+                    lessons.push(
+                        startDate
+                    );
                 }
             });
 

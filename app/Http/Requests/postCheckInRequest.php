@@ -39,10 +39,13 @@ class postCheckInRequest extends FormRequest
      */
     public function rules()
     {
-        // dd($this->category);
+        // dd($this->all());
         return [
             'id' => 'required|exists:lessons,id',
             'checkIn' => 'required|array',
+            'checkIn.*.val' =>'required|integer|min:1|max:3',
+            'checkIn.*.id' => 'required|exists:users,id',
+            'start_at' => 'required|date_format:H:i:s'
         ];
     }
 
@@ -53,6 +56,8 @@ class postCheckInRequest extends FormRequest
             'id.exists' => 'Dữ liệu không tồn tại',
             'checkIn.array' => 'Sai kiểu dữ liệu',
             'checkIn.required' => 'Yêu cầu không để trống',
+            'start_at.required' => 'Yêu cầu không để trống',
+            'start_at.date_format' => 'Sai định dạng'
         ];
 
     }

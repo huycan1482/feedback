@@ -91,7 +91,7 @@
 
 th, td {
     /* resize: both; overflow: auto; */
-    width: 200;
+    width: 200px;
 }
 
 table {
@@ -103,10 +103,14 @@ table td {
 }
 
 
-.form-check-input {
+.form-check .form-check-input {
     border-width: .5px !important;
-    padding: 10px;
+    padding: 10px !important;
     margin: 0 2px;
+}
+
+.form-check-input:focus {
+    outline: none !important;
 }
 
 .form-check-input:checked[type=radio] {
@@ -164,4 +168,15 @@ table td {
 
 .hidden-checkIn {
     display: none;
+}
+
+.choose-time .col-lg-4 {
+    display: flex;
+    justify-content: center;
+}
+
+.pick-time {
+    margin: 30px 0 40px;
+    display: flex;
+    justify-content: center;
 }

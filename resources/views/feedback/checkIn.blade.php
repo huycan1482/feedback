@@ -3,12 +3,16 @@
 @section('css')
 <!-- FullCalendar -->
 <link rel='stylesheet' href='feedback/fullcalendar-3.9.0/fullcalendar.css' />
+<!-- TimePicker -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css"
+    rel="stylesheet">
 <!-- Box -->
 <link rel="stylesheet" href="feedback/css/box.css">
 <!-- Css Layout -->
 <link rel="stylesheet" href="feedback/css/checkIn.css">
 {{-- <!-- Calendar -->
 <link rel="stylesheet" href="feedback/css/calendar.css"> --}}
+
 @endsection
 
 @section('content')
@@ -17,7 +21,7 @@
         {{-- {{dd(isset($classes))}} --}}
         @if (!isset($classes))
         <h1>Không có lớp</h1>
-        @else  
+        @else
         <div class="col-lg-12">
             <div class="box">
                 <div class="drop-box-header">
@@ -96,16 +100,16 @@
                                 <div class="form-check form-check-note">
                                     <p>Chú thích: </p>
                                     <div>
-                                        <input type="radio" class="form-check-input input-info" id="" name=""
-                                            value="" checked> Có mặt
+                                        <input type="radio" class="form-check-input input-info" id="" name="" value=""
+                                            checked> Có mặt
                                     </div>
                                     <div>
                                         <input type="radio" class="form-check-input input-warning" id="" name=""
                                             value="" checked> Muộn
                                     </div>
                                     <div>
-                                        <input type="radio" class="form-check-input input-danger" id="" name=""
-                                            value="" checked> Vắng mặt
+                                        <input type="radio" class="form-check-input input-danger" id="" name="" value=""
+                                            checked> Vắng mặt
                                     </div>
                                 </div>
                             </div>
@@ -123,9 +127,10 @@
                                     <th scope="col" class="text-center col">Họ và tên</th>
                                     <th scope="col" class="text-center col">Ngày sinh</th>
                                     @if (!empty($lessons->first()))
-                                        @foreach($lessons as $key => $lesson)
-                                        <th scope="col" class="text-center col {{ ($key != 0) ? 'hidden_checkIn' : '' }}">{{date_format(date_create($lesson->start_at), 'd-m-Y')}}</th>
-                                        @endforeach
+                                    @foreach($lessons as $key => $lesson)
+                                    <th scope="col" class="text-center col {{ ($key != 0) ? 'hidden_checkIn' : '' }}">
+                                        {{date_format(date_create($lesson->start_at), 'd-m-Y')}}</th>
+                                    @endforeach
                                     @endif
                                 </tr>
                             </thead>
@@ -135,8 +140,8 @@
                                 <tr>
                                     <td scope="row" class="text-center table-stt">{{ $key + 1 }}</td>
                                     <td class="text-center table-name">
-                                        <p>{{ $student->name }}</p>   
-                                        
+                                        <p>{{ $student->name }}</p>
+
                                         @foreach($user_checkIn[$student->id] as $item)
                                         {{-- {{dd($user_checkIn)}} --}}
                                         <span class="label label-info">{{$item->di_hoc}}</span>
@@ -145,35 +150,74 @@
                                         @endforeach
 
                                     </td>
-                                    <td class=" table-date text-center">{{ date_format(date_create($student->date_of_birth), 'd-m-Y') }}</td>
-                                    
+                                    <td class=" table-date text-center">
+                                        {{ date_format(date_create($student->date_of_birth), 'd-m-Y') }}</td>
+
                                     @if ($checkIn[$student->id] != null)
-                                        @foreach($checkIn[$student->id] as $key => $item)
-                                        <td class="text-center">
-                                            <div class="form-check">
-                                                {{-- {{dd($item->is_check)}} --}}
+                                    @foreach($checkIn[$student->id] as $key => $item)
+                                    <td class="text-center">
+                                        <div class="form-check">
+                                            {{-- {{dd($item->is_check)}} --}}
                                             @if($item->is_check == null)
-                                                <input type="radio" class="form-check-input input-info" name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}"
-                                                    id="{{$student->id}}_1" value="1" data-id="{{ $student->id }}">
-                                                <input type="radio" class="form-check-input input-warning" name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}"
-                                                    id="{{$student->id}}_2" value="2" data-id="{{ $student->id }}">
-                                                <input type="radio" class="form-check-input input-danger" name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}"
-                                                    id="{{$student->id}}_3" value="3" data-id="{{ $student->id }}">
+                                            <input type="radio" class="form-check-input input-info"
+                                                name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}"
+                                                id="{{$student->id}}_1" value="1" data-id="{{ $student->id }}">
+                                            <input type="radio" class="form-check-input input-warning"
+                                                name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}"
+                                                id="{{$student->id}}_2" value="2" data-id="{{ $student->id }}">
+                                            <input type="radio" class="form-check-input input-danger"
+                                                name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}"
+                                                id="{{$student->id}}_3" value="3" data-id="{{ $student->id }}">
                                             @elseif($item->is_check == 1)
-                                                <input type="radio" class="form-check-input input-info hidden_checkIn" name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}" checked >
+                                            <input type="radio" class="form-check-input input-info hidden_checkIn"
+                                                name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}"
+                                                checked>
                                             @elseif($item->is_check == 2)
-                                                <input type="radio" class="form-check-input input-warning hidden_checkIn" name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}" checked >
+                                            <input type="radio" class="form-check-input input-warning hidden_checkIn"
+                                                name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}"
+                                                checked>
                                             @else
-                                                <input type="radio" class="form-check-input input-danger hidden_checkIn" name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}" checked >
+                                            <input type="radio" class="form-check-input input-danger hidden_checkIn"
+                                                name="{{$student->id}}_{{date_format(date_create($item->start_at), 'd-m-Y')}}"
+                                                checked>
                                             @endif
-                                            </div>
-                                        </td>
-                                        @endforeach
+                                        </div>
+                                    </td>
+                                    @endforeach
                                     @endif
-                                
-                                @endforeach
+
+                                    @endforeach
                             </tbody>
                         </table>
+                    </div>
+
+                    <div class="container ">
+                        <div class="row choose-time">
+                            <div class="col-lg-4">
+                                <p class="btn btn-primary" data-item="8:00 AM">Ca Sáng: 8h - 11h</p>   
+                            </div>
+                            <div class="col-lg-4">
+                                <p class="btn btn-primary" data-item="2:00 PM">Ca Chiều: 14h - 17h</p>
+                            </div>
+                            <div class="col-lg-4">
+                                <p class="btn btn-primary" data-item="6:00 PM">Ca Tối: 18h - 21h</p>
+                            </div>
+                        </div>
+                        <div class="row pick-time">
+
+                            <div class='col-lg-2'>
+                                <div class="form-group">
+                                    <label for="">Thời gian bắt đầu</label>
+                                    <div class='input-group date datetimepicker3' id=''>
+                                        <input type='text' class="form-control" value="{{date_format(date_create($lessons->first()->start_at), 'H:m')}}" />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-time"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
 
                     <div class="form-notice">
@@ -191,15 +235,21 @@
                                     </tr>
                                     <tr>
                                         <td>Có mặt:</td>
-                                        <td><span class="label label-success">{{ $present->total }}/{{ $total_student->total }}</span></td>
+                                        <td><span
+                                                class="label label-success">{{ $present->total }}/{{ $total_student->total }}</span>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Muộn:</td>
-                                        <td><span class="label label-warning">{{ $late->total }}/{{ $total_student->total }}</span></td>
+                                        <td><span
+                                                class="label label-warning">{{ $late->total }}/{{ $total_student->total }}</span>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Vắng mặt:</td>
-                                        <td><span class="label label-danger">{{ $not_present->total }}/{{ $total_student->total }}</span></td>
+                                        <td><span
+                                                class="label label-danger">{{ $not_present->total }}/{{ $total_student->total }}</span>
+                                        </td>
                                     </tr>
                                 </table>
                             </div>
@@ -216,11 +266,12 @@
 
                     <div class="form-footer">
                         <div class="">
-                            
+
                         </div>
                         <div>
                             <div class="btn btn-danger btn-reset">Tải lại</div>
-                            <div class="btn btn-primary btn-save" data-id="{{ (empty($lessons->first())) ? 0 : $lessons->first()->id}}">Lưu</div>
+                            <div class="btn btn-primary btn-save"
+                                data-id="{{ (empty($lessons->first())) ? 0 : $lessons->first()->id}}">Lưu</div>
                         </div>
                     </div>
 
@@ -234,8 +285,8 @@
                 </div>
             </div>
         </div>
-        @endif 
-        
+        @endif
+
     </div>
 </div>
 @endsection
@@ -249,29 +300,43 @@
 <!-- BoxJS -->
 {{-- <script src="feedback/js/calendar.js"></script> --}}
 
+<!-- TimePicker -->
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js">
+</script>
+
+
 <script type="text/javascript">
     $(function () {
-
-        // page is now ready, initialize the calendar...
+        $('.datetimepicker3').datetimepicker({
+            format: 'LT'
+        });
+        
 
         $('#calendar').fullCalendar({
             // put your options and callbacks here
             events: [
 
-                @if (isset($classes))
+                @if(isset($classes)) 
                 {!! $events !!}
-                @endif  
+                @endif
             ]
         });
 
     });
+
 </script>
 
 <script src="feedback/js/form.js"></script>
 
 <script type="text/javascript">
     $(function () {
-        $(document).on('click', '.btn-save', function () {  
+
+        $(document).on('click', '.choose-time .btn', function () {
+            $('.datetimepicker3 input').val($(this).attr('data-item'));
+        });
+
+        $(document).on('click', '.btn-save', function () {
             var date = new Date();
 
             if (date.getMonth() < 9) {
@@ -280,35 +345,56 @@
                 var getMonth = (date.getMonth() + 1);
             }
 
-            var today = date.getDate()+'-'+ getMonth +'-'+date.getFullYear();            
+            var today = date.getDate() + '-' + getMonth + '-' + date.getFullYear();
 
             var id = $(this).attr('data-id');
 
             // var inputs_checkIn = $("[name*='"+ today +"']:checked");
 
-            var inputs_checkIn = $("[name*='17-08-2021']:checked");
+            var inputs_checkIn = $("[name*='05-08-2021']:checked");
 
 
             var note = $('#note').val();
 
             var checkIn = [];
 
-            inputs_checkIn.each( function (index, value) {
+            inputs_checkIn.each(function (index, value) {
                 console.log($(this).attr('data-id'), value.value);
-                checkIn[index] = { 'id': $(this).attr('data-id'), 'val': value.value };
+                checkIn[index] = {
+                    'id': $(this).attr('data-id'),
+                    'val': value.value
+                };
             });
+
+            var timeStartAt = $('.datetimepicker3 input').val();
+
+            var time = timeStartAt.split(' ')[0];
+            var dayOrNight = timeStartAt.split(' ')[1];
+            var hour = time.split(':')[0];
+            var minute = time.split(':')[1];
+                    // console.log(time3);
+            if (hour < 10) {
+                hour = '0' + hour;
+            }
+
+            if (dayOrNight == 'PM') {
+                hour = hour * 1 + 12;
+            }
+
+            var start_at = hour + ':' + minute + ':00';
 
             var data = {
                 id: id,
                 checkIn: checkIn,
                 note: note,
+                start_at: start_at
             }
 
             $.ajax({
                 type: 'POST',
                 url: base_url + '/postCheckIn',
                 data: data,
-                dataType : 'json',
+                dataType: 'json',
 
                 success: function (response) {
                     console.log(response);
@@ -322,7 +408,7 @@
 
         });
     });
-    
+
 </script>
 
 @endsection

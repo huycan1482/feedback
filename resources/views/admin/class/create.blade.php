@@ -302,6 +302,7 @@
             var dateStartAt = date[2] + '-' + date[1] + '-' + date[0];
 
             var lessons = [];
+            
 
             $('input[type="checkbox"].flat-red').each(function (index, value) { 
                 if ( $(this).is(':checked') ) {
@@ -369,7 +370,9 @@
 
             var model = '/admin/class';
 
-            addModel(model, data);
+            // addModel(model, data);
+
+            console.log(data)
 
         }); 
 

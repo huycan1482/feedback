@@ -125,11 +125,12 @@ class HomeRepository
 
     public function getTotalStudentByClassId($class_id)
     {
+        
         try {
-            return \App\Lesson::selectRaw('count(check_in.user_id) as total')
+            return \App\Lesson::selectRaw('count( DISTINCT check_in.user_id) as total')
                 ->join('check_in', 'check_in.lesson_id', '=', 'lessons.id')
                 ->rightJoin('users', 'users.id', '=', 'check_in.user_id')
-                ->whereRaw("lessons.class_id = " . $class_id . " and date(check_in.created_at) = date(current_date())")
+                ->whereRaw("lessons.class_id = " . $class_id)
                 ->get()->first();
         } catch (Exception $e) {
             return 0;
@@ -142,7 +143,7 @@ class HomeRepository
             return \App\Lesson::selectRaw('count(check_in.user_id) as total')
             ->join('check_in', 'check_in.lesson_id', '=', 'lessons.id')
             ->rightJoin('users', 'users.id', '=', 'check_in.user_id')
-            ->whereRaw("lessons.class_id = ". $class_id ." and date(check_in.created_at) = date(current_date()) and check_in.is_check = 1")
+            ->whereRaw("lessons.class_id = ". $class_id ." and date(check_in.created_at) = date(current_date() - 1) and check_in.is_check = 1")
             ->get()->first();
         } catch (Exception $e) {
             return 0;
@@ -155,7 +156,7 @@ class HomeRepository
             return \App\Lesson::selectRaw('count(check_in.user_id) as total')
             ->join('check_in', 'check_in.lesson_id', '=', 'lessons.id')
             ->rightJoin('users', 'users.id', '=', 'check_in.user_id')
-            ->whereRaw("lessons.class_id = ". $class_id ." and date(check_in.created_at) = date(current_date()) and check_in.is_check = 2")
+            ->whereRaw("lessons.class_id = ". $class_id ." and date(check_in.created_at) = date(current_date() - 1) and check_in.is_check = 2")
             ->get()->first();
         } catch (Exception $e) {
             return 0;
@@ -168,7 +169,7 @@ class HomeRepository
             return \App\Lesson::selectRaw('count(check_in.user_id) as total')
             ->join('check_in', 'check_in.lesson_id', '=', 'lessons.id')
             ->rightJoin('users', 'users.id', '=', 'check_in.user_id')
-            ->whereRaw("lessons.class_id = ". $class_id ." and date(check_in.created_at) = date(current_date()) and check_in.is_check = 3")
+            ->whereRaw("lessons.class_id = ". $class_id ." and date(check_in.created_at) = date(current_date() - 1) and check_in.is_check = 3")
             ->get()->first();
         } catch (Exception $e) {
             return 0;

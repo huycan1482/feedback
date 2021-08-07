@@ -123,12 +123,12 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th scope="col" class="text-center col">STT</th>
-                                    <th scope="col" class="text-center col">Họ và tên</th>
-                                    <th scope="col" class="text-center col">Ngày sinh</th>
+                                    <th scope="col" class="text-center col sticky-col first-col">STT</th>
+                                    <th scope="col" class="text-center col sticky-col second-col">Họ và tên</th>
+                                    <th scope="col" class="text-center col sticky-col third-col">Ngày sinh</th>
                                     @if (!empty($lessons->first()))
                                     @foreach($lessons as $key => $lesson)
-                                    <th scope="col" class="text-center col {{ ($key != 0) ? 'hidden_checkIn' : '' }}">
+                                    <th scope="col" class="text-center col {{ ( date_format(date_create($lesson->start_at), 'd-m-Y') != date("d-m-Y") ) ? 'hidden_checkIn' : '' }}">
                                         {{date_format(date_create($lesson->start_at), 'd-m-Y')}}</th>
                                     @endforeach
                                     @endif
@@ -138,8 +138,8 @@
 
                                 @foreach($students as $key => $student)
                                 <tr>
-                                    <td scope="row" class="text-center table-stt">{{ $key + 1 }}</td>
-                                    <td class="text-center table-name">
+                                    <td scope="row" class="text-center table-stt sticky-col first-col">{{ $key + 1 }}</td>
+                                    <td class="text-center table-name sticky-col second-col">
                                         <p>{{ $student->name }}</p>
 
                                         @foreach($user_checkIn[$student->id] as $item)
@@ -150,11 +150,12 @@
                                         @endforeach
 
                                     </td>
-                                    <td class=" table-date text-center">
+                                    <td class=" table-date text-center sticky-col third-col">
                                         {{ date_format(date_create($student->date_of_birth), 'd-m-Y') }}</td>
 
                                     @if ($checkIn[$student->id] != null)
                                     @foreach($checkIn[$student->id] as $key => $item)
+                                    {{-- {{dd($checkIn)}} --}}
                                     <td class="text-center">
                                         <div class="form-check">
                                             {{-- {{dd($item->is_check)}} --}}
@@ -227,10 +228,15 @@
                                 <table>
                                     <tr>
                                         <td>Điểm danh:</td>
-                                        @if ($present->total == 0)
-                                        <td><span class="label label-danger">Chưa hoàn thành</span></td>
+                                        {{-- {{ dd( $present ) }} --}}
+                                        @if (date_format(date_create(array_values($checkIn)[0][0]->start_at), 'd-m-Y') == date("d-m-Y"))
+                                            @if($present->total != 0 && $late->total != 0 && $not_present->total != 0)
+                                            <td><span class="label label-success">Hoàn thành</span></td>
+                                            @else
+                                            <td><span class="label label-danger">Chưa hoàn thành</span></td>
+                                            @endif
                                         @else
-                                        <td><span class="label label-success">Đã hoàn thành</span></td>
+                                        <td><span class="label label-danger">Chưa đến ngày học</span></td>
                                         @endif
                                     </tr>
                                     <tr>

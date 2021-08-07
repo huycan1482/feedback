@@ -74,8 +74,6 @@ class HomeController extends HomeRepository
 
             $not_present = $this->getNotPresentStudentsByClassId($classes->first()->id);
 
-            // dd(date_format(date_create($lessons->first()->start_at), 'H:m'));
-
             return view('feedback.checkIn', [
                 'classes' => $classes,
                 'class' => $class,
@@ -101,11 +99,11 @@ class HomeController extends HomeRepository
 
         if ($currentUser->can('viewCheckIn', User::class)) {
 
+            $classes = $this->getClassesByTeacherId($currentUser->id);
+
             if (empty(ClassRoom::find($id))) {
                 return view('feedback.checkIn');
             }
-
-            $classes = $this->getClassesByTeacherId($id);
 
             $class = $this->get1ClassByClassId($id);
 
@@ -132,6 +130,7 @@ class HomeController extends HomeRepository
             $late = $this->getLateStudentsByClassId($id);
 
             $not_present = $this->getNotPresentStudentsByClassId($id);
+
 
             return view('feedback.checkIn', [
                 'classes' => $classes,

@@ -74,6 +74,7 @@ class HomeController extends HomeRepository
 
             $not_present = $this->getNotPresentStudentsByClassId($classes->first()->id);
 
+
             return view('feedback.checkIn', [
                 'classes' => $classes,
                 'class' => $class,
@@ -130,6 +131,8 @@ class HomeController extends HomeRepository
             $late = $this->getLateStudentsByClassId($id);
 
             $not_present = $this->getNotPresentStudentsByClassId($id);
+
+
 
 
             return view('feedback.checkIn', [

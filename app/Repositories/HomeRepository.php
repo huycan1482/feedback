@@ -88,7 +88,7 @@ class HomeRepository
     public function getLessonsByClassId($class_id)
     {
         try {
-            return \App\ClassRoom::select('classes.code', 'lessons.id', 'lessons.start_at')
+            return \App\ClassRoom::select('classes.code', 'lessons.id', 'lessons.start_at', 'lessons.time_limit')
                 ->join('lessons', 'lessons.class_id', '=', 'classes.id')
                 ->whereRaw("classes.id = " . $class_id . " and date(now()) >= lessons.start_at")
                 ->orderBy('lessons.start_at', 'desc')

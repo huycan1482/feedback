@@ -227,6 +227,12 @@
                                 <p>Thông tin buổi học</p>
                                 <table>
                                     <tr>
+                                        <td>Thời gian học:</td>
+                                        <td><span
+                                                class="label label-info">{{ $lessons->first()->time_limit }} phút</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td>Điểm danh:</td>
                                         {{-- {{ dd( $present ) }} --}}
                                         @if (date_format(date_create(array_values($checkIn)[0][0]->start_at), 'd-m-Y') == date("d-m-Y"))

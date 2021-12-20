@@ -43,6 +43,14 @@
                                                 </tr>
                                                 <tr style="width: 100%">
                                                     <td class="" style="width: 30%">
+                                                        Mã người dùng:
+                                                    </td>
+                                                    <td class="modal-user-identity" style="width: 70%">
+
+                                                    </td>
+                                                </tr>
+                                                <tr style="width: 100%">
+                                                    <td class="" style="width: 30%">
                                                         Email:
                                                     </td>
                                                     <td class="modal-user-email" style="width: 70%">
@@ -134,6 +142,7 @@
                             <tr>
                                 <th class="text-center">STT</th>
                                 <th class="text-center">Tên</th>
+                                <th class="text-center">Mã người dùng</th>
                                 <th class="text-center">SĐT</th>
                                 <th class="text-center">Email</th>
                                 <th class="text-center">Trạng thái</th>
@@ -145,6 +154,7 @@
                             <tr class="item-{{ $teacher->id }}">
                                 <td class="text-center">{{ $key + 1}}</td>
                                 <td class="text-center">{{ $teacher->name }}</td>
+                                <td class="text-center">{{ $teacher->identity_code }}</td>
                                 <td class="text-center">{{ $teacher->phone }}</td>
                                 <td class="text-center">{{ $teacher->email }}</td>
                                 <td class="text-center">
@@ -184,6 +194,7 @@
                             <tr>
                                 <th class="text-center">STT</th>
                                 <th class="text-center">Tên</th>
+                                <th class="text-center">Mã người dùng</th>
                                 <th class="text-center">SĐT</th>
                                 <th class="text-center">Email</th>
                                 <th class="text-center">Trạng thái</th>
@@ -195,6 +206,7 @@
                             <tr class="item-{{ $teacher->id }}">
                                 <td class="text-center">{{ $key + 1}}</td>
                                 <td class="text-center">{{ $teacher->name }}</td>
+                                <td class="text-center">{{ $teacher->identity_code }}</td>
                                 <td class="text-center">{{ $teacher->phone }}</td>
                                 <td class="text-center">{{ $teacher->email }}</td>
                                 <td class="text-center">
@@ -209,7 +221,6 @@
                                     <a href="javascript:void(0)" onclick = "forceDelete('teacher/forceDelete', '{{ $teacher->id }}' )" class="btn btn-danger" title="Xóa">
                                         <i class="fas fa-ban"></i>
                                     </a>
-
                                 </td>
                             </tr>
                             @endforeach
@@ -252,6 +263,7 @@
                 success: function (response) {
 
                     $('.modal-user-name').html(response.teacher.name);
+                    $('.modal-user-identity').html(response.teacher.identity_code);
                     $('.modal-user-email').html(response.teacher.email);
                     $('.modal-user-phone').html(response.teacher.phone);
                     $('.modal-user-birth').html(response.teacher.date_of_birth);

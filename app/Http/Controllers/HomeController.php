@@ -52,18 +52,13 @@ class HomeController extends HomeRepository
 
         foreach ($feedBack->question as $key => $item) {
             $arr = [];
-
-            // dd($item);
-
             foreach ($item->answers as $item2) {
                 $arr[] = [
                     'id' => $item2->id,
                     'content' => $item2->content,
                 ];
             }
-
             shuffle($arr);
-
             $data[] = [
                 'id' => $item->id,
                 'code' => $item->code,
@@ -78,6 +73,11 @@ class HomeController extends HomeRepository
         return view('feedback.publicSurvey', [
             'data' => $data,
         ]);
+    }
+
+    public function postPublicSurvey(Request $request)
+    {
+        dd($request->all());
     }
 
     public function getCheckIn()

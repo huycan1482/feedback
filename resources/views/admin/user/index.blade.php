@@ -38,6 +38,14 @@
                                         </tr>
                                         <tr style="width: 100%">
                                             <td class="" style="width: 30%">
+                                                Mã người dùng:
+                                            </td>
+                                            <td class="modal-user-identity" style="width: 70%">
+
+                                            </td>
+                                        </tr>
+                                        <tr style="width: 100%">
+                                            <td class="" style="width: 30%">
                                                 Email:
                                             </td>
                                             <td class="modal-user-email" style="width: 70%">
@@ -87,6 +95,7 @@
                             <tr>
                                 <th class="text-center">STT</th>
                                 <th class="text-center">Tên</th>
+                                <th class="text-center">Mã</th>
                                 <th class="text-center">Email</th>
                                 <th class="text-center">Chức năng</th>
                                 <th class="text-center">Trạng thái</th>
@@ -98,6 +107,7 @@
                             <tr class="item-{{ $user->id }}">
                                 <td class="text-center">{{ $key + 1}}</td>
                                 <td class="text-center">{{ $user->name }}</td>
+                                <td class="text-center">{{ $user->identity_code }}</td>
                                 <td class="text-center">{{ $user->email }}</td>
                                 {{-- <td class="text-center"></td> --}}
                                 <td class="text-center">{{ $user->role->name }}</td>
@@ -144,6 +154,7 @@
                             <tr>
                                 <th class="text-center">STT</th>
                                 <th class="text-center">Tên</th>
+                                <th class="text-center">Mã người dùng</th>
                                 <th class="text-center">Email</th>
                                 <th class="text-center">Chức năng</th>
                                 <th class="text-center">Trạng thái</th>
@@ -155,6 +166,7 @@
                             <tr class="item-{{ $user->id }}">
                                 <td class="text-center">{{ $key + 1}}</td>
                                 <td class="text-center">{{ $user->name }}</td>
+                                <td class="text-center">{{ $user->identity_code }}</td>
                                 <td class="text-center">{{ $user->email }}</td>
                                 <td class="text-center">{{ $user->role->name }}</td>
                                 <td class="text-center">
@@ -208,6 +220,7 @@
                 dataType: "json",
                 success: function (response) {
                     $('.modal-user-name').html(response.user.name);
+                    $('.modal-user-identity').html(response.user.identity_code);
                     $('.modal-user-email').html(response.user.email);
                     $('.modal-user-role').html(response.user.role);
                     $('.modal-user-createdAt').html(response.user.created_at);

@@ -19,8 +19,23 @@ class UserRepository extends EloquentRepository{
     public function createModelByEloquent ($request) 
     {
         $user = new User;
-        $user->name = '';
-        $user->email = '';
+        $user->name = $request['name'];
+        $user->email = $request['email'];
+        $user->password = $request['password'];
+        $user->role_id = $request['role_id'];
+        $user->gender = $request['gender'];
+        $user->address = $request['address'];
+        $user->date_of_birth = $request['date_of_birth'];
+        $user->code = $request['code'];
+        $user->phone = $request['phone'];
+        $user->is_active = $request['is_active'];
+        if ($user->save()) {
+            $user->identity_code = 100000 + $user->id*1;
+            return true;
+        } else {
+            return false;
+        }
+        
     }
 
 }

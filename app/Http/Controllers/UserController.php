@@ -82,7 +82,8 @@ class UserController extends UserRepository
             $data = $request->all();
             $data['password'] = Hash::make($request->input('password'));
 
-            if ($this->createModel($data)) {
+            // if ($this->createModel($data)) {
+            if ($this->createModelByEloquent($data)) {
                 return response()->json(['mess' => 'Thêm bản ghi thành công', 200]);
             } else {
                 return response()->json(['mess' => 'Thêm bản ghi lỗi'], 502);
@@ -104,7 +105,7 @@ class UserController extends UserRepository
 
         if ($currentUser->can('checkAdmin', User::class)) {
             $user = DB::table('users')
-                ->select(['users.name', 'users.email', 'users.created_at', 'roles.name as role'])
+                ->select(['users.name', 'users.identity_code', 'users.email', 'users.created_at', 'roles.name as role'])
                 ->leftJoin('roles', 'roles.id', '=', 'users.role_id')
                 ->where('users.id', '=', $id)
                 ->get()->first();

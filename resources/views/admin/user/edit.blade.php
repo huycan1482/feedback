@@ -32,6 +32,13 @@
                             </div>
                         </div>
 
+                        <div class="form-group " id="form-identity">
+                            <label class="" for="">Mã người dùng </label>
+                            <div>
+                                <input name="identity" type="text" class="form-control " placeholder="Mã người dùng" value="{{ $user->identity_code }}" disabled>
+                            </div>
+                        </div>
+
                         <div class="form-group " id="form-code">
                             <label class="" for="">Số căn cước công dân</label>
                             <div>

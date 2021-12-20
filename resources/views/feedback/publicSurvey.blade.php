@@ -119,11 +119,14 @@
                                                 @endforeach
                                             </div>
                                             @endif
-                                            
+                                    
                                         </div>
                                     </div>
                                     @endforeach
-            
+                                    <div class=" form-group" style="padding: 20px">
+                                        <label for="phone" class="form-label">Mã người dùng</label>
+                                        <input type="text" class="form-control">
+                                    </div>
                                     <div class=" form-group" style="padding: 20px">
                                         <label for="phone" class="form-label">Góp ý:</label>
                                         <textarea name="" id="note" cols="30" rows="10" class="form-control"></textarea>
@@ -221,19 +224,19 @@
             //     class_id : class_id,
             // }
 
-            // $.ajax({
-            //     type: 'POST',
-            //     url: base_url + '/postFeedBack',
-            //     data: data,
-            //     dataType : 'json',
+            $.ajax({
+                type: 'POST',
+                url: base_url + '/postPublicSurvey',
+                data: data,
+                dataType : 'json',
 
-            //     success: function (response) {
-            //         successResponse(response);
-            //     },
-            //     error: function (e) {
-            //         errorResponse(e)
-            //     }
-            // });
+                success: function (response) {
+                    successResponse(response);
+                },
+                error: function (e) {
+                    errorResponse(e)
+                }
+            });
         });
     });
     </script>

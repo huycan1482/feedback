@@ -130,3 +130,4 @@ Route::get('/', function () {
 });
 
 Route::get('/publicSurvey/{code}', 'HomeController@getPublicSurvey')->name('getPublicSurvey');
+Route::get('/postPublicSurvey', 'HomeController@postPublicSurvey')->name('postPublicSurvey');

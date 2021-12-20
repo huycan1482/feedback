@@ -116,7 +116,7 @@
                             <tr>
                                 <th class="text-center">STT</th>
                                 <th class="text-center">Nội dung</th>
-                                {{-- <th class="text-center"></th> --}}
+                                <th class="text-center">Loại câu hỏi</th>
                                 <th class="text-center">Người tạo</th>
                                 <th class="text-center">Trạng thái</th>
                                 <th class="text-center">Hành động</th>
@@ -127,6 +127,15 @@
                             <tr class="item-{{ $question->id }}">
                                 <td class="text-center">{{ $key + 1}}</td>
                                 <td class="text-center">{!! Str::limit($question->content, 50) !!}</td>
+                                <td class="text-center">
+                                    @if($question->type == 1)
+                                    {{'Chọn một đáp án'}}
+                                    @elseif($question->type == 2)
+                                    {{'Chọn nhiều đáp án'}}
+                                    @else 
+                                    {{'Viết câu trả lời'}}
+                                    @endif   
+                                </td>
                                 <td class="text-center">{{ (asset($question->userCreate->name)) ? $question->userCreate->name : 'Trống' }}</td>
                                 <td class="text-center">
                                     <span
@@ -180,7 +189,7 @@
                             <tr>
                                 <th class="text-center">STT</th>
                                 <th class="text-center">Nội dung</th>
-                                {{-- <th class="text-center"></th> --}}
+                                <th class="text-center">Loại câu hỏi</th>
                                 <th class="text-center">Người tạo</th>
                                 <th class="text-center">Trạng thái</th>
                                 <th class="text-center">Hành động</th>
@@ -191,6 +200,15 @@
                             <tr class="item-{{ $question->id }}">
                                 <td class="text-center">{{ $key + 1}}</td>
                                 <td class="text-center">{!! Str::limit($question->content, 50) !!}</td>
+                                <td class="text-center">
+                                    @if($question->type == 1)
+                                    {{'Chọn một đáp án'}}
+                                    @elseif($question->type == 2)
+                                    {{'Chọn nhiều đáp án'}}
+                                    @else 
+                                    {{'Viết câu trả lời'}}
+                                    @endif   
+                                </td>
                                 <td class="text-center">{{ (asset($question->userCreate->name)) ? $question->userCreate->name : 'Trống' }}</td>
                                 <td class="text-center">
                                     <span

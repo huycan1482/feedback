@@ -12,7 +12,7 @@ class Question extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        'code', 'content', 'slug', 'is_active', 'user_create', 'user_update'
+        'code', 'content', 'slug', 'type', 'is_active', 'user_create', 'user_update'
     ];
 
     protected static function boot() {

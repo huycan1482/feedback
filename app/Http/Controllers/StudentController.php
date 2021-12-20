@@ -62,7 +62,6 @@ class StudentController extends StudentRepository
      */
     public function store(StudentRequest $request)
     {
-
         $role = $this->getRoleUser();
 
         if (empty($role)) {
@@ -106,7 +105,7 @@ class StudentController extends StudentRepository
         } else {
 
             $data = $this->getUserDetails($id);
-
+            
             return response()->json(['student' => $student, 'data' => $data], 200);
         }
     }

@@ -153,6 +153,12 @@
 
                         <div class="checkbox form-group">
                             <label>
+                                <input type="checkbox" name="is_public" id="is_public" {{ ($feedback->is_public == 1) ? 'checked' : '' }}> Công khai
+                            </label>
+                        </div>
+
+                        <div class="checkbox form-group">
+                            <label>
                                 <input type="checkbox" name="is_active" id="is_active" {{ ($feedback->is_active == 1) ? 'checked' : '' }}> Kích hoạt
                             </label>
                         </div>
@@ -252,13 +258,9 @@
                         <tfoot>
     
                         </tfoot>
-                    </table>
-                    
+                    </table>  
                 </div>
-
-                
             </div>
-
         </div>
         
         <!--/.col (right) -->
@@ -339,10 +341,6 @@
                     errorResponse(e)
                 }
             });
-
-                
-            
-
         });
 
         $(document).on('click', '.btn-edit-question', function (e) {
@@ -409,12 +407,14 @@
             var code = $("input[name='code']").val();
             var time = $("input[name='time']").val();
             var is_active = ( $("input[name='is_active']").is(':checked') ) ? 1 : 0;
+            var is_public = ( $("input[name='is_public']").is(':checked') ) ? 1 : 0;
 
             data = {
                 name: name,
                 code: code,
                 time: time,
-                is_active : is_active
+                is_active : is_active,
+                is_public  : is_public,
             };
 
             var model = '/admin/feedback/' + $(this).attr('data-id');

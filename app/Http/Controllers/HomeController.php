@@ -41,6 +41,45 @@ class HomeController extends HomeRepository
         return view('feedback.home');
     }
 
+    public function getPublicSurvey($code) 
+    {
+        $feedBack = Feedback::where([['code', '=', $code], ['is_active', '=', 1], ['is_public', '=', 1]])->get()->first();
+
+        if (empty($feedBack)) {
+            // return redirect()->route();
+            dd("fail");
+        }        
+
+        foreach ($feedBack->question as $key => $item) {
+            $arr = [];
+
+            // dd($item);
+
+            foreach ($item->answers as $item2) {
+                $arr[] = [
+                    'id' => $item2->id,
+                    'content' => $item2->content,
+                ];
+            }
+
+            shuffle($arr);
+
+            $data[] = [
+                'id' => $item->id,
+                'code' => $item->code,
+                'content' => $item->content,
+                'type' => $item->type,
+                'answers' => $arr,
+            ];
+        }
+
+        shuffle($data);
+
+        return view('feedback.publicSurvey', [
+            'data' => $data,
+        ]);
+    }
+
     public function getCheckIn()
     {
 

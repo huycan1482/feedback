@@ -23,6 +23,7 @@ class UserController extends UserRepository
     public function index()
     {
         $currentUser = User::findOrFail(Auth()->user()->id);
+        // $currentUser->can();
 
         if ($currentUser->can('checkAdmin', User::class)) {
             $users = User::select('users.*')

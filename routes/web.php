@@ -96,7 +96,6 @@ Route::group(['prefix' => 'admin' , 'as' => 'admin.', 'middleware' => 'checkAdmi
     Route::get('checkIn/getLessons/{id}', 'CheckInController@getLessons')->name('checkIn.getLessons');
 });
 
-
 //UserLogin
 Route::get('login', 'Auth\LoginController@userLogin')->name('user.login');
 Route::post('postUserLogin', 'Auth\LoginController@postUserLogin')->name('user.postUserLogin');
@@ -129,3 +128,5 @@ Route::group(['middleware' => 'checkUserLogin'], function () {
 Route::get('/', function () {
     return redirect()->route('user.login');
 });
+
+Route::get('/publicSurvey/{code}', 'HomeController@getPublicSurvey')->name('getPublicSurvey');

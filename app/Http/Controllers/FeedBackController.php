@@ -169,6 +169,8 @@ class FeedBackController extends FeedbackRepository
             'user_update' => Auth::user()->id,
         ]);
 
+        // dd($request->all());
+
         if ($this->updateModel($id, $request->all())) {
             return response()->json(['mess' => 'Sửa bản ghi thành công', 200]);
         } else {

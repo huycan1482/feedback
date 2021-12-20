@@ -117,7 +117,13 @@
                             </div>
                         </div>
 
-                        <div class="checkbox form-group">
+                        <div class="checkbox form-group" id="form-is_public">
+                            <label>
+                                <input type="checkbox" name="is_public" id="is_public"> Công khai
+                            </label>
+                        </div>
+
+                        <div class="checkbox form-group" id="form-is_active">
                             <label>
                                 <input type="checkbox" name="is_active" id="is_active"> Kích hoạt
                             </label>
@@ -294,6 +300,7 @@
             var code = $('[name="code"]').val();
             var time = $('[name="time"]').val();
             var is_active = ( $("input[name='is_active']").is(':checked') ) ? 1 : 0;
+            var is_public = ( $("input[name='is_public']").is(':checked') ) ? 1 : 0;
 
             $('[class*="question-"]').children('td:last-child').each(function (index, value) {
                 questionsId.push($(this).children('div').attr('data-id'));
@@ -304,6 +311,7 @@
                 code: code,
                 time : time,
                 is_active : is_active,
+                is_public : is_public,
                 question_id : questionsId
             };
 

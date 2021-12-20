@@ -12,7 +12,7 @@ class FeedBack extends Model
     protected $table = 'feedbacks';
 
     protected $fillable = [
-        'name', 'slug', 'code', 'time', 'is_active', 'user_create', 'user_update', 'created_at', 'updated_at'
+        'name', 'slug', 'code', 'time', 'is_active', 'is_public', 'user_create', 'user_update', 'created_at', 'updated_at'
     ];
 
     protected static function boot() {

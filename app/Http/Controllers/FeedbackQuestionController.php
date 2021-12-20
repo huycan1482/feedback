@@ -40,7 +40,7 @@ class FeedbackQuestionController extends FeedbackQuestionRepository
     public function store(FeedbackQuestionRequest $request)
     {
 
-        if ( !$this->checkFeedbackQuestionExists($request->input('feedback_id'), $request->input('question_id')) ) {
+        if ( $this->checkFeedbackQuestionExists($request->input('feedback_id'), $request->input('question_id')) ) {
             return response()->json([ 'mess' => 'Thêm bản ghi lỗi, câu hỏi đã tồn tại'], 400);
         } else {
             $request->merge([
@@ -88,6 +88,8 @@ class FeedbackQuestionController extends FeedbackQuestionRepository
      */
     public function update(Request $request, $id)
     {
+
+        dd($request->all());
         // $feedbackQuestion = FeedbackQuestion::find($id);
 
         // if (empty($feedbackQuestion)) {

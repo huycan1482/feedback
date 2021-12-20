@@ -103,7 +103,19 @@
                             </div>
                         </div>
 
-                        <div class="form-group" style="display: block;">
+                        <div class="form-group" id="form-type">
+                            <label for="">Loại câu hỏi</label>
+                            <div>
+                                <select class="form-control" name="type">
+                                    <option value="0" disabled selected>--Chọn--</option>
+                                    <option value="1" {{ ($question->type == '1') ? ' selected="selected"' : '' }}>Chọn 1 đáp án</option>
+                                    <option value="2" {{ ($question->type == '2') ? ' selected="selected"' : '' }}>Chọn nhiều đáp án</option>
+                                    <option value="3" {{ ($question->type == '3') ? ' selected="selected"' : '' }}>Viết câu trả lời</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group list-answer" style="display: block;">
                             <label for="">
                                 <span>Danh sách câu trả lời </span>
                                 <span class="label label-success" data-toggle="modal" data-target="#modal-default2" style="margin-left: 10px; cursor: pointer;"> Thêm đáp án</span>
@@ -113,7 +125,7 @@
                                 <div data-id="{{ $answer->id }}">
                                     <input type="radio" class="minimal" checked>
                                     <div class="answer-content">
-                                        <p class="" data-id="{{ $answer->id }}">{{$answer->content}} / ({{$answer->point}}%)</p>
+                                        <p class="" data-id="{{ $answer->id }}">{{$answer->content}}</p>
                                     </div>
                                     <div class="">
                                         <button type="button" class="btn btn-warning btn-detail" data-toggle="modal" data-target="#modal-default1" title="Chi tiết" data-id="{{$answer->id}}" style="margin-right: 5px">
@@ -189,17 +201,13 @@
                     });
 
                 } else {
-                    var message = "<div class='pad margin no-print' id='message' ><div class='alert alert-danger alert-dismissible'>"
-                        +"<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>×</button><h4><i class='icon fa fa-check'></i> Thông báo !</h4> Tối đa 4 câu trả lời </div></div>";
-
+                    var message = "<div class='pad margin no-print' id='message' ><div class='alert alert-danger alert-dismissible'>"+"<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>×</button><h4><i class='icon fa fa-check'></i> Thông báo !</h4> Tối đa 4 câu trả lời </div></div>";
                     if ( $('#message') ) {
                         $('#message').remove();
                     }
-
                     $('.form-modal').before(message);
                 }
             }
-            
         });
 
         $(document).on('click', '.btn-detail', function (e) {
@@ -271,10 +279,19 @@
             });
         });
 
+        $(document).on('change', "select[name='type']", function (e) {
+            ($(this).val() == 3) ? $('.list-answer').hide():  $('.list-answer').show();
+        }); 
+
+        if ($("select[name='type']").val() == "3") {
+            $('.list-answer').hide();
+        }
+
         $(document).on('click', '.btn-update-question', function (e) {
             var code = $("input[name='code']").val();
             var question_id = $('.btn-update-question').attr('data-id');
             var content = $("input[name='content']").val();
+            var type =  $("select[name='type']").val();
             var is_active = ( $("input[name*='is_active']").is(':checked') ) ? 1 : 0;
 
             $.ajax({
@@ -283,6 +300,7 @@
                 data: {
                     'code' : code,
                     'content' : content,
+                    'type' : type,
                     'is_active' : is_active,
                 },
                 dataType: "json",

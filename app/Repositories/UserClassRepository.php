@@ -5,7 +5,6 @@ namespace App\Repositories;
 use App\Repositories\EloquentRepository;
 
 class UserClassRepository extends EloquentRepository {
-
     /**
      * get model
      * @return string

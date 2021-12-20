@@ -47,7 +47,8 @@ class QuestionController extends QuestionRepository
      */
     public function create()
     {
-        return view('admin.question.create');
+        // return view('admin.question.create');
+        return view('admin.question.create1');
     }
 
     /**
@@ -66,16 +67,19 @@ class QuestionController extends QuestionRepository
             'created_at' =>  $created_time,
         ]);
 
+        $request['content'] = $request->trueContent;
+
         DB::beginTransaction();
 
         try {
-            if (!$this->create($request->all()))
+            if (!$this->createModel($request->all()))
                 throw new Exception();
 
             $latestQuestion = $this->getLatestQuestion($created_time);
 
-            if (!$this->createAnswers($request->input('answers'), $request->input('code'), $latestQuestion))
-                throw new Exception();
+            if ($request['type'] != 3)
+                if (!$this->createAnswers($request->input('answers'), $request->input('code'), $latestQuestion))
+                    throw new Exception();
 
             DB::commit();
         } catch (Exception $e) {
@@ -121,7 +125,7 @@ class QuestionController extends QuestionRepository
 
         $answers = $this->getAnswersBelongsTo($id);
 
-        return view('admin.question.edit', [
+        return view('admin.question.edit1', [
             'question' => $question,
             'answers' => $answers,
         ]);
@@ -134,11 +138,13 @@ class QuestionController extends QuestionRepository
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(QuestionRequest $request, $id)
     {
         $request->merge([
             'user_update' => Auth::user()->id,
         ]);
+
+        dd($request->all());
 
         if ($this->updateModel($id, $request->all())) {
             return response()->json(['mess' => 'Sửa bản ghi thành công', 200]);

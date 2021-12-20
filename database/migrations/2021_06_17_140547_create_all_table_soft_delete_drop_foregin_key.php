@@ -162,6 +162,7 @@ class CreateAllTableSoftDeleteDropForeginKey extends Migration
         //     $table->string('code', 255);
         //     $table->integer('time');
         //     $table->tinyInteger('is_active');
+        //     $table->integer('is_public');
         //     $table->unsignedBigInteger('user_create')->nullable();
         //     $table->unsignedBigInteger('user_update')->nullable();
         //     $table->timestamps();
@@ -174,6 +175,7 @@ class CreateAllTableSoftDeleteDropForeginKey extends Migration
         //     $table->string('code', 255);
         //     $table->string('content', 255);
         //     $table->string('slug', 255);
+        //     $table->tinyInteger('type');
         //     $table->tinyInteger('is_active');
         //     $table->unsignedBigInteger('user_create')->nullable();
         //     $table->unsignedBigInteger('user_update')->nullable();
@@ -207,6 +209,7 @@ class CreateAllTableSoftDeleteDropForeginKey extends Migration
         //     $table->string('code', 255);
         //     $table->text('content');
         //     $table->float('point');
+        //     $table->tinyInteger('type');
         //     // $table->tinyInteger('type');
         //     // $table->tinyInteger('is_true');
         //     $table->unsignedBigInteger('user_create')->nullable();
@@ -276,6 +279,25 @@ class CreateAllTableSoftDeleteDropForeginKey extends Migration
         //         ->onDelete('cascade');
 
         // });
+
+        Schema::create('anonymous_users', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('user_identity')->nullable();
+            $table->string('name', 255);
+            $table->string('email', 255);
+            $table->string('phone', 255);
+            $table->string('address', 255);
+            $table->string('facebook_link', 255);
+
+
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('user_identity')
+                ->references('id')->on('users')
+                ->onDelete('cascade');
+
+        });
     }
 
     /**

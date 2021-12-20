@@ -86,7 +86,6 @@
                 </div>
                 <!-- /.box-header -->
                 <!-- form start -->
-                {{-- {{ dd(route('admin.category.store')) }} --}}
                 <form enctype="multipart/form-data">
                     <div class="box-body">
 
@@ -104,7 +103,19 @@
                             </div>
                         </div>
 
-                        <div class="">
+                        <div class="form-group" id="form-type">
+                            <label for="">Loại câu hỏi</label>
+                            <div>
+                                <select class="form-control" name="type">
+                                    <option value="0" disabled selected>--Chọn--</option>
+                                    <option value="1">Chọn 1 đáp án</option>
+                                    <option value="2">Chọn nhiều đáp án</option>
+                                    <option value="3">Viết câu trả lời</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="list-answer">
                             <label for="">
                                 <span>Danh sách câu trả lời </span>
                                 <span class="label label-success" data-toggle="modal" data-target="#modal-default1" style="margin-left: 10px; cursor: pointer;"> Thêm đáp án</span>
@@ -112,7 +123,6 @@
                             <div class="answer">
                                 <div></div>
                             </div>
-
                         </div>
                         
                         <div class="checkbox form-group" id="form-is_active">
@@ -202,9 +212,15 @@
             $('div.data-id-' + delete_id).remove();
         });
 
+        $("select[name='type']").change(function(e) {
+            if ($(this).val() == 3)
+                $('.list-answer').hide();
+        });
+
         $('.add-question').click(function (e) {
             var code = $("input[name='code']").val();
             var content = $("input[name='content']").val();
+            var type =  $("select[name='type']").val();
             var is_active = ( $("input[name*='is_active']").is(':checked') ) ? 1 : 0;
             var answers = [];
 
@@ -222,6 +238,7 @@
                 data: {
                     'code' : code,
                     'content' : content,
+                    'type' : type,
                     'answers' : answers,
                     'is_active' : is_active,
                 },
@@ -233,14 +250,10 @@
                     errorResponse(e)
                 }
             });
-        }); 
-
-        
+        });         
     });
 
-    
 
-    
 </script>
 
 @endsection

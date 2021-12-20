@@ -323,12 +323,10 @@
         $('.datetimepicker3').datetimepicker({
             format: 'LT'
         });
-        
-
+    
         $('#calendar').fullCalendar({
             // put your options and callbacks here
             events: [
-
                 @if(isset($classes)) 
                 {!! $events !!}
                 @endif
@@ -362,9 +360,7 @@
             var id = $(this).attr('data-id');
 
             // var inputs_checkIn = $("[name*='"+ today +"']:checked");
-
             var inputs_checkIn = $("[name*='05-08-2021']:checked");
-
 
             var note = $('#note').val();
 
@@ -401,6 +397,8 @@
                 note: note,
                 start_at: start_at
             }
+
+            // console.log(data);
 
             $.ajax({
                 type: 'POST',

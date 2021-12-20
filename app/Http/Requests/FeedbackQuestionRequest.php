@@ -73,11 +73,12 @@ class FeedbackQuestionRequest extends FormRequest
      */
     public function rules()
     {
-        // if ($this->feedbackQuestion) {
+        // if ($this->feedbackQuestion) {   
         //     return [
 
         //     ];
         // }
+
 
         return [
             'question_id' => 'required|exists:questions,id',

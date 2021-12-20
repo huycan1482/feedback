@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Question;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -46,7 +47,7 @@ class QuestionRequest extends FormRequest
 
     public function checkQuestion()
     {
-        $checkQuestion = Queue::find($this->question);
+        $checkQuestion = Question::find($this->question);
 
         if (empty($checkQuestion)) {
             return false;
@@ -72,25 +73,51 @@ class QuestionRequest extends FormRequest
      */
     public function rules()
     {
-        // dd($this->all());
         $this->request->add([
-            'trueContent' => $this->input('name'),
-            'content' => Str::slug($this->input('name')),
-            'slug' => Str::slug($this->input('name')),
+            'trueContent' => $this->input('content'),
+            'content' => Str::slug($this->input('content')),
+            'slug' => Str::slug($this->input('content')),
         ]);
 
         if ($this->question) {
+
             return [
                 'content' => 'required|unique:questions,slug,' . $this->question,
                 'code' => 'required|unique:questions,code,' . $this->question,
+                'content' => 'bail|required|unique:questions,slug',
+                'is_active' => 'bail|integer|boolean',
+                'answers' => 'bail|required_unless:type,==,3|array|size:4',
+                'answers.*.value' => [
+                    'bail',
+                    'string',
+                    function ($attribute, $value, $fail) {
+                        if ($value == '') {
+                            return $this->mess = ("Thêm bản ghi lỗi, yêu cầu không bỏ trống câu trả lời");
+                        }
+                    }, 'required_unless:type,==,3',
+                ],
+                'answers' => 'required_unless:type,==,3',[
+                    function ($attribute, $value, $fail) {
+                        foreach ($value as $item) {
+                            $point[] = $item['point'];
+                            $content[] = $item['value'];
+                        }
+
+                        if (count($content) !== count(array_unique($content)))
+                            return $this->mess = ("Thêm bản ghi lỗi, câu trả lời trùng");
+                        if (count($point) !== count(array_unique($point)))
+                            return $this->mess = ("Thêm bản ghi lỗi, dữ liệu của câu trả lời không phù hợp");
+                    },
+                ],
             ];
         }
 
         return [
             'code' => 'bail|required|unique:questions,code',
+            'type' => 'bail|required|min:1|max:3|integer',
             'content' => 'bail|required|unique:questions,slug',
             'is_active' => 'bail|integer|boolean',
-            'answers' => 'bail|required|array|size:4',
+            'answers' => 'bail|required_unless:type,==,3|array|size:4',
 
             'answers.*.value' => [
                 'bail',
@@ -99,19 +126,19 @@ class QuestionRequest extends FormRequest
                     if ($value == '') {
                         return $this->mess = ("Thêm bản ghi lỗi, yêu cầu không bỏ trống câu trả lời");
                     }
-                }, 'required',
+                }, 'required_unless:type,==,3',
             ],
-            'answers.*.point' => [
-                'bail',
-                'string',
-                function ($attribute, $value, $fail) {
-                    $arrVal = ['100', '66.66', '33.33', '0'];
-                    if (!in_array($value, $arrVal)) {
-                        return $this->mess = ("Thêm bản ghi lỗi, dữ liệu của câu trả lời không phù hợp");
-                    }
-                }, 'required',
-            ],
-            'answers' => [
+            // 'answers.*.point' => [
+            //     'bail',
+            //     'string',
+            //     function ($attribute, $value, $fail) {
+            //         $arrVal = ['100', '66.66', '33.33', '0'];
+            //         if (!in_array($value, $arrVal)) {
+            //             return $this->mess = ("Thêm bản ghi lỗi, dữ liệu của câu trả lời không phù hợp");
+            //         }
+            //     }, 'required',
+            // ],
+            'answers' => 'required_unless:type,==,3',[
                 function ($attribute, $value, $fail) {
                     foreach ($value as $item) {
                         $point[] = $item['point'];
@@ -135,6 +162,12 @@ class QuestionRequest extends FormRequest
                 'content.unique' => 'Dữ liệu bị trùng',
                 'code.required' => 'Yêu cầu không để trống',
                 'code.unique' => 'Dữ liệu bị trùng',
+                'type.required' => 'Yêu cầu không để trống',
+                'is_active.integer' => 'Sai kiểu dữ liệu',
+                'is_active.boolean' => 'Sai kiểu dữ liệu',
+                'answers.required' => 'Yêu cầu không để trống',
+                'answers.size' => 'Yêu cầu có đủ 4 câu trả lời',
+                'answers.array' => 'Sai kiểu dữ liệu',
             ];
         }
 

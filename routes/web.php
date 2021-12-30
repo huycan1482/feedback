@@ -94,6 +94,10 @@ Route::group(['prefix' => 'admin' , 'as' => 'admin.', 'middleware' => 'checkAdmi
     Route::get('checkIn/getCourses/{id}', 'CheckInController@getCourses')->name('checkIn.getCourses');
     Route::get('checkIn/getClasses/{id}', 'CheckInController@getClasses')->name('checkIn.getClasses');
     Route::get('checkIn/getLessons/{id}', 'CheckInController@getLessons')->name('checkIn.getLessons');
+
+    Route::resource('survey', 'SurveyController');
+    Route::get('survey/forceDelete/{id}', 'SurveyController@forceDelete')->name('survey.forceDelete');
+    Route::get('survey/restore/{id}', 'SurveyController@restore')->name('survey.restore');
 });
 
 //UserLogin
@@ -130,4 +134,4 @@ Route::get('/', function () {
 });
 
 Route::get('/publicSurvey/{code}', 'HomeController@getPublicSurvey')->name('getPublicSurvey');
-Route::get('/postPublicSurvey', 'HomeController@postPublicSurvey')->name('postPublicSurvey');
+Route::post('/postPublicSurvey', 'HomeController@postPublicSurvey')->name('postPublicSurvey');

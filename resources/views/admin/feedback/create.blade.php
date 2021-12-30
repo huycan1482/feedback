@@ -103,24 +103,18 @@
                             </div>
                         </div>
 
-                        <div class="form-group" id="form-code">
+                        {{-- <div class="form-group" id="form-code">
                             <label for="">Mã bài đánh giá</label>
                             <div>
                                 <input name="code" type="text" class="form-control" placeholder="Mã bài đánh giá">
                             </div>
-                        </div>
+                        </div> --}}
 
                         <div class="form-group" id="form-time">
                             <label for="">Thời gian đánh giá (phút)</label>
                             <div>
                                 <input name="time" type="number" class="form-control" placeholder="Thời gian đánh giá">
                             </div>
-                        </div>
-
-                        <div class="checkbox form-group" id="form-is_public">
-                            <label>
-                                <input type="checkbox" name="is_public" id="is_public"> Công khai
-                            </label>
                         </div>
 
                         <div class="checkbox form-group" id="form-is_active">
@@ -297,10 +291,9 @@
         $(document).on('click', '.add-feedback', function (e) {
             var questionsId = [];
             var name = $('[name="name"]').val();
-            var code = $('[name="code"]').val();
+            // var code = $('[name="code"]').val();
             var time = $('[name="time"]').val();
             var is_active = ( $("input[name='is_active']").is(':checked') ) ? 1 : 0;
-            var is_public = ( $("input[name='is_public']").is(':checked') ) ? 1 : 0;
 
             $('[class*="question-"]').children('td:last-child').each(function (index, value) {
                 questionsId.push($(this).children('div').attr('data-id'));
@@ -308,10 +301,9 @@
 
             data = {
                 name: name,
-                code: code,
+                // code: code,
                 time : time,
                 is_active : is_active,
-                is_public : is_public,
                 question_id : questionsId
             };
 

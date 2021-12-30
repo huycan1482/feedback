@@ -89,12 +89,12 @@
                     @csrf
                     <div class="box-body">
 
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label for="">Mã câu hỏi</label>
                             <div>
                                 <input name="code" type="text" class="form-control" placeholder="Mã câu hỏi" value="{{$question->code}}">
                             </div>
-                        </div>
+                        </div> --}}
 
                         <div class="form-group">
                             <label for="">Nội dung câu hỏi</label>
@@ -106,7 +106,7 @@
                         <div class="form-group" id="form-type">
                             <label for="">Loại câu hỏi</label>
                             <div>
-                                <select class="form-control" name="type">
+                                <select class="form-control" name="type" disabled>
                                     <option value="0" disabled selected>--Chọn--</option>
                                     <option value="1" {{ ($question->type == '1') ? ' selected="selected"' : '' }}>Chọn 1 đáp án</option>
                                     <option value="2" {{ ($question->type == '2') ? ' selected="selected"' : '' }}>Chọn nhiều đáp án</option>
@@ -145,7 +145,6 @@
                                 <input type="checkbox" name="is_active" value="1" {{ ( $question->is_active == 1 ) ? 'checked' : '' }}> Kích hoạt
                             </label>
                         </div>
-                        
                     </div>
                     
                     <!-- /.box-body -->
@@ -287,8 +286,15 @@
             $('.list-answer').hide();
         }
 
+        $("select[name='type']").change(function(e) {
+            if ($(this).val() == 3)
+                $('.list-answer').hide();
+            else
+                $('.list-answer').show();
+        });
+
         $(document).on('click', '.btn-update-question', function (e) {
-            var code = $("input[name='code']").val();
+            // var code = $("input[name='code']").val();
             var question_id = $('.btn-update-question').attr('data-id');
             var content = $("input[name='content']").val();
             var type =  $("select[name='type']").val();
@@ -298,7 +304,7 @@
                 type: 'PUT',
                 url: base_url + '/admin/question/' + question_id,
                 data: {
-                    'code' : code,
+                    // 'code' : code,
                     'content' : content,
                     'type' : type,
                     'is_active' : is_active,

@@ -13,17 +13,17 @@ class CreateTableQuestionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('questions', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('code', 255);
-            $table->string('content', 255);
-            $table->string('slug', 255);
-            $table->tinyInteger('is_active');
-            $table->unsignedBigInteger('user_create')->nullable();
-            $table->unsignedBigInteger('user_update')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        // Schema::create('questions', function (Blueprint $table) {
+        //     $table->bigIncrements('id');
+        //     $table->string('code', 255);
+        //     $table->string('content', 255);
+        //     $table->string('slug', 255);
+        //     $table->tinyInteger('is_active');
+        //     $table->unsignedBigInteger('user_create')->nullable();
+        //     $table->unsignedBigInteger('user_update')->nullable();
+        //     $table->timestamps();
+        //     $table->softDeletes();
+        // });
     }
 
     /**
@@ -33,6 +33,6 @@ class CreateTableQuestionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('questions');
+        // Schema::dropIfExists('questions');
     }
 }

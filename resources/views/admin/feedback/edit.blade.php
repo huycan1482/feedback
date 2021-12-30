@@ -137,24 +137,18 @@
                             </div>
                         </div>
 
-                        <div class="form-group" id="form-code">
+                        {{-- <div class="form-group" id="form-code">
                             <label for="">Mã bài đánh giá</label>
                             <div>
                                 <input name="code" type="text" class="form-control" placeholder="Mã bài đánh giá" value="{{ $feedback->code }}">
                             </div>
-                        </div>
+                        </div> --}}
 
                         <div class="form-group" id="form-time">
-                            <label for="">Thời gian đánh giá</label>
+                            <label for="">Thời gian đánh giá (phút)</label>
                             <div>
                                 <input name="time" type="number" class="form-control" placeholder="Thời gian đánh giá" value="{{ $feedback->time }}">
                             </div>
-                        </div>
-
-                        <div class="checkbox form-group">
-                            <label>
-                                <input type="checkbox" name="is_public" id="is_public" {{ ($feedback->is_public == 1) ? 'checked' : '' }}> Công khai
-                            </label>
                         </div>
 
                         <div class="checkbox form-group">
@@ -404,17 +398,13 @@
         $(document).on('click', '.update-feedback', function (e) {
 
             var name = $("input[name='name']").val();
-            var code = $("input[name='code']").val();
             var time = $("input[name='time']").val();
             var is_active = ( $("input[name='is_active']").is(':checked') ) ? 1 : 0;
-            var is_public = ( $("input[name='is_public']").is(':checked') ) ? 1 : 0;
 
             data = {
                 name: name,
-                code: code,
                 time: time,
                 is_active : is_active,
-                is_public  : is_public,
             };
 
             var model = '/admin/feedback/' + $(this).attr('data-id');

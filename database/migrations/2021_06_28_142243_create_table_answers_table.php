@@ -13,23 +13,23 @@ class CreateTableAnswersTable extends Migration
      */
     public function up()
     {
-        Schema::create('answers', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('question_id');
-            $table->string('code', 255);
-            $table->text('content');
-            $table->float('point');
-            // $table->tinyInteger('type');
-            // $table->tinyInteger('is_true');
-            $table->unsignedBigInteger('user_create')->nullable();
-            $table->unsignedBigInteger('user_update')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
+        // Schema::create('answers', function (Blueprint $table) {
+        //     $table->bigIncrements('id');
+        //     $table->unsignedBigInteger('question_id');
+        //     $table->string('code', 255);
+        //     $table->text('content');
+        //     $table->float('point');
+        //     // $table->tinyInteger('type');
+        //     // $table->tinyInteger('is_true');
+        //     $table->unsignedBigInteger('user_create')->nullable();
+        //     $table->unsignedBigInteger('user_update')->nullable();
+        //     $table->timestamps();
+        //     $table->softDeletes();
 
-            $table->foreign('question_id')
-                ->references('id')->on('questions')
-                ->onDelete('cascade');
-        });
+        //     $table->foreign('question_id')
+        //         ->references('id')->on('questions')
+        //         ->onDelete('cascade');
+        // });
 
     }
 
@@ -40,6 +40,6 @@ class CreateTableAnswersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('answers');
+        // Schema::dropIfExists('answers');
     }
 }

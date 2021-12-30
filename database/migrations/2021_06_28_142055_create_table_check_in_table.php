@@ -13,22 +13,22 @@ class CreateTableCheckInTable extends Migration
      */
     public function up()
     {
-        Schema::create('check_in', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('lesson_id');
-            $table->tinyInteger('is_check');
-            $table->timestamps();
-            $table->softDeletes();
+        // Schema::create('check_in', function (Blueprint $table) {
+        //     $table->bigIncrements('id');
+        //     $table->unsignedBigInteger('user_id');
+        //     $table->unsignedBigInteger('lesson_id');
+        //     $table->tinyInteger('is_check');
+        //     $table->timestamps();
+        //     $table->softDeletes();
 
-            $table->foreign('user_id')
-                ->references('id')->on('users')
-                ->onDelete('cascade');
+        //     $table->foreign('user_id')
+        //         ->references('id')->on('users')
+        //         ->onDelete('cascade');
 
-            $table->foreign('lesson_id')
-                ->references('id')->on('lessons')
-                ->onDelete('cascade');
-        });
+        //     $table->foreign('lesson_id')
+        //         ->references('id')->on('lessons')
+        //         ->onDelete('cascade');
+        // });
     }
 
     /**
@@ -38,6 +38,6 @@ class CreateTableCheckInTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('check_in');
+        // Schema::dropIfExists('check_in');
     }
 }

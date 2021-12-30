@@ -75,13 +75,13 @@ class FeedBackController extends FeedbackRepository
         DB::beginTransaction();
 
         try {
-            if (!$this->createModel($request->all())) {
+            if (!$this->createModelByEloquent($request->all())) {
                 return new Exception;
             }
 
-            $latestFeedBack = $this->getLatestFeedBack($created_time);
+            $latest_feedback_id = $this->getLatestFeedBackId($created_time);
 
-            if (!$this->createFeedbackQuestion($request->input('question_id'), $latestFeedBack)) {
+            if (!$this->createFeedbackQuestion($request->input('question_id'), $latest_feedback_id)) {
                 return new Exception;
             }
 
@@ -168,8 +168,6 @@ class FeedBackController extends FeedbackRepository
             'name' => $request->input('trueName'),
             'user_update' => Auth::user()->id,
         ]);
-
-        // dd($request->all());
 
         if ($this->updateModel($id, $request->all())) {
             return response()->json(['mess' => 'Sửa bản ghi thành công', 200]);

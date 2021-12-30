@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\AnonymousUser;
 use App\CheckIn;
 use App\ClassRoom;
 use App\FeedBack;
 use App\Http\Requests\postCheckInRequest;
 use App\Lesson;
 use App\Repositories\HomeRepository;
+use App\SurveyAnswer;
+use App\SurveyAnswerDetail;
 use App\User;
 use App\UserAnswer;
 use App\UserAnswerDetail;
@@ -72,17 +75,74 @@ class HomeController extends HomeRepository
 
         return view('feedback.publicSurvey', [
             'data' => $data,
+            'feedback_id' => $feedBack->id,
         ]);
     }
 
     public function postPublicSurvey(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
+        $validator = Validator::make($request->all(), [
+            'feedback_id' => 'required|exists:feedbacks,id',
+            'identity' => 'nullable|exists:users,user_identity',
+            'name' => 'required|string:255',
+            'email' => 'required|email',
+            'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
+            'address' => 'nullable|string:255',
+            'facebook_link' => 'nullable|string:255',
+            'note' => 'nullable|string:255',
+            'feedback_text' => 'nullable|array',
+            'feedback_text.*.question_id' => 'required_unless:feedback_text,null|exists:questions,id',
+            'feedback_text.*.question_type' => 'required_unless:feedback_text,null|min:1|max:3',
+            'feedback_text.*.answer' => 'required_unless:feedback_text,null',
+            'feedback_radio' => 'nullable|array',
+            'feedback_radio.*question_id' => 'required_unless:feedback_radio,null|exists:questions,id',
+            'feedback_radio.*question_type' => 'required_unless:feedback_radio,null|min:1|max:3',
+            'feedback_radio.*answer_id' => 'required_unless:feedback_radio,null|exists:answers,id',
+            'feedback_checkbox' => 'nullable|array',
+            'feedback_checkbox.*question_id' => 'required_unless:feedback_checkbox,null|exists:questions,id',
+            'feedback_checkbox.*question_type' => 'required_unless:feedback_checkbox,null|min:1|max:3',
+            'feedback_checkbox.*answer_id' => 'required_unless:feedback_checkbox,null|exists:answers,id',
+        ], [
+            '' => ''
+        ]);
+
+        $errs = $validator->errors();
+
+        if ( $validator->fails() ) {
+            return response()->json(['errors' => $errs, 'mess' => 'Thêm bản ghi lỗi'], 400);
+        } else {
+            DB::beginTransaction();
+            try {
+                $anonymous_user = $this->storeAnonymousUser($request->all());
+
+                if ($anonymous_user != 0) {
+                    $survey_answer = $this->storeSurveyAnswer($request->all(), $anonymous_user);
+
+                    if ($survey_answer != 0) {
+                        $survey_answer_detail = $this->storeSurveyAnswerDetail($request->all(), $survey_answer);
+
+                        if ($survey_answer_detail == 0) throw new Exception();
+
+                    } else {
+                        throw new Exception();
+                    }
+                } else {
+                    throw new Exception();
+                }
+                
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return response()->json(['mess' => 'Gửi bài khảo sát lỗi'], 502);
+            }
+
+            return response()->json(['mess' => 'Gửi bài khảo sát thành công', 200]);            
+        }
     }
 
     public function getCheckIn()
     {
-
         $currentUser = User::findOrFail(Auth()->user()->id);
 
         if ($currentUser->can('viewCheckIn', User::class)) {
@@ -170,9 +230,6 @@ class HomeController extends HomeRepository
             $late = $this->getLateStudentsByClassId($id);
 
             $not_present = $this->getNotPresentStudentsByClassId($id);
-
-
-
 
             return view('feedback.checkIn', [
                 'classes' => $classes,

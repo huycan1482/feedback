@@ -73,18 +73,20 @@ class QuestionRequest extends FormRequest
      */
     public function rules()
     {
+        
         $this->request->add([
             'trueContent' => $this->input('content'),
             'content' => Str::slug($this->input('content')),
             'slug' => Str::slug($this->input('content')),
         ]);
 
+        // dd($this->request);
+
         if ($this->question) {
 
             return [
-                'content' => 'required|unique:questions,slug,' . $this->question,
-                'code' => 'required|unique:questions,code,' . $this->question,
-                'content' => 'bail|required|unique:questions,slug',
+                'content' => 'required|unique:questions,content,' . $this->question,
+                // 'code' => 'required|unique:questions,code,' . $this->question,
                 'is_active' => 'bail|integer|boolean',
                 'answers' => 'bail|required_unless:type,==,3|array|size:4',
                 'answers.*.value' => [
@@ -113,9 +115,9 @@ class QuestionRequest extends FormRequest
         }
 
         return [
-            'code' => 'bail|required|unique:questions,code',
+            // 'code' => 'bail|required|unique:questions,code',
             'type' => 'bail|required|min:1|max:3|integer',
-            'content' => 'bail|required|unique:questions,slug',
+            'content' => 'required|unique:questions,content',
             'is_active' => 'bail|integer|boolean',
             'answers' => 'bail|required_unless:type,==,3|array|size:4',
 
@@ -124,6 +126,7 @@ class QuestionRequest extends FormRequest
                 'string',
                 function ($attribute, $value, $fail) {
                     if ($value == '') {
+
                         return $this->mess = ("Thêm bản ghi lỗi, yêu cầu không bỏ trống câu trả lời");
                     }
                 }, 'required_unless:type,==,3',

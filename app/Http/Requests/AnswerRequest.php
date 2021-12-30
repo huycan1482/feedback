@@ -72,7 +72,7 @@ class AnswerRequest extends FormRequest
             return [
                 // 'answer_content' => 'required|unique:answers,content',
                 'content' => 'required|string',
-                'answer_is_active' => 'integer|boolean',
+                'answer_is_active' => ' |boolean',
             ];
         }
 

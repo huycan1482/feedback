@@ -281,24 +281,82 @@ class CreateAllTableSoftDeleteDropForeginKey extends Migration
 
         // });
 
-        Schema::create('anonymous_users', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('user_identity')->nullable();
-            $table->string('name', 255);
-            $table->string('email', 255);
-            $table->string('phone', 255);
-            $table->string('address', 255);
-            $table->string('facebook_link', 255);
+        // Schema::create('anonymous_users', function (Blueprint $table) {
+        //     $table->bigIncrements('id');
+        //     $table->unsignedBigInteger('user_identity')->nullable();
+        //     $table->string('name', 255);
+        //     $table->string('email', 255);
+        //     $table->string('phone', 255);
+        //     $table->string('address', 255)->nullable();
+        //     $table->string('facebook_link', 255)->nullable();
 
+        //     $table->timestamps();
+        //     $table->softDeletes();
+
+        //     $table->foreign('user_identity')
+        //         ->references('id')->on('users')
+        //         ->onDelete('cascade');
+
+        // });
+
+        Schema::create('surveys', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('code', 255)->unique();
+            $table->unsignedBigInteger('feedback_id');
+            $table->dateTime('start_at');
+            $table->dateTime('end_at');
+            $table->tinyInteger('is_active');
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('feedback_id')
+                ->references('id')->on('feedbacks')
+                ->onDelete('cascade');
+        });
+
+        Schema::create('survey_answers', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('anonymous_user_id');
+            $table->unsignedBigInteger('survey_id');
+            $table->text('opinion')->nullable();
+            $table->tinyInteger('status');
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('anonymous_user_id')
+                ->references('id')->on('anonymous_users')
+                ->onDelete('cascade');
+
+            $table->foreign('survey_id')
+                ->references('id')->on('surveys')
+                ->onDelete('cascade');
+        });
+
+        Schema::create('survey_answer_details', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('survey_answer_id');
+            $table->unsignedBigInteger('question_id');
+            $table->unsignedBigInteger('answer_id')->nullable();
+            $table->integer('question_type');
+            $table->text('answer_text')->nullable();
 
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('user_identity')
-                ->references('id')->on('users')
+            $table->foreign('survey_answer_id')
+                ->references('id')->on('survey_answers')
+                ->onDelete('cascade');
+
+            $table->foreign('question_id')
+                ->references('id')->on('questions')
+                ->onDelete('cascade');
+
+            $table->foreign('answer_id')
+                ->references('id')->on('answers')
                 ->onDelete('cascade');
 
         });
+
     }
 
     /**

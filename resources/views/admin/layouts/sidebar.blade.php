@@ -34,6 +34,29 @@
 
             <li class="treeview">
                 <a href="#">
+                    <i class="fas fa-list"></i> <span> Khảo sát </span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li class="">
+                        <a href="{{ route('admin.getFeedback') }}">
+                            <i class="fas fa-tasks"></i>
+                            <span>Tạo, kích hoạt đánh giá</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{{ route('admin.getDashboard') }}">
+                            <i class="fas fa-clipboard-list"></i>
+                            <span> Kết quả Khảo sát </span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="treeview">
+                <a href="#">
                     <i class="fas fa-list"></i> <span> Đánh giá </span>
                     <span class="pull-right-container">
                         <i class="fa fa-angle-left pull-right"></i>

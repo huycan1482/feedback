@@ -13,24 +13,24 @@ class CreateTableFeedbackUserAnswersTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_answers', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('feedBackDetail_id');
-            $table->text('opinion')->nullable();
-            $table->tinyInteger('status');
-            $table->timestamps();
-            $table->softDeletes();
+        // Schema::create('user_answers', function (Blueprint $table) {
+        //     $table->bigIncrements('id');
+        //     $table->unsignedBigInteger('user_id');
+        //     $table->unsignedBigInteger('feedBackDetail_id');
+        //     $table->text('opinion')->nullable();
+        //     $table->tinyInteger('status');
+        //     $table->timestamps();
+        //     $table->softDeletes();
 
-            $table->foreign('user_id')
-                ->references('id')->on('users')
-                ->onDelete('cascade');
+        //     $table->foreign('user_id')
+        //         ->references('id')->on('users')
+        //         ->onDelete('cascade');
 
-            $table->foreign('feedBackDetail_id')
-                ->references('id')->on('feedback_details')
-                ->onDelete('cascade');
+        //     $table->foreign('feedBackDetail_id')
+        //         ->references('id')->on('feedback_details')
+        //         ->onDelete('cascade');
             
-        });
+        // });
     }
 
     /**
@@ -40,6 +40,6 @@ class CreateTableFeedbackUserAnswersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_answers');
+        // Schema::dropIfExists('user_answers');
     }
 }

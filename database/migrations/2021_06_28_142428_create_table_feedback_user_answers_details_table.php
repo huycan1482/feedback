@@ -13,23 +13,23 @@ class CreateTableFeedbackUserAnswersDetailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('userAnswer_details', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('userAnswer_id');
-            $table->unsignedBigInteger('answer_id');
+        // Schema::create('userAnswer_details', function (Blueprint $table) {
+        //     $table->bigIncrements('id');
+        //     $table->unsignedBigInteger('userAnswer_id');
+        //     $table->unsignedBigInteger('answer_id');
 
-            $table->timestamps();
-            $table->softDeletes();
+        //     $table->timestamps();
+        //     $table->softDeletes();
 
-            $table->foreign('userAnswer_id')
-                ->references('id')->on('user_answers')
-                ->onDelete('cascade');
+        //     $table->foreign('userAnswer_id')
+        //         ->references('id')->on('user_answers')
+        //         ->onDelete('cascade');
 
-            $table->foreign('answer_id')
-                ->references('id')->on('answers')
-                ->onDelete('cascade');
+        //     $table->foreign('answer_id')
+        //         ->references('id')->on('answers')
+        //         ->onDelete('cascade');
 
-        });
+        // });
     }
 
     /**
@@ -39,6 +39,6 @@ class CreateTableFeedbackUserAnswersDetailsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('userAnswer_details');
+        // Schema::dropIfExists('userAnswer_details');
     }
 }

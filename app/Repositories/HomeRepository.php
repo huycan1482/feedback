@@ -2,6 +2,10 @@
 
 namespace App\Repositories;
 
+use App\AnonymousUser;
+use App\SurveyAnswer;
+use App\SurveyAnswerDetail;
+use App\User;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
@@ -199,4 +203,108 @@ class HomeRepository
             return false;
         }
     }
+
+    public function storeAnonymousUser($request) {
+        $anonymous_user = new AnonymousUser();
+        if (!empty($request['identity'])) {
+            $user = User::where('identity_code', $request['identity'])->get();
+            if (!empty($user->first())) {
+                $anonymous_user->user_identity = $user->first()->id;
+                $anonymous_user->name = $user->first()->name;
+                $anonymous_user->email = $user->first()->email;
+                $anonymous_user->phone = $user->first()->phone;
+                $anonymous_user->address = $user->first()->address;
+            }
+        } else {
+            $anonymous_user->name = $request['name'];
+            $anonymous_user->email = $request['email'];
+            $anonymous_user->phone = (!empty($request['phone'])) ? $request['phone'] : '';
+            $anonymous_user->address = (!empty($request['address'])) ? $request['address'] : '';
+        }
+
+        $anonymous_user->facebook_link = (!empty($request['facebook_link'])) ? $request['facebook_link'] : '';
+            
+        if ($anonymous_user->save()) {
+            return $anonymous_user->id;
+        } else {
+            return 0;
+        }
+    }
+
+    public function storeSurveyAnswer($request, $anonymous_user_id) 
+    {
+        $survey_answer = new SurveyAnswer();
+        $survey_answer->anonymous_user_id = $anonymous_user_id;
+        $survey_answer->feedback_id = $request['feedback_id'];
+        $survey_answer->opinion = (!empty($request['opinion'])) ? $request['opinion'] : '';
+        $survey_answer->status = 1;
+
+        if ($survey_answer->save()) {
+
+            return $survey_answer->id;
+        } else {
+            return 0;
+        }
+    }
+
+    public function storeSurveyAnswerDetail($request, $survey_answer_id) 
+    {
+        // dd($request);
+        DB::beginTransaction();
+        try { 
+            if (!empty($request['feedback_radio'])) {
+                foreach ($request['feedback_radio'] as $key => $item) {
+                    $survey_answer_detail = new SurveyAnswerDetail();
+                    $survey_answer_detail->survey_answer_id = $survey_answer_id;
+                    $survey_answer_detail->answer_id = $item['answer_id'];
+                    $survey_answer_detail->question_id = $item['question_id'];
+                    $survey_answer_detail->question_type = 1;
+                    if ($survey_answer_detail->save()) {
+
+                    } else {
+                        throw new Exception();
+                    }
+                }
+            } 
+    
+            if (!empty($request['feedback_checkbox'])) {
+                foreach ($request['feedback_checkbox'] as $item) {
+                    $survey_answer_detail = new SurveyAnswerDetail();
+                    $survey_answer_detail->survey_answer_id = $survey_answer_id;
+                    $survey_answer_detail->answer_id = $item['answer_id'];
+                    $survey_answer_detail->question_id = $item['question_id'];
+                    $survey_answer_detail->question_type = 2;
+                    if ($survey_answer_detail->save()) {
+
+                    } else {
+                        throw new Exception();
+                    }
+                }
+            }
+    
+            if (!empty($request['feedback_text'])) {
+
+                foreach ($request['feedback_text'] as $item) {
+                    $survey_answer_detail = new SurveyAnswerDetail();
+                    $survey_answer_detail->survey_answer_id = $survey_answer_id;
+                    $survey_answer_detail->question_id = $item['question_id'];
+                    $survey_answer_detail->answer_text = $item['answer'];
+                    $survey_answer_detail->question_type = 3;
+
+                    if ($survey_answer_detail->save()) {
+
+                    } else {
+                        throw new Exception();
+                    }    
+                }
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return 0;
+        }
+
+        return 1;
+    }
 }
+

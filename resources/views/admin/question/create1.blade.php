@@ -89,12 +89,12 @@
                 <form enctype="multipart/form-data">
                     <div class="box-body">
 
-                        <div class="form-group" id="form-code">
+                        {{-- <div class="form-group" id="form-code">
                             <label for="">Mã câu hỏi</label>
                             <div>
                                 <input name="code" type="text" class="form-control" placeholder="Mã câu hỏi">
                             </div>
-                        </div>
+                        </div> --}}
 
                         <div class="form-group" id="form-content">
                             <label for="">Nội dung câu hỏi</label>
@@ -141,9 +141,7 @@
                 </form>
             </div>
             <!-- /.box -->
-            
-
-        </div>
+        {{-- </div> --}}
         <!--/.col (right) -->
     </div>
     <!-- /.row -->
@@ -215,10 +213,12 @@
         $("select[name='type']").change(function(e) {
             if ($(this).val() == 3)
                 $('.list-answer').hide();
+            else
+                $('.list-answer').show();
         });
 
         $('.add-question').click(function (e) {
-            var code = $("input[name='code']").val();
+            // var code = $("input[name='code']").val();
             var content = $("input[name='content']").val();
             var type =  $("select[name='type']").val();
             var is_active = ( $("input[name*='is_active']").is(':checked') ) ? 1 : 0;
@@ -226,17 +226,21 @@
 
             $('input:radio').each(function (index, value) {
                 console.log(index, value.value);
-                answers.push([
-                    value.value,
-                    (value.checked) ? 1 : 0,
-                ]);
+                var arr_val = {
+                    'value': value.value,
+                    'checked': (value.checked) ? 1 : 0,
+                };
+                answers.push({
+                    'value': value.value,
+                    'checked': (value.checked) ? 1 : 0,
+                });
             });
 
             $.ajax({
                 type: "post",
                 url: base_url + '/admin/question',
                 data: {
-                    'code' : code,
+                    // 'code' : code,
                     'content' : content,
                     'type' : type,
                     'answers' : answers,

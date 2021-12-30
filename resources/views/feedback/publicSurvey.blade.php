@@ -119,13 +119,34 @@
                                                 @endforeach
                                             </div>
                                             @endif
-                                    
                                         </div>
                                     </div>
                                     @endforeach
-                                    <div class=" form-group" style="padding: 20px">
-                                        <label for="phone" class="form-label">Mã người dùng</label>
-                                        <input type="text" class="form-control">
+                                    <div class="d-flex flex-wrap">
+                                        <div class="form-group col-md-4" style="padding: 20px">
+                                            <label for="identity" class="form-label">Mã người dùng</label>
+                                            <input type="text" class="form-control" id="identity" placeholder="Mã người dùng nếu có">
+                                        </div>
+                                        <div class="form-group col-md-4" style="padding: 20px">
+                                            <label for="name" class="form-label">Họ tên</label><span style="color: red">*</span>
+                                            <input type="text" id="name" class="form-control" placeholder="Họ và tên" required>
+                                        </div>
+                                        <div class="form-group col-md-4" style="padding: 20px">
+                                            <label for="phone" class="form-label">Số điện thoại</label><span style="color: red">*</span>
+                                            <input type="text" id="phone" class="form-control" placeholder="Số điện thoại" required>
+                                        </div>
+                                        <div class="form-group col-md-6" style="padding: 20px">
+                                            <label for="email" class="form-label">Email</label><span style="color: red">*</span>
+                                            <input type="text" id="email" class="form-control" placeholder="Email">
+                                        </div>
+                                        <div class="form-group col-md-6" style="padding: 20px">
+                                            <label for="address" class="form-label">Địa chỉ</label>
+                                            <input type="text" id="address" class="form-control" placeholder="Địa chỉ">
+                                        </div>
+                                        <div class="form-group col-md-6" style="padding: 20px">
+                                            <label for="facebook_link" class="form-label">Link Facebook</label>
+                                            <input type="text" id="facebook_link" class="form-control" placeholder="Link Facebook">
+                                        </div>
                                     </div>
                                     <div class=" form-group" style="padding: 20px">
                                         <label for="phone" class="form-label">Góp ý:</label>
@@ -135,10 +156,9 @@
                             </div>
                             <div class="box-footer">
                                 <div style="margin: 20px; display: flex; justify-content: flex-end">
-                                    <div class="btn btn-primary btn-save">Hoàn thành</div>
+                                    <div class="btn btn-primary btn-save" data-id="{{$feedback_id}}">Hoàn thành</div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -168,7 +188,15 @@
     $(document).ready(function () {
         
         $(document).on('click', '.btn-save', function (e) {
-            // var feedback_id = $(this).attr('feedback-id');   
+            var feedback_id = $(this).attr('data-id');   
+
+            var identity = $("#identity").val();
+            var name = $("#name").val();
+            var email = $("#email").val();
+            var phone = $("#phone").val();
+            var address = $("#address").val();
+            var facebook_link = $("#facebook_link").val();
+            var note = $("#note").val();
 
             var feedback_radio = [];
             var feedback_checkbox = [];
@@ -199,9 +227,10 @@
             });
 
             $('textarea').each(function (index, value) {
-                if ($(this).attr('data-type') != '') {
+                if ($(this).attr('data-type') != undefined) {
+                    console.log($(this).attr('data-type'));
                     var question_id = value.name.split('_')[1];
-                    var answer = $(this).text();
+                    var answer = $(this).val();
                     var question_type = $(this).attr('data-type');
 
                     feedback_text [index] = {
@@ -212,17 +241,25 @@
                 }
             });
 
-            console.log(feedback_radio);
-            console.log(feedback_checkbox);
-            console.log(feedback_text);
+            // console.log(feedback_radio);
+            // console.log(feedback_checkbox);
+            // console.log(feedback_text);
 
-            // var data = {
-            //     feedback_id: feedback_id,
-            //     feedback_detail : feedback_detail,
-            //     feedback: feedback,
-            //     note: note,
-            //     class_id : class_id,
-            // }
+            var data = {
+                'feedback_id' : feedback_id,
+
+                'identity' : identity,
+                'name' : name,
+                'email' : email,
+                'phone' : phone,
+                'address' : address,
+                'facebook_link' : facebook_link,
+                'note' : note,
+
+                'feedback_radio' : feedback_radio,
+                'feedback_checkbox' : feedback_checkbox,
+                'feedback_text' : feedback_text,
+            }
 
             $.ajax({
                 type: 'POST',

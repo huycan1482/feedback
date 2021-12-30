@@ -173,6 +173,7 @@ abstract class EloquentRepository implements RepositoryInterface
             $result = $this->_model->withTrashed()->find($id);
             if ($result) {
                 $result->forceDelete();
+                return true;
             }
             return false;
         } catch (Exception $e) {
@@ -191,6 +192,7 @@ abstract class EloquentRepository implements RepositoryInterface
             $result = $this->_model->withTrashed()->find($id);
             if ($result) {
                 $result->restore();
+                return true;
             }
             return false;
         } catch (Exception $e) {

@@ -14,28 +14,28 @@ class CreateTableClassesTable extends Migration
     public function up()
     {
         
-        Schema::create('classes', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('name', 255);
-            $table->string('code', 255);
-            $table->string('slug', 255);
-            $table->unsignedBigInteger('course_id');
-            $table->unsignedBigInteger('teacher_id');
-            $table->integer('total_number');
-            $table->tinyInteger('is_active');
-            $table->unsignedBigInteger('user_create')->nullable();
-            $table->unsignedBigInteger('user_update')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
+        // Schema::create('classes', function (Blueprint $table) {
+        //     $table->bigIncrements('id');
+        //     $table->string('name', 255);
+        //     $table->string('code', 255);
+        //     $table->string('slug', 255);
+        //     $table->unsignedBigInteger('course_id');
+        //     $table->unsignedBigInteger('teacher_id');
+        //     $table->integer('total_number');
+        //     $table->tinyInteger('is_active');
+        //     $table->unsignedBigInteger('user_create')->nullable();
+        //     $table->unsignedBigInteger('user_update')->nullable();
+        //     $table->timestamps();
+        //     $table->softDeletes();
 
-            $table->foreign('course_id')
-                ->references('id')->on('courses')
-                ->onDelete('cascade');
+        //     $table->foreign('course_id')
+        //         ->references('id')->on('courses')
+        //         ->onDelete('cascade');
 
-            $table->foreign('teacher_id')
-                ->references('id')->on('users')
-                ->onDelete('cascade');
-        });
+        //     $table->foreign('teacher_id')
+        //         ->references('id')->on('users')
+        //         ->onDelete('cascade');
+        // });
     }
 
     /**
@@ -45,6 +45,6 @@ class CreateTableClassesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('classes');
+        // Schema::dropIfExists('classes');
     }
 }

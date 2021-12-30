@@ -84,18 +84,18 @@ class FeedbackRequest extends FormRequest
         if ($this->feedback) {
             return [
                 'name' => 'required|unique:feedbacks,slug,' . $this->feedback,
-                'code' => 'required|unique:feedbacks,code,' . $this->feedback,
+                // 'code' => 'required|unique:feedbacks,code,' . $this->feedback,
                 'is_active' => 'integer|boolean',
-                'is_public' => 'integer|boolean',
+                // 'is_public' => 'integer|boolean',
                 'time' => 'required|min:0|integer',
             ];
         }
 
         return [
             'name' => 'required|unique:feedbacks,slug',
-            'code' => 'required|unique:feedbacks,code',
+            // 'code' => 'required|unique:feedbacks,code',
             'is_active' => 'integer|boolean',
-            'is_public' => 'integer|boolean',
+            // 'is_public' => 'integer|boolean',
             'question_id' => 'required|min:1|array',
             'question_id.*' => 'exists:questions,id',
             'time' => 'required|min:0|integer',
@@ -108,12 +108,12 @@ class FeedbackRequest extends FormRequest
             return [
                 'name.required' => 'Yêu cầu không để trống',
                 'name.unique' => 'Dữ liệu trùng',
-                'code.required' => 'Yêu cầu không để trống',
-                'code.unique' => 'Dữ liệu trùng',
+                // 'code.required' => 'Yêu cầu không để trống',
+                // 'code.unique' => 'Dữ liệu trùng',
                 'is_active.integer' => 'Sai kiểu dữ liệu',
                 'is_active.boolean' => 'Sai kiểu dữ liệu',
-                'is_public.integer' => 'Sai kiểu dữ liệu',
-                'is_public.boolean' => 'Sai kiểu dữ liệu',
+                // 'is_public.integer' => 'Sai kiểu dữ liệu',
+                // 'is_public.boolean' => 'Sai kiểu dữ liệu',
                 'time.required' => 'Yêu cầu không để trống',
                 'time.min' => 'Thời gian phải lớn hơn 0',
                 'time.integer' => 'Sai kiểu dữ liệu',
@@ -123,12 +123,12 @@ class FeedbackRequest extends FormRequest
         return [
             'name.required' => 'Yêu cầu không để trống',
             'name.unique' => 'Dữ liệu trùng',
-            'code.required' => 'Yêu cầu không để trống',
-            'code.unique' => 'Dữ liệu trùng',
+            // 'code.required' => 'Yêu cầu không để trống',
+            // 'code.unique' => 'Dữ liệu trùng',
             'is_active.integer' => 'Sai kiểu dữ liệu',
             'is_active.boolean' => 'Sai kiểu dữ liệu',
-            'is_public.integer' => 'Sai kiểu dữ liệu',
-            'is_public.boolean' => 'Sai kiểu dữ liệu',
+            // 'is_public.integer' => 'Sai kiểu dữ liệu',
+            // 'is_public.boolean' => 'Sai kiểu dữ liệu',
             'question_id.required' => 'Yêu cầu không để trống',
             'question_id.min' => 'Yêu cầu có ít nhất 1 câu hỏi',
             'question_id.array' => 'Sai kiểu định dạng',

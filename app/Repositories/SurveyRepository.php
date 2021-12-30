@@ -3,13 +3,12 @@
 namespace App\Repositories;
 
 use App\FeedBack;
-use App\FeedbackQuestion;
 use App\Question;
+use App\Repositories\EloquentRepository;
+use App\Survey;
 use Exception;
-use Illuminate\Support\Facades\Auth;
 
-class FeedbackRepository extends EloquentRepository
-{
+class SurveyRepository extends EloquentRepository{
 
     /**
      * get model
@@ -17,46 +16,32 @@ class FeedbackRepository extends EloquentRepository
      */
     public function getModel()
     {
-        return \App\FeedBack::class;
+        return \App\Survey::class;
     }
 
-    public function getQuestions()
+    public function getFeedback () 
     {
-        try {
-            return Question::where('is_active', '=', 1)->latest()->get();
-        } catch (Exception $e) {
-            return [];
-        }
+        return FeedBack::where('is_active', 1)->latest()->get();
     }
 
-    public function getLatestFeedBackId($created_time)
+    public function createModelByEloquent ($request)
     {
-        try {
-            return FeedBack::where(['created_at' => $created_time])->first()->id;
-        } catch (Exception $e) {
-            return null;
-        }
-    }
+        $survey = new Survey();
+        $survey->feedback_id = $request['feedback_id'];
+        $survey->start_at = $request['start_at'];
+        $survey->end_at = $request['end_at'];
+        $survey->is_active = 1*$request['is_active'];
 
-    public function createFeedbackQuestion($data, $latestFeedBack)
-    {
-        // dd($data, $latestFeedBack);
-        try {
-            foreach ($data as $item) {
-                $feedback_question = new FeedbackQuestion();
-                $feedback_question->question_id = $item;
-                $feedback_question->feedback_id = $latestFeedBack;
-                // $feedback_question->position = 1;
-                $feedback_question->user_create = Auth::user()->id;
-                $feedback_question->save();
-            }
+        if ($survey->save()) {
+            $survey->code = 'SV' . (1000 + $survey->id);
+            $survey->save();
             return true;
-        } catch (Exception $e) {
+        } else {
             return false;
         }
     }
 
-    public function getFeedbackFDetail($feedback)
+    public function getSurveyDetail ($feedback) 
     {
         try {
             foreach ($feedback->question as $key => $item) {
@@ -121,26 +106,5 @@ class FeedbackRepository extends EloquentRepository
         } catch (Exception $e) {
             return [];
         }
-    }
-
-    public function createModelByEloquent ($request)
-    {
-        $feedback = new FeedBack();
-        $feedback->name = $request['name'];
-        $feedback->slug = $request['slug'];
-        $feedback->time = $request['time'];
-        $feedback->is_active = $request['is_active'];
-        $feedback->user_create = $request['user_create'];
-        $feedback->is_public = 0;
-        $feedback->created_at = $request['created_at'];
-        
-        if ($feedback->save()) {
-            $feedback->code = 'BDG' . (1000 + $feedback->id);
-            $feedback->save();
-            return true;
-        } else {
-            return false;
-        }
-
     }
 }

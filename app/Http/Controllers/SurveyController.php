@@ -2,20 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Answer;
-use App\Http\Requests\QuestionRequest;
-use App\Question;
-use App\Repositories\QuestionRepository;
+use App\FeedBack;
+use App\Http\Requests\SurveyRequest;
+use App\Repositories\SurveyRepository;
+use App\Survey;
 use App\User;
-use DateTime;
 use Exception;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 
-class QuestionController extends QuestionRepository
+class SurveyController extends SurveyRepository
 {
     /**
      * Display a listing of the resource.
@@ -26,17 +22,17 @@ class QuestionController extends QuestionRepository
     {
         $currentUser = User::findOrFail(Auth()->user()->id);
 
-        $questionsWithTrashed = [];
+        $feedbacksWithTrashed = [];
 
-        if ($currentUser->can('forceDelete', Question::class)) {
-            $questionsWithTrashed = $this->getAllWithTrashed();
+        if ($currentUser->can('forceDelete', Survey::class)) {
+            $feedbacksWithTrashed = $this->getAllWithTrashed();
         }
 
-        $questions = $this->getAll();
+        $feedbacks = $this->getAll();
 
-        return view('admin.question.index', [
-            'questions' => $questions,
-            'questionsWithTrashed' => $questionsWithTrashed,
+        return view('admin.survey.index', [
+            'feedbacks' => $feedbacks,
+            'feedbacksWithTrashed' => $feedbacksWithTrashed
         ]);
     }
 
@@ -47,8 +43,11 @@ class QuestionController extends QuestionRepository
      */
     public function create()
     {
-        // return view('admin.question.create');
-        return view('admin.question.create1');
+        $feedbacks = $this->getFeedback();
+
+        return view ('admin.survey.create', [
+            'feedbacks' => $feedbacks
+        ]);
     }
 
     /**
@@ -57,30 +56,13 @@ class QuestionController extends QuestionRepository
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(QuestionRequest $request)
+    public function store(SurveyRequest $request)
     {
-        $current_date = new DateTime();
-        $created_time = date('Y-m-d H:i:s', $current_date->getTimestamp());
-
-        $request->merge([
-            'user_create' => Auth::user()->id,
-            'created_at' =>  $created_time,
-        ]);
-
-        $request['content'] = $request->trueContent;
-        // dd($request->all());
         DB::beginTransaction();
 
         try {
             if ($this->createModelByEloquent($request->all()) == false)
                 throw new Exception();
-
-            $latestQuestion = $this->getLatestQuestion($created_time);
-
-            // dd($latestQuestion->id);
-            if ($request['type'] != 3)
-                if (!$this->createAnswers($request['answers'], $latestQuestion->code, $latestQuestion->id))
-                    throw new Exception();
 
             DB::commit();
         } catch (Exception $e) {
@@ -99,15 +81,21 @@ class QuestionController extends QuestionRepository
      */
     public function show($id)
     {
-        $question = $this->find($id);
+        $checkSurvey = $this->find($id);
 
-        if (empty($question)) {
-            return response()->json(['mess' => 'Bản ghi không tồn tại', 404]);
+        if (empty($checkSurvey)) {
+            return response()->json(['mess' => 'Bản ghi không tồn tại'], 404);    
+
+        } else {
+            $checkFeedback = FeedBack::find($checkSurvey->feedback_id);
+
+            if (!empty($checkFeedback)) {
+                $data = $this->getSurveyDetail($checkFeedback);
+                return response()->json(['feedback' => $checkFeedback, 'data' => json_encode($data)], 200);
+            } else {
+                return response()->json(['mess' => 'Bản ghi không tồn tại'], 404);    
+            }
         }
-
-        $answers = $this->getAnswersBelongsTo($id);
-
-        return response()->json(['question' => $question, 'answers' => $answers], 200);
     }
 
     /**
@@ -118,17 +106,17 @@ class QuestionController extends QuestionRepository
      */
     public function edit($id)
     {
-        $question = $this->find($id);
+        $feedbacks = $this->getFeedback();
 
-        if (empty($question)) {
-            return response()->json(['mess' => 'Bản ghi không tồn tại', 404]);
+        $survey = $this->find($id);
+
+        if (empty($survey)) {
+            return redirect()->route('admin.errors.404');
         }
 
-        $answers = $this->getAnswersBelongsTo($id);
-
-        return view('admin.question.edit1', [
-            'question' => $question,
-            'answers' => $answers,
+        return view('admin.survey.edit', [
+            'feedbacks' => $feedbacks,
+            'survey' => $survey,
         ]);
     }
 
@@ -139,14 +127,8 @@ class QuestionController extends QuestionRepository
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(QuestionRequest $request, $id)
+    public function update(SurveyRequest $request, $id)
     {
-        $request->merge([
-            'user_update' => Auth::user()->id,
-        ]);
-
-        dd($request->all());
-
         if ($this->updateModel($id, $request->all())) {
             return response()->json(['mess' => 'Sửa bản ghi thành công', 200]);
         } else {
@@ -169,34 +151,18 @@ class QuestionController extends QuestionRepository
         }
     }
 
-    public function getListAnswers($id)
-    {
-        $question = $this->find($id);
-
-        if (empty($question)) {
-            return redirect()->route('admin.errors.404');
-        }
-
-        $answers = $this->getAnswersBelongsTo($id);
-
-        return view('admin.question.listAnswers', [
-            'answers' => $answers,
-            'question' => $question->first(),
-        ]);
-    }
-
     public function forceDelete($id)
     {
         $currentUser = User::findOrFail(Auth()->user()->id);
 
-        if ($currentUser->can('forceDelete', Question::class)) {
+        if ($currentUser->can('forceDelete', Survey::class)) {
             if ($this->forceDeleteModel($id)) {
                 return response()->json(['mess' => 'Xóa bản ghi thành công'], 200);
             } else {
                 return response()->json(['mess' => 'Xóa bản không thành công'], 400);
             }
         } else {
-            return response()->json(['mess' => 'Xóa bản ghi lỗi, bạn không đủ thẩm quyền'], 403);
+            return response()->json(['mess' => 'Xóa bản ghi lỗi'], 403);
         }
     }
 
@@ -204,14 +170,14 @@ class QuestionController extends QuestionRepository
     {
         $currentUser = User::findOrFail(Auth()->user()->id);
 
-        if ($currentUser->can('restore', Question::class)) {
+        if ($currentUser->can('restore', Survey::class)) {
             if ($this->restoreModel($id)) {
                 return response()->json(['mess' => 'Khôi bản ghi thành công'], 200);
             } else {
                 return response()->json(['mess' => 'Khôi bản không thành công'], 400);
             }
         } else {
-            return response()->json(['mess' => 'Khôi phục bản ghi lỗi, bạn không đủ thẩm quyền'], 403);
+            return response()->json(['mess' => 'Khôi phục bản ghi lỗi'], 403);
         }
     }
 }

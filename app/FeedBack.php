@@ -21,11 +21,13 @@ class FeedBack extends Model
         static::deleting(function($feedback) {
             $feedback->feedback_details()->delete();
             $feedback->feedback_question()->delete();
+            $feedback->surveys()->delete();
         });
 
         static::restoring(function($feedback) {
             $feedback->feedback_details()->withTrashed()->restore();
             $feedback->feedback_question()->withTrashed()->restore();
+            $feedback->surveys()->withTrashed()->restore();
         });
     }
 
@@ -61,5 +63,10 @@ class FeedBack extends Model
     public function userUpdate ()
     {
         return $this->belongsTo('App\User', 'user_update', 'id');
+    }
+
+    public function surveys () 
+    {
+        $this->hasMany('App\Survey', 'feedback_id', 'id');
     }
 }

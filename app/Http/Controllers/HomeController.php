@@ -9,6 +9,7 @@ use App\FeedBack;
 use App\Http\Requests\postCheckInRequest;
 use App\Lesson;
 use App\Repositories\HomeRepository;
+use App\Survey;
 use App\SurveyAnswer;
 use App\SurveyAnswerDetail;
 use App\User;
@@ -46,14 +47,14 @@ class HomeController extends HomeRepository
 
     public function getPublicSurvey($code) 
     {
-        $feedBack = Feedback::where([['code', '=', $code], ['is_active', '=', 1], ['is_public', '=', 1]])->get()->first();
+        $survey = Survey::where([['code', '=', $code], ['is_active', '=', 1]])->get()->first();
 
-        if (empty($feedBack)) {
+        if (empty($survey) || $survey->is_active != 1 || $survey->feedback->is_active != 1) {
             // return redirect()->route();
             dd("fail");
         }        
 
-        foreach ($feedBack->question as $key => $item) {
+        foreach ($survey->feedBack->question as $key => $item) {
             $arr = [];
             foreach ($item->answers as $item2) {
                 $arr[] = [
@@ -61,7 +62,7 @@ class HomeController extends HomeRepository
                     'content' => $item2->content,
                 ];
             }
-            shuffle($arr);
+            // shuffle($arr);
             $data[] = [
                 'id' => $item->id,
                 'code' => $item->code,
@@ -71,11 +72,11 @@ class HomeController extends HomeRepository
             ];
         }
 
-        shuffle($data);
+        // shuffle($data);
 
         return view('feedback.publicSurvey', [
             'data' => $data,
-            'feedback_id' => $feedBack->id,
+            'survey_id' => $survey->id,
         ]);
     }
 
@@ -83,7 +84,7 @@ class HomeController extends HomeRepository
     {
         // dd($request->all());
         $validator = Validator::make($request->all(), [
-            'feedback_id' => 'required|exists:feedbacks,id',
+            'survey_id' => 'required|exists:surveys,id',
             'identity' => 'nullable|exists:users,user_identity',
             'name' => 'required|string:255',
             'email' => 'required|email',
@@ -134,6 +135,8 @@ class HomeController extends HomeRepository
                 DB::commit();
             } catch (\Exception $e) {
                 DB::rollBack();
+            dd($e);
+
                 return response()->json(['mess' => 'Gửi bài khảo sát lỗi'], 502);
             }
 

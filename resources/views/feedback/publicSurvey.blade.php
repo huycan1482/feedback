@@ -77,13 +77,11 @@
                     </div>
                     <div class="col-lg-8">
                         <div class="box">
-
                             <div class="box-header">
                                 <p class="box-title">
-                                    Bài khảo sát đánh giá Giảng viên
+                                    Bài khảo sát
                                 </p>
                             </div>
-
                             <div class="box-body">
                                 <div>
                                     @foreach ($data as $key => $item)
@@ -156,7 +154,7 @@
                             </div>
                             <div class="box-footer">
                                 <div style="margin: 20px; display: flex; justify-content: flex-end">
-                                    <div class="btn btn-primary btn-save" data-id="{{$feedback_id}}">Hoàn thành</div>
+                                    <div class="btn btn-primary btn-save" data-id="{{$survey_id}}">Hoàn thành</div>
                                 </div>
                             </div>
                         </div>
@@ -188,7 +186,7 @@
     $(document).ready(function () {
         
         $(document).on('click', '.btn-save', function (e) {
-            var feedback_id = $(this).attr('data-id');   
+            var survey_id = $(this).attr('data-id');   
 
             var identity = $("#identity").val();
             var name = $("#name").val();
@@ -246,7 +244,7 @@
             // console.log(feedback_text);
 
             var data = {
-                'feedback_id' : feedback_id,
+                'survey_id' : survey_id,
 
                 'identity' : identity,
                 'name' : name,

@@ -223,7 +223,7 @@ class HomeRepository
         }
 
         $anonymous_user->facebook_link = (!empty($request['facebook_link'])) ? $request['facebook_link'] : '';
-            
+        
         if ($anonymous_user->save()) {
             return $anonymous_user->id;
         } else {
@@ -235,7 +235,7 @@ class HomeRepository
     {
         $survey_answer = new SurveyAnswer();
         $survey_answer->anonymous_user_id = $anonymous_user_id;
-        $survey_answer->feedback_id = $request['feedback_id'];
+        $survey_answer->survey_id = $request['survey_id'];
         $survey_answer->opinion = (!empty($request['opinion'])) ? $request['opinion'] : '';
         $survey_answer->status = 1;
 
@@ -301,6 +301,7 @@ class HomeRepository
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
+            dd($e);
             return 0;
         }
 

@@ -41,9 +41,9 @@
                 </a>
                 <ul class="treeview-menu">
                     <li class="">
-                        <a href="{{ route('admin.getFeedback') }}">
+                        <a href="{{ route('admin.survey.index') }}">
                             <i class="fas fa-tasks"></i>
-                            <span>Tạo, kích hoạt đánh giá</span>
+                            <span>Tạo bài khảo sát giá</span>
                         </a>
                     </li>
                     <li class="">

@@ -136,7 +136,7 @@
                                     {{'Viết câu trả lời'}}
                                     @endif   
                                 </td>
-                                <td class="text-center">{{ (asset($question->userCreate->name)) ? $question->userCreate->name : 'Trống' }}</td>
+                                <td class="text-center">{{ (!empty($question->userCreate->name)) ? $question->userCreate->name : 'Trống' }}</td>
                                 <td class="text-center">
                                     <span
                                         class="label label-{{ ($question->is_active == 1) ? 'success' : 'danger' }}">{{ ($question->is_active == 1) ? 'Hiển thị' : 'Ẩn' }}</span>
@@ -209,7 +209,7 @@
                                     {{'Viết câu trả lời'}}
                                     @endif   
                                 </td>
-                                <td class="text-center">{{ (asset($question->userCreate->name)) ? $question->userCreate->name : 'Trống' }}</td>
+                                <td class="text-center">{{ (!empty($question->userCreate->name)) ? $question->userCreate->name : 'Trống' }}</td>
                                 <td class="text-center">
                                     <span
                                         class="label label-{{ ($question->is_active == 1) ? 'success' : 'danger' }}">{{ ($question->is_active == 1) ? 'Hiển thị' : 'Ẩn' }}</span>

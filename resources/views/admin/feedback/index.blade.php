@@ -230,15 +230,20 @@
                     var question = JSON.parse(response.data) ;
 
                     question.forEach( function (value, index) {
-                        // console.log(value, index);
                         html += "<div class='feedback-question'><span>"+ (index + 1) +". ("+ value.code +"): </span>"+ value.content +"</div><div class='feedback-answers'><div class='row'>";
 
-                        value.answer.forEach( function (value2, index2) {
-                            // console.log(value2, index2);
-                            html += "<div class='col-lg-6 answer-items'><i class='far fa-circle'></i>"+
-                                value2.content +"</div>";
-                        });
-
+                        if (value.type == 1) {
+                            value.answer.forEach( function (value2, index2) {
+                                html += "<div class='col-lg-6 answer-items'><i class='far fa-square'></i>"+ value2.content +"</div>";
+                            });
+                        } else if (value.type == 2) {
+                            value.answer.forEach( function (value2, index2) {
+                                html += "<div class='col-lg-6 answer-items'><i class='far fa-circle'></i>"+ value2.content +"</div>";
+                            });
+                        } else {
+                            
+                        }
+                        
                         html += '</div></div>';
                     });
 

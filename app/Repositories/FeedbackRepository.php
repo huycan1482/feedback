@@ -71,6 +71,7 @@ class FeedbackRepository extends EloquentRepository
 
                 $data[] = [
                     'id' => $item->id,
+                    'type' => $item->type,
                     'code' => $item->code,
                     'content' => $item->content,
                     'answer' => $arr,

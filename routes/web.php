@@ -98,6 +98,9 @@ Route::group(['prefix' => 'admin' , 'as' => 'admin.', 'middleware' => 'checkAdmi
     Route::resource('survey', 'SurveyController');
     Route::get('survey/forceDelete/{id}', 'SurveyController@forceDelete')->name('survey.forceDelete');
     Route::get('survey/restore/{id}', 'SurveyController@restore')->name('survey.restore');
+    Route::get('survey/getSurveyResult/{id}', 'SurveyController@getSurveyResult')->name('survey.getSurveyResult');
+
+    Route::post('import/importTest', 'ImportController@importTest')->name('import.importTest');
 });
 
 //UserLogin

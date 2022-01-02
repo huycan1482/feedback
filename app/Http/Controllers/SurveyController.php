@@ -22,17 +22,17 @@ class SurveyController extends SurveyRepository
     {
         $currentUser = User::findOrFail(Auth()->user()->id);
 
-        $feedbacksWithTrashed = [];
+        $surveysWithTrashed = [];
 
         if ($currentUser->can('forceDelete', Survey::class)) {
-            $feedbacksWithTrashed = $this->getAllWithTrashed();
+            $surveysWithTrashed = $this->getAllWithTrashed();
         }
 
-        $feedbacks = $this->getAll();
+        $surveys = $this->getAll();
 
         return view('admin.survey.index', [
-            'feedbacks' => $feedbacks,
-            'feedbacksWithTrashed' => $feedbacksWithTrashed
+            'surveys' => $surveys,
+            'surveysWithTrashed' => $surveysWithTrashed
         ]);
     }
 
@@ -179,5 +179,16 @@ class SurveyController extends SurveyRepository
         } else {
             return response()->json(['mess' => 'Khôi phục bản ghi lỗi'], 403);
         }
+    }
+
+    public function getSurveyResult($id) 
+    {
+        $survey = $this->find($id);
+
+        if (empty($survey)) {
+            return redirect()->route('admin.errors.404');
+        }
+
+        return view ('admin.survey.result');
     }
 }

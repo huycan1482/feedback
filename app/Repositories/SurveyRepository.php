@@ -33,7 +33,7 @@ class SurveyRepository extends EloquentRepository{
         $survey->is_active = 1*$request['is_active'];
 
         if ($survey->save()) {
-            $survey->code = 'SV' . (1000 + $survey->id);
+            $survey->code = 'BKS' . (1000 + $survey->id);
             $survey->save();
             return true;
         } else {
@@ -57,6 +57,7 @@ class SurveyRepository extends EloquentRepository{
                 $data[] = [
                     'id' => $item->id,
                     'code' => $item->code,
+                    'type' => $item->type,
                     'content' => $item->content,
                     'answer' => $arr,
                 ];

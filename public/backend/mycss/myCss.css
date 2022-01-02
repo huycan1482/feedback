@@ -1,7 +1,8 @@
-.main-header, .main-sidebar, .wrapper, .logo {
-    background: linear-gradient(
-        145deg
-        ,#00b5ad,#17a2b8) !important;
+.main-header,
+.main-sidebar,
+.wrapper,
+.logo {
+    background: linear-gradient(145deg, #00b5ad, #17a2b8) !important;
 }
 
 .skin-blue .main-header .navbar {
@@ -29,7 +30,7 @@
     justify-content: space-between;
 }
 
-.form-group > div {
+.form-group>div {
     width: 70%;
 }
 
@@ -58,7 +59,7 @@
     color: #2c3e50;
 }
 
-.feedback-item i + span {
+.feedback-item i+span {
     color: #17a2b8;
     font-weight: 600;
 }
@@ -72,12 +73,13 @@
     color: #17a2b8;
 }
 
-.feedback-question > span {
+.feedback-question>span {
     font-weight: bold;
     color: #2c3e50;
 }
 
-.feedback-answer, .feedback-question {
+.feedback-answer,
+.feedback-question {
     letter-spacing: 1px;
 }
 
@@ -89,6 +91,24 @@
     margin-right: 5px;
 }
 
+/* custom input type file */
+.label-type-file {
+    cursor: pointer;
+}
+
+.input-type-file {
+    /* opacity: 0;
+    position: absolute;
+    z-index: -1; */
+}
+
+.custom-import {
+    margin-bottom: 10px;
+}
+
+.custom-import input[type=file] {
+    display: inline;
+}
 @media (min-width: 768px) {
     .modal .modal-dialog {
         width: 70vw !important;

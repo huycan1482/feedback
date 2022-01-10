@@ -177,7 +177,7 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
+ 
         $(document).on('click', '.btn-detail', function(){
             var itemId = $(this).attr('data-id');
             $.ajax({
@@ -209,7 +209,7 @@
                         } else {
                             
                         }
-
+                        
                         html += '</div></div>';
                     });
 

@@ -221,7 +221,6 @@ function messageReload (status, mess, reload)
     var message = "<div class='pad margin no-print col-md-3' id='message' style='position: fixed; right: -5px; z-index:10; top: 40px; width: '><div class='alert alert-" + status + " alert-dismissible'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>×</button><h4><i class='icon fa fa-check'></i> Thông báo !</h4>"
     + mess +" <br> "+ reload +" </div></div>";
 
-
     if ( $('#message') ) {
         $('#message').remove();
     }

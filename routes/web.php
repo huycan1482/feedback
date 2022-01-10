@@ -95,10 +95,15 @@ Route::group(['prefix' => 'admin' , 'as' => 'admin.', 'middleware' => 'checkAdmi
     Route::get('checkIn/getClasses/{id}', 'CheckInController@getClasses')->name('checkIn.getClasses');
     Route::get('checkIn/getLessons/{id}', 'CheckInController@getLessons')->name('checkIn.getLessons');
 
+    Route::resource('anonymousUser', 'AnonymousUserController');
+
     Route::resource('survey', 'SurveyController');
     Route::get('survey/forceDelete/{id}', 'SurveyController@forceDelete')->name('survey.forceDelete');
     Route::get('survey/restore/{id}', 'SurveyController@restore')->name('survey.restore');
     Route::get('survey/getSurveyResult/{id}', 'SurveyController@getSurveyResult')->name('survey.getSurveyResult');
+    Route::get('survey/getAnonymousUser/{user_id}_{survey_id}', 'SurveyController@getAnonymousUser')->name('survey.getAnonymousUser');
+    Route::get('survey/getQuestionChart/{survey_id}_{question_id}', 'SurveyController@getQuestionChart')->name('survey.getQuestionChart');
+    Route::get('survey/getAnswersChart/{survey_id}_{question_id}', 'SurveyController@getAnswersChart')->name('survey.getAnswersChart');
 
     Route::post('import/importTest', 'ImportController@importTest')->name('import.importTest');
 });

@@ -2,10 +2,12 @@
 
 namespace App\Repositories;
 
+use App\AnonymousUser;
 use App\FeedBack;
 use App\Question;
 use App\Repositories\EloquentRepository;
 use App\Survey;
+use App\SurveyAnswer;
 use Exception;
 
 class SurveyRepository extends EloquentRepository{
@@ -94,18 +96,52 @@ class SurveyRepository extends EloquentRepository{
         }
     }
 
-    public function getQuestionsBelongsTo($feedback_id, $question_ids)
+    public function getQuestionsBelongsTo($feedback_id)
     {
         try {
             return Question::selectRaw('questions.*, feedback_question.position as position, feedback_question.id as feedbackQuestionId')
                 ->join('feedback_question', 'questions.id', '=', 'feedback_question.question_id')
                 ->where('feedback_question.feedback_id', $feedback_id)
-                ->whereIn('questions.id', $question_ids)
                 ->orderBy('position', 'desc')
                 ->orderBy('feedback_question.id', 'asc')
                 ->get();
         } catch (Exception $e) {
             return [];
+        }
+    }
+
+    public function getUserOutSystem ($survey_id)
+    {
+        try {
+            return AnonymousUser::selectRaw("COUNT(anonymous_users.id) as quantity ")
+            ->join('survey_answers', 'anonymous_users.id', '=', 'survey_answers.anonymous_user_id')
+            ->whereRaw("anonymous_users.user_identity is null AND survey_answers.survey_id = $survey_id")
+            ->get()->first()->quantity;
+        } catch (Exception $e) {
+            return [];
+        }
+    }
+
+    public function getUserInSystem ($survey_id)
+    {
+        try {
+            return AnonymousUser::selectRaw("COUNT(anonymous_users.id) as quantity ")
+            ->join('survey_answers', 'anonymous_users.id', '=', 'survey_answers.anonymous_user_id')
+            ->whereRaw("anonymous_users.user_identity is not null AND survey_answers.survey_id = $survey_id")
+            ->get()->first()->quantity;
+        } catch (Exception $e) {
+            return 0;
+        }
+    }
+
+    public function getOpinion ($survey_id)
+    {
+        try {
+            return SurveyAnswer::selectRaw("COUNT(survey_answers.id) as quantity ")
+            ->whereRaw("anonymous_users.user_identity is not null AND survey_answers.survey_id = $survey_id")
+            ->get()->first()->quantity;
+        } catch (Exception $e) {
+            return 0;
         }
     }
 }

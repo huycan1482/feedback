@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\AnonymousUser;
 use App\FeedBack;
 use App\Http\Requests\SurveyRequest;
+use App\Question;
 use App\Repositories\SurveyRepository;
 use App\Survey;
+use App\SurveyAnswer;
 use App\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -58,6 +61,8 @@ class SurveyController extends SurveyRepository
      */
     public function store(SurveyRequest $request)
     {
+
+        dd($request->all());
         DB::beginTransaction();
 
         try {
@@ -185,10 +190,91 @@ class SurveyController extends SurveyRepository
     {
         $survey = $this->find($id);
 
+        
+
         if (empty($survey)) {
             return redirect()->route('admin.errors.404');
         }
 
-        return view ('admin.survey.result');
+        $user_out_system = $this->getUserOutSystem($id);
+        $user_in_system = $this->getUserInSystem($id);
+
+        $users_chart = "['Trong hệ thống', ".$user_in_system."], ['Ngoài hệ thống', ".$user_out_system."],";
+
+        $opinions = $this->getOpinion($id);
+
+        // $opinions_chart = $opinions;
+
+        $questions = $this->getQuestionsBelongsTo($survey->feedback_id);
+
+        return view ('admin.survey.result', [
+            'anonymous_users' => $survey->anonymous_users,
+            'survey_id' => $id,
+            'users_chart' => $users_chart,
+            'questions' => $questions
+        ]);
+    }
+
+    public function getAnonymousUser ($user_id, $survey_id)
+    {
+        $anonymous_user = AnonymousUser::find($user_id);
+
+        $data = SurveyAnswer::where([['anonymous_user_id', '=', $user_id], ['survey_id', '=', $survey_id]])->get()->first();
+
+        // dd($anonymous_user, $data);
+        return response()->json([
+            'anonymous_user' => $anonymous_user,
+            'data' => $data,
+        ]);
+    }
+
+    public function getQuestionChart ($survey_id, $question_id)
+    {
+        $question = Question::find($question_id);
+
+        $survey_answer = SurveyAnswer::where('survey_id', $survey_id)->pluck('id')->toArray();
+        // dd(implode(',',$survey_answer));
+
+        $question_chart = DB::table('answers')
+        ->selectRaw("COUNT(test.id) as 'number', answers.code, answers.content")
+        ->leftJoin(DB::raw("(SELECT survey_answer_details.answer_id as id FROM survey_answer_details 
+        WHERE survey_answer_details.survey_answer_id IN (".implode(',',$survey_answer).")
+        AND survey_answer_details.question_id = $question_id) as test"), 'test.id', '=', 'answers.id')
+        ->where("answers.question_id", $question_id)
+        ->groupBy("answers.id")
+        ->get();
+
+        return response()->json([
+            'question_chart' => $question_chart,
+            'question_content' => $question->content,
+        ]);
+    }
+
+    public function getAnswersChart ($survey_id, $question_id) 
+    {
+        $question = Question::find($question_id);
+
+        $survey_answer = SurveyAnswer::where('survey_id', $survey_id)->pluck('id')->toArray();
+
+        $questions = DB::table('answers')
+        ->selectRaw("COUNT(test.id) as 'number', answers.code, answers.content")
+        ->leftJoin(DB::raw("(SELECT survey_answer_details.answer_id as id FROM survey_answer_details 
+        WHERE survey_answer_details.survey_answer_id IN (".implode(',',$survey_answer).")
+        AND survey_answer_details.question_id = $question_id) as test"), 'test.id', '=', 'answers.id')
+        ->where("answers.question_id", $question_id)
+        ->groupBy("answers.id")
+        ->get();
+
+        $question_chart = "";
+
+        foreach($questions as $key => $item) {
+            $question_chart .= "['".$item->code."',".$item->number."],";
+        }
+
+        return view ('admin.survey.answersChart', [
+            'question' => $question,
+            'questions' => $questions,
+            'question_chart' => $question_chart
+        ]);
     }
 }

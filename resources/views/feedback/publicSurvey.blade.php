@@ -239,10 +239,6 @@
                 }
             });
 
-            // console.log(feedback_radio);
-            // console.log(feedback_checkbox);
-            // console.log(feedback_text);
-
             var data = {
                 'survey_id' : survey_id,
 

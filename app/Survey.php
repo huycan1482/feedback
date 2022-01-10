@@ -19,11 +19,11 @@ class Survey extends Model
         parent::boot();
     
         static::deleting(function($survey) {
-            // $survey->survey_answers()->delete();
+            $survey->survey_answers()->delete();
         });
 
         static::restoring(function($survey) {
-            // $survey->survey_answers()->withTrashed()->restore();
+            $survey->survey_answers()->withTrashed()->restore();
         });
     }
 
@@ -35,6 +35,11 @@ class Survey extends Model
     public function survey_answers () 
     {
         return $this->hasMany('App\SurveyAnswer', 'survey_id', 'id');
+    }
+
+    public function anonymous_users ()
+    {
+        return $this->belongsToMany('App\AnonymousUser', 'survey_answers', 'survey_id', 'anonymous_user_id');
     }
 
 }

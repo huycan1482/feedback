@@ -82,10 +82,9 @@ class HomeController extends HomeRepository
 
     public function postPublicSurvey(Request $request)
     {
-        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'survey_id' => 'required|exists:surveys,id',
-            'identity' => 'nullable|exists:users,user_identity',
+            'identity' => 'nullable|exists:users,identity_code',
             'name' => 'required|string:255',
             'email' => 'required|email',
             'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
@@ -135,8 +134,6 @@ class HomeController extends HomeRepository
                 DB::commit();
             } catch (\Exception $e) {
                 DB::rollBack();
-            dd($e);
-
                 return response()->json(['mess' => 'Gửi bài khảo sát lỗi'], 502);
             }
 
